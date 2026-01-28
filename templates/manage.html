@@ -1,0 +1,54 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Services - Admin</title>
+    <link rel="stylesheet" href="/static/style.css">
+</head>
+<body>
+<div style="padding: 20px;">
+    <h1>Manage Services & Content</h1>
+    
+    <div style="max-width: 800px;">
+        <h2>Services Management</h2>
+        <button onclick="showServiceForm()" style="padding:10px 16px; background:#0b3b8c; color:white; border:none; border-radius:6px; cursor:pointer; margin-bottom:20px;">Add New Service</button>
+        
+        <div id="servicesList" style="background:white; padding:20px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+            Loading...
+        </div>
+        
+        <h2 style="margin-top:30px;">Categories Management</h2>
+        <button onclick="showCategoryForm()" style="padding:10px 16px; background:#0b3b8c; color:white; border:none; border-radius:6px; cursor:pointer; margin-bottom:20px;">Add New Category</button>
+        <div id="categoriesList" style="background:white; padding:20px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+            Loading...
+        </div>
+        
+        <h2 style="margin-top:30px;">Officers Management</h2>
+        <button onclick="showOfficerForm()" style="padding:10px 16px; background:#0b3b8c; color:white; border:none; border-radius:6px; cursor:pointer; margin-bottom:20px;">Add New Officer</button>
+        <div id="officersList" style="background:white; padding:20px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+            Loading...
+        </div>
+        
+        <h2 style="margin-top:30px;">Ads Management</h2>
+        <button onclick="showAdForm()" style="padding:10px 16px; background:#0b3b8c; color:white; border:none; border-radius:6px; cursor:pointer; margin-bottom:20px;">Add New Ad</button>
+        <div id="adsList" style="background:white; padding:20px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+            Loading...
+        </div>
+    </div>
+    
+    <div id="formModal" class="modal" style="display:none;">
+        <div class="modal-content" style="max-width:600px;">
+            <h2 id="formTitle">Form</h2>
+            <form id="dataForm" onsubmit="submitForm(event)">
+                <div id="formFields"></div>
+                <button type="submit" style="width:100%; padding:10px; background:#0b3b8c; color:white; border:none; border-radius:6px; cursor:pointer; margin-top:15px;">Save</button>
+                <button type="button" onclick="closeForm()" style="width:100%; padding:10px; background:#999; color:white; border:none; border-radius:6px; cursor:pointer; margin-top:8px;">Cancel</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="/static/manage.js"></script>
+</body>
+</html>
