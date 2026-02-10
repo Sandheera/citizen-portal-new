@@ -378,6 +378,11 @@ def manage_categories():
         payload = request.json
         cid = payload.get("id")
         if not cid: return jsonify({"error":"id required"}), 400
+        
+        # ensure subcategories array exists
+        if "subcategories" not in payload:
+            payload["subcategories"] = []
+        
         categories_col.update_one({"id":cid}, {"$set":payload}, upsert=True)
         return jsonify({"status":"ok"})
     
@@ -385,6 +390,23 @@ def manage_categories():
         cid = request.args.get("id")
         categories_col.delete_one({"id":cid})
         return jsonify({"status":"deleted"})
+
+# Add subcategory to existing category
+@app.route("/api/admin/categories/add-subcategory", methods=["POST"])
+@admin_required
+def add_subcategory():
+    payload = request.json
+    parent_id = payload.get("parentId")
+    subcategory = payload.get("subcategory")
+    
+    if not parent_id or not subcategory:
+        return jsonify({"error":"parentId and subcategory required"}), 400
+    
+    categories_col.update_one(
+        {"id": parent_id},
+        {"$push": {"subcategories": subcategory}}
+    )
+    return jsonify({"status":"ok"})
 
 # officers
 @app.route("/api/admin/officers", methods=["GET","POST","DELETE"])
