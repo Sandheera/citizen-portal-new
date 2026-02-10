@@ -4,23 +4,158 @@ let categories = [];
 let currentServiceName = "";
 let currentSub = null;
 let profile_id = null;
+let expandedCategories = new Set();
 
-// load categories
+// load categories with subcategories tree
 async function loadCategories(){
     const res = await fetch("/api/categories");
     categories = await res.json();
     const el = document.getElementById("category-list");
     el.innerHTML = "";
+    
     categories.forEach(c=>{
-        const btn = document.createElement("div");
-        btn.className = "cat-item";
-        btn.textContent = c.name?.[lang] || c.name?.en || c.id;
-        btn.onclick = ()=> loadMinistriesInCategory(c);
-        el.appendChild(btn);
+        const catDiv = document.createElement("div");
+        catDiv.className = "cat-tree-item";
+        
+        // Category header with expand/collapse toggle
+        const header = document.createElement("div");
+        header.className = "cat-header";
+        
+        const toggle = document.createElement("span");
+        toggle.className = "cat-toggle";
+        toggle.textContent = "▶";
+        toggle.style.cursor = "pointer";
+        toggle.style.marginRight = "8px";
+        toggle.style.fontSize = "12px";
+        toggle.onclick = (e) => {
+            e.stopPropagation();
+            toggleCategory(c.id, toggle);
+        };
+        
+        const icon = document.createElement("span");
+        icon.textContent = c.icon || "📁";
+        icon.style.marginRight = "8px";
+        
+        const name = document.createElement("span");
+        name.textContent = c.name?.[lang] || c.name?.en || c.id;
+        name.style.fontWeight = "bold";
+        name.style.cursor = "pointer";
+        name.onclick = () => selectCategory(c);
+        
+        header.appendChild(toggle);
+        header.appendChild(icon);
+        header.appendChild(name);
+        catDiv.appendChild(header);
+        
+        // Subcategories container
+        if(c.subcategories && c.subcategories.length > 0){
+            const subDiv = document.createElement("div");
+            subDiv.className = "cat-subcategories";
+            subDiv.id = `subcat-${c.id}`;
+            subDiv.style.display = "none";
+            subDiv.style.marginLeft = "20px";
+            subDiv.style.borderLeft = "2px solid #ddd";
+            subDiv.style.paddingLeft = "10px";
+            
+            c.subcategories.forEach(sub => {
+                const subItem = document.createElement("div");
+                subItem.className = "subcat-item";
+                subItem.style.padding = "8px 0";
+                subItem.style.cursor = "pointer";
+                subItem.style.borderRadius = "4px";
+                subItem.style.paddingLeft = "8px";
+                
+                const subName = document.createElement("div");
+                subName.textContent = `└ ${sub.name?.[lang] || sub.name?.en}`;
+                subName.style.fontWeight = "500";
+                
+                const subCount = document.createElement("div");
+                subCount.textContent = `${sub.itemCount || 0} items`;
+                subCount.style.fontSize = "12px";
+                subCount.style.color = "#666";
+                subCount.style.marginTop = "2px";
+                
+                subItem.appendChild(subName);
+                subItem.appendChild(subCount);
+                
+                subItem.onclick = () => selectSubcategory(c, sub);
+                subItem.onmouseover = () => subItem.style.backgroundColor = "#f0f0f0";
+                subItem.onmouseout = () => subItem.style.backgroundColor = "transparent";
+                
+                subDiv.appendChild(subItem);
+            });
+            
+            catDiv.appendChild(subDiv);
+        }
+        
+        el.appendChild(catDiv);
     });
     
     // load ads
     loadAds();
+}
+
+function toggleCategory(catId, toggleEl){
+    const subDiv = document.getElementById(`subcat-${catId}`);
+    if(subDiv){
+        if(expandedCategories.has(catId)){
+            subDiv.style.display = "none";
+            toggleEl.textContent = "▶";
+            expandedCategories.delete(catId);
+        } else {
+            subDiv.style.display = "block";
+            toggleEl.textContent = "▼";
+            expandedCategories.add(catId);
+        }
+    }
+}
+
+function selectCategory(cat){
+    document.getElementById("sub-title").innerText = cat.name?.[lang] || cat.name?.en || cat.id;
+    document.getElementById("sub-list").innerHTML = "";
+    document.getElementById("q-title").innerText = "Select a subcategory";
+    document.getElementById("question-list").innerHTML = "";
+    document.getElementById("answer-box").innerHTML = "";
+}
+
+function selectSubcategory(cat, sub){
+    document.getElementById("sub-title").innerText = cat.name?.[lang] || cat.name?.en;
+    const subList = document.getElementById("sub-list");
+    subList.innerHTML = "";
+    
+    const header = document.createElement("div");
+    header.style.fontWeight = "bold";
+    header.style.marginBottom = "10px";
+    header.style.color = cat.color || "#333";
+    header.textContent = sub.name?.[lang] || sub.name?.en;
+    subList.appendChild(header);
+    
+    const desc = document.createElement("p");
+    desc.textContent = sub.description || "";
+    desc.style.fontSize = "14px";
+    desc.style.color = "#666";
+    desc.style.marginBottom = "15px";
+    subList.appendChild(desc);
+    
+    const itemsText = document.createElement("p");
+    itemsText.innerHTML = `<strong>Available items:</strong> ${sub.itemCount || 0}`;
+    subList.appendChild(itemsText);
+    
+    if(sub.keywords && sub.keywords.length > 0){
+        const keywordsDiv = document.createElement("div");
+        keywordsDiv.style.marginTop = "10px";
+        const kLabel = document.createElement("strong");
+        kLabel.textContent = "Keywords: ";
+        keywordsDiv.appendChild(kLabel);
+        const kSpan = document.createElement("span");
+        kSpan.textContent = sub.keywords.join(", ");
+        kSpan.style.fontSize = "14px";
+        kSpan.style.color = "#555";
+        keywordsDiv.appendChild(kSpan);
+        subList.appendChild(keywordsDiv);
+    }
+    
+    document.getElementById("q-title").innerText = `${sub.name?.[lang] || sub.name?.en} - Details`;
 }
 
 async function loadMinistriesInCategory(cat){
