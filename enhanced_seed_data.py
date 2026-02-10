@@ -28,7 +28,7 @@ categories_col.delete_many({})
 officers_col.delete_many({})
 ads_col.delete_many({})
 
-# Enhanced categories with subcategories
+# Enhanced categories with 15+ subcategories for each
 enhanced_categories = [
     {
         "id": "cat_it",
@@ -37,27 +37,22 @@ enhanced_categories = [
         "icon": "💻",
         "color": "#1976D2",
         "subcategories": [
-            {
-                "id": "subcat_digital_cert",
-                "name": {"en": "Digital Certificates", "si": "ඩිජිටල් සහතික", "ta": "டிஜிட்டல் சொன்றிதழ்"},
-                "description": "Apply for and manage digital certificates",
-                "keywords": ["certificate", "digital", "authentication", "e-signature"],
-                "itemCount": 5
-            },
-            {
-                "id": "subcat_it_training",
-                "name": {"en": "IT Training Programs", "si": "IT පුහුණු වැඩසටහන්", "ta": "ஐடி பயிற்சி திட்டங்கள்"},
-                "description": "Free and paid training courses for IT skills",
-                "keywords": ["training", "course", "programming", "web development"],
-                "itemCount": 12
-            },
-            {
-                "id": "subcat_tech_support",
-                "name": {"en": "Technical Support", "si": "තාක්ෂණ සහාය", "ta": "தொழில்நுட்ப ஆதரவு"},
-                "description": "Get help with technical issues and troubleshooting",
-                "keywords": ["support", "help", "troubleshooting", "issues"],
-                "itemCount": 8
-            }
+            {"id": "subcat_it_1", "name": {"en": "Digital Certificates", "si": "ඩිජිටල් සහතික", "ta": "டிஜிட்டல் சொன்றிதழ்"}, "description": "Apply for and manage digital certificates", "keywords": ["certificate", "digital", "authentication"], "itemCount": 5},
+            {"id": "subcat_it_2", "name": {"en": "IT Training Programs", "si": "IT පුහුණු", "ta": "ஐடி பயிற்சி"}, "description": "Free and paid training courses", "keywords": ["training", "course", "programming"], "itemCount": 12},
+            {"id": "subcat_it_3", "name": {"en": "Technical Support", "si": "තාක්ෂණ", "ta": "தொழில்நுட்ப"}, "description": "Get help with technical issues", "keywords": ["support", "help", "troubleshooting"], "itemCount": 8},
+            {"id": "subcat_it_4", "name": {"en": "Web Development Services", "si": "වෙබ් සේවා", "ta": "வலை சேவைகள்"}, "description": "Government website development", "keywords": ["web", "development", "website"], "itemCount": 6},
+            {"id": "subcat_it_5", "name": {"en": "Mobile App Development", "si": "මෝබයිල් යෙදුම්", "ta": "மொபைல் பயன்பாடு"}, "description": "Government mobile applications", "keywords": ["mobile", "app", "development"], "itemCount": 7},
+            {"id": "subcat_it_6", "name": {"en": "Cybersecurity Services", "si": "සයිබර් ආරක්ෂණ", "ta": "சைபர் பாதுகாப்பு"}, "description": "Data protection and security solutions", "keywords": ["security", "cyber", "protection"], "itemCount": 9},
+            {"id": "subcat_it_7", "name": {"en": "Cloud Computing", "si": "මේघ පරිගණන", "ta": "கிளவுட் கணினி"}, "description": "Cloud infrastructure and services", "keywords": ["cloud", "computing", "infrastructure"], "itemCount": 8},
+            {"id": "subcat_it_8", "name": {"en": "Data Analytics", "si": "දත්ත විශ්ලේෂණ", "ta": "தரவு பகுப்பாய்வு"}, "description": "Business intelligence and analytics", "keywords": ["data", "analytics", "intelligence"], "itemCount": 6},
+            {"id": "subcat_it_9", "name": {"en": "AI & Machine Learning", "si": "කෘත්‍රිම බුද්ධිමත්තාව", "ta": "செயற்கை நுண்ணறிவு"}, "description": "Artificial intelligence solutions", "keywords": ["AI", "machine learning", "automation"], "itemCount": 5},
+            {"id": "subcat_it_10", "name": {"en": "Blockchain Services", "si": "බ්ලොකචේන්", "ta": "பிளாக்செயின்"}, "description": "Blockchain and distributed ledger technology", "keywords": ["blockchain", "ledger", "cryptocurrency"], "itemCount": 4},
+            {"id": "subcat_it_11", "name": {"en": "IT Consultancy", "si": "IT උපදෙස්", "ta": "ஐடி ஆலோசனை"}, "description": "Technology consulting and advisory", "keywords": ["consultancy", "advisory", "consulting"], "itemCount": 7},
+            {"id": "subcat_it_12", "name": {"en": "System Administration", "si": "පද්ධති පරිපාලනය", "ta": "கணினி நிர்வாகம்"}, "description": "Server and network management", "keywords": ["system", "administration", "network"], "itemCount": 8},
+            {"id": "subcat_it_13", "name": {"en": "Database Management", "si": "දත්ත සමුදාය", "ta": "தரவுத்தளம்"}, "description": "Database design and maintenance", "keywords": ["database", "SQL", "management"], "itemCount": 6},
+            {"id": "subcat_it_14", "name": {"en": "IT Infrastructure", "si": "IT ඉතිරුව", "ta": "ஐடி உள்கட்டமைப்பு"}, "description": "Complete IT infrastructure setup", "keywords": ["infrastructure", "hardware", "setup"], "itemCount": 9},
+            {"id": "subcat_it_15", "name": {"en": "Software Testing", "si": "මෘදුවේරේ පරීක්ෂණ", "ta": "மென்பொருள் சோதனை"}, "description": "QA and software quality assurance", "keywords": ["testing", "QA", "quality"], "itemCount": 7},
+            {"id": "subcat_it_16", "name": {"en": "IT Project Management", "si": "IT ව්‍යාපෘති", "ta": "ஐடி திட்ட மேலாண்மை"}, "description": "Project planning and execution", "keywords": ["project", "management", "planning"], "itemCount": 8}
         ]
     },
     {
@@ -67,34 +62,22 @@ enhanced_categories = [
         "icon": "🏥",
         "color": "#D32F2F",
         "subcategories": [
-            {
-                "id": "subcat_medical_cert",
-                "name": {"en": "Medical Certificates", "si": "වෛද්‍ය සහතික", "ta": "மருத்துவ சொன்றிதழ்"},
-                "description": "Apply for medical certificates and health records",
-                "keywords": ["medical", "certificate", "health", "doctor"],
-                "itemCount": 7
-            },
-            {
-                "id": "subcat_vaccination",
-                "name": {"en": "Vaccination Programs", "si": "ශරීර ගතිකතා වැඩසටහන්", "ta": "தடுப்பூசி திட்டங்கள்"},
-                "description": "Immunization schedules and vaccination centers",
-                "keywords": ["vaccination", "immunization", "vaccine", "health"],
-                "itemCount": 6
-            },
-            {
-                "id": "subcat_health_insurance",
-                "name": {"en": "Health Insurance", "si": "සෞඛ්‍ය රක්ෂණ", "ta": "சுகாதார காப்பீடு"},
-                "description": "Government health insurance schemes and benefits",
-                "keywords": ["insurance", "coverage", "benefits", "plan"],
-                "itemCount": 9
-            },
-            {
-                "id": "subcat_wellness",
-                "name": {"en": "Wellness Programs", "si": "සුබ දbrusseวā", "ta": "ஆரோக்கிய திட்டங்கள்"},
-                "description": "Health promotion and disease prevention initiatives",
-                "keywords": ["wellness", "prevention", "health", "program"],
-                "itemCount": 5
-            }
+            {"id": "subcat_health_1", "name": {"en": "Medical Certificates", "si": "වෛද්‍ය සහතික", "ta": "மருத்துவ சொன்றிதழ்"}, "description": "Apply for medical certificates", "keywords": ["medical", "certificate"], "itemCount": 7},
+            {"id": "subcat_health_2", "name": {"en": "Vaccination Programs", "si": "ශරීර ගතිකතා", "ta": "தடுப்பூசி"}, "description": "Immunization schedules", "keywords": ["vaccination", "vaccine"], "itemCount": 6},
+            {"id": "subcat_health_3", "name": {"en": "Health Insurance", "si": "සෞඛ්‍ය රක්ෂණ", "ta": "சுகாதார காப்பீடு"}, "description": "Government insurance schemes", "keywords": ["insurance", "coverage"], "itemCount": 9},
+            {"id": "subcat_health_4", "name": {"en": "Wellness Programs", "si": "සුබ දල", "ta": "ஆரோக்கிய திட்டங்கள்"}, "description": "Health promotion initiatives", "keywords": ["wellness", "prevention"], "itemCount": 5},
+            {"id": "subcat_health_5", "name": {"en": "Disease Prevention", "si": "රෝග නිරෝධන", "ta": "நோய் தடுப்பு"}, "description": "Disease control programs", "keywords": ["disease", "prevention", "control"], "itemCount": 8},
+            {"id": "subcat_health_6", "name": {"en": "Hospital Services", "si": "රෝහල් සේවා", "ta": "மருத்துவமனை சேவைகள்"}, "description": "Hospital admission and procedures", "keywords": ["hospital", "admission", "service"], "itemCount": 10},
+            {"id": "subcat_health_7", "name": {"en": "Emergency Care", "si": "හදිසි ප්‍රතිකාර", "ta": "அவசர சிகிச்சை"}, "description": "Emergency medical services", "keywords": ["emergency", "urgent", "care"], "itemCount": 6},
+            {"id": "subcat_health_8", "name": {"en": "Maternal Care", "si": "මවුවතා සිටුවාවු", "ta": "தாய் சிகிச்சை"}, "description": "Pregnancy and childbirth services", "keywords": ["maternal", "pregnancy", "childbirth"], "itemCount": 7},
+            {"id": "subcat_health_9", "name": {"en": "Child Health", "si": "ළමා සෞඛ්‍ය", "ta": "குழந்தை சுகாதாரம்"}, "description": "Pediatric and child health services", "keywords": ["child", "pediatric", "health"], "itemCount": 8},
+            {"id": "subcat_health_10", "name": {"en": "Mental Health", "si": "මානසික සෞඛ්‍ය", "ta": "மனநல சேவை"}, "description": "Mental health and counseling", "keywords": ["mental", "psychology", "counseling"], "itemCount": 6},
+            {"id": "subcat_health_11", "name": {"en": "Dental Care", "si": "දතු සිතුවාවු", "ta": "பல் சிகிச்சை"}, "description": "Dental health and treatment", "keywords": ["dental", "teeth", "care"], "itemCount": 5},
+            {"id": "subcat_health_12", "name": {"en": "Eye Care", "si": "ඇසින් සිතුවාවු", "ta": "கண் சிகிச்சை"}, "description": "Ophthalmology services", "keywords": ["eye", "vision", "ophthalmology"], "itemCount": 5},
+            {"id": "subcat_health_13", "name": {"en": "Pharmacy Services", "si": "ඖෂධ සපයාම", "ta": "மருந்து சேவைகள்"}, "description": "Prescription and medication services", "keywords": ["pharmacy", "medicine", "prescription"], "itemCount": 7},
+            {"id": "subcat_health_14", "name": {"en": "Laboratory Tests", "si": "විද්‍යාගාර පරීක්ෂණ", "ta": "ஆய்வக சோதனைகள்"}, "description": "Medical laboratory services", "keywords": ["laboratory", "test", "diagnosis"], "itemCount": 9},
+            {"id": "subcat_health_15", "name": {"en": "Physical Therapy", "si": "ශාරීරික ප්‍රතිකාර", "ta": "உடல் சிகிச்சை"}, "description": "Rehabilitation and therapy", "keywords": ["therapy", "rehabilitation", "physical"], "itemCount": 6},
+            {"id": "subcat_health_16", "name": {"en": "Nutrition Services", "si": "පෝෂණ සेवা", "ta": "ஊட்டச்சத்து சேவைகள்"}, "description": "Nutritional counseling", "keywords": ["nutrition", "diet", "food"], "itemCount": 5}
         ]
     },
     {
