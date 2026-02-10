@@ -1,0 +1,227 @@
+// Example of the hierarchical structure
+
+CITIZEN PORTAL MANAGEMENT SYSTEM
+================================
+
+ADMIN DASHBOARD
+├── Sidebar (Left)
+│   ├── 📂 IT & Digital Services
+│   │   ├─ 💻 Digital Certificates (5 items)
+│   │   ├─ 🎓 IT Training Programs (12 items)
+│   │   └─ 🆘 Technical Support (8 items)
+│   │
+│   ├── 🏥 Health & Medical Services
+│   │   ├─ 📋 Medical Certificates (7 items)
+│   │   ├─ 💉 Vaccination Programs (6 items)
+│   │   ├─ 🛡️ Health Insurance (9 items)
+│   │   └─ 💪 Wellness Programs (5 items)
+│   │
+│   ├── 📚 Education & Training
+│   │   ├─ 🎒 School Enrollment (8 items)
+│   │   ├─ 📊 Exam Results & Schedules (4 items)
+│   │   ├─ 🎓 Scholarships & Grants (15 items)
+│   │   └─ 📜 Education Certificates (6 items)
+│   │
+│   ├── 🚗 Transport & Vehicles
+│   │   ├─ 📝 Vehicle Registration (7 items)
+│   │   ├─ 🪪 Driving Licenses (10 items)
+│   │   ├─ 🎫 Permits & Authorizations (6 items)
+│   │   └─ 🚌 Public Transport Info (12 items)
+│   │
+│   ├── 🏠 Land & Housing
+│   │   ├─ 🏘️ Land Registration (8 items)
+│   │   ├─ 🏗️ Housing Schemes (9 items)
+│   │   └─ 📄 Property Documents (5 items)
+│   │
+│   └── 🗳️ Elections & Voting
+│       ├─ ✍️ Voter Registration (6 items)
+│       ├─ 📍 Polling Information (4 items)
+│       └─ 👤 Candidate Information (3 items)
+│
+└── Main Content (Right)
+    ├── 📋 SERVICES MANAGEMENT
+    │   ├─ Service ID
+    │   ├─ Service Name
+    │   ├─ Category
+    │   ├─ Description
+    │   ├─ Contact Email
+    │   ├─ Hotline
+    │   ├─ Website
+    │   └─ Requirements
+    │
+    ├── 👥 OFFICERS & STAFF
+    │   ├─ Officer Name
+    │   ├─ Role/Position
+    │   ├─ Department
+    │   ├─ Email & Phone
+    │   ├─ Specialization
+    │   └─ Bio/Description
+    │
+    └── 📢 ADS & ANNOUNCEMENTS
+        ├─ Title
+        ├─ Description
+        ├─ Type (Promotion, Training, Event, Important)
+        ├─ Target Audience
+        ├─ Link/URL
+        ├─ Start & End Dates
+        └─ Priority (Low, Medium, High, Urgent)
+
+
+DATABASE STRUCTURE
+==================
+
+Categories Collection
+{
+  id: "cat_it",
+  name: {
+    en: "IT & Digital Services",
+    si: "...",
+    ta: "..."
+  },
+  description: "Government IT services...",
+  icon: "💻",
+  color: "#1976D2",
+  subcategories: [
+    {
+      id: "subcat_digital_cert",
+      name: { en: "Digital Certificates" },
+      description: "Apply for and manage digital certificates",
+      keywords: ["certificate", "digital", "e-signature"],
+      itemCount: 5
+    }
+  ]
+}
+
+Officers Collection
+{
+  id: "off_it_01",
+  name: "Ms. Nayana Perera",
+  role: "Director - Digital Services",
+  department: "Ministry of IT & Digital Affairs",
+  email: "nayana.perera@it.gov.lk",
+  phone: "+94-71-123-4567",
+  specialization: "Digital Transformation, Cloud Computing",
+  bio: "Leads digital transformation initiatives..."
+}
+
+Ads Collection
+{
+  id: "ad_digital_training",
+  title: "Free Digital Skills Training Program",
+  body: "Enroll now for government digital skills training...",
+  type: "training",
+  targetAudience: ["youth", "unemployed", "students"],
+  link: "https://training.gov.lk/digital-skills",
+  startDate: "2026-02-15",
+  endDate: "2026-03-15",
+  priority: "high"
+}
+
+
+CONTENT HIERARCHY EXAMPLE
+=========================
+
+🇱🇰 Sri Lanka Citizen Portal
+│
+├─── 💻 IT & Digital Services (6 officers, 3 announcements)
+│    │
+│    ├─ 📄 Digital Certificates (5 items)
+│    │  └─ How to apply?
+│    │  └─ Where to download?
+│    │  └─ Certificate types
+│    │  └─ Processing time
+│    │  └─ Required documents
+│    │
+│    ├─ 🎓 IT Training Programs (12 items)
+│    │  ├─ Web Development Course
+│    │  ├─ Data Analysis Course
+│    │  ├─ Cybersecurity Training
+│    │  ├─ Cloud Computing Basics
+│    │  └─ ... (8 more courses)
+│    │
+│    └─ 🆘 Technical Support (8 items)
+│       ├─ Common Issues
+│       ├─ FAQ
+│       ├─ Support Hotline
+│       └─ ... (5 more)
+│
+├─── 🏥 Health & Medical Services (5 officers, 2 announcements)
+│    │
+│    ├─ 📋 Medical Certificates (7 items)
+│    ├─ 💉 Vaccination Programs (6 items)
+│    ├─ 🛡️ Health Insurance (9 items)
+│    └─ 💪 Wellness Programs (5 items)
+│
+├─── 📚 Education & Training (4 officers, 2 announcements)
+│    │
+│    ├─ 🎒 School Enrollment (8 items)
+│    ├─ 📊 Exam Results & Schedules (4 items)
+│    ├─ 🎓 Scholarships & Grants (15 items)
+│    └─ 📜 Education Certificates (6 items)
+│
+├─── 🚗 Transport & Vehicles (2 officers, 1 announcement)
+│    │
+│    ├─ 📝 Vehicle Registration (7 items)
+│    ├─ 🪪 Driving Licenses (10 items)
+│    ├─ 🎫 Permits & Authorizations (6 items)
+│    └─ 🚌 Public Transport Info (12 items)
+│
+├─── 🏠 Land & Housing (2 officers)
+│    │
+│    ├─ 🏘️ Land Registration (8 items)
+│    ├─ 🏗️ Housing Schemes (9 items)
+│    └─ 📄 Property Documents (5 items)
+│
+└─── 🗳️ Elections & Voting (2 officers, 1 announcement)
+     │
+     ├─ ✍️ Voter Registration (6 items)
+     ├─ 📍 Polling Information (4 items)
+     └─ 👤 Candidate Information (3 items)
+
+
+UI FLOW
+=======
+
+USER NAVIGATES TO /admin/manage
+│
+├─ Sees Sidebar with Categories
+│  ├─ Click category → Expands subcategories
+│  ├─ Click subcategory → Highlights it
+│  └─ Click "+ Add Category" → Opens form modal
+│
+├─ Sees Services Panel (auto-populated from database)
+│  ├─ Shows all services with details
+│  ├─ Shows subservices and questions count
+│  └─ "+ Add Service" button → Opens form modal
+│
+├─ Sees Officers Panel (auto-populated from database)
+│  ├─ Shows all officers with full details
+│  ├─ Email, phone, specialization visible
+│  └─ "+ Add Officer" button → Opens form modal
+│
+└─ Sees Ads Panel (auto-populated from database)
+   ├─ Shows all ads with priority and dates
+   ├─ Type and target audience visible
+   └─ "+ Add Advertisement" button → Opens form modal
+
+
+API ENDPOINTS
+=============
+
+GET  /api/admin/categories              → List all categories with subcategories
+POST /api/admin/categories              → Create/Update category
+DELETE /api/admin/categories?id=...     → Delete category
+
+POST /api/admin/categories/add-subcategory  → Add subcategory to category
+
+GET  /api/admin/services                → List all services
+POST /api/admin/services                → Create/Update service
+DELETE /api/admin/services/{id}         → Delete service
+
+GET  /api/admin/officers                → List all officers
+POST /api/admin/officers                → Create/Update officer
+DELETE /api/admin/officers?id=...       → Delete officer
+
+GET  /api/admin/ads                     → List all ads
+POST /api/admin/ads                     → Create/Update ad
+DELETE /api/admin/ads?id=...            → Delete ad

@@ -1,7 +1,74 @@
 let currentType = null;
 let currentItem = null;
 let expandedCategories = new Set();
+let selectedCategory = null;
 
+// Load and build category tree
+async function loadCategoryTree() {
+    const res = await fetch('/api/admin/categories');
+    const categories = await res.json();
+    const treeEl = document.getElementById('categoriesTree');
+    
+    if (!categories.length) {
+        treeEl.innerHTML = '<p style="color:#999; font-size:12px;">No categories found</p>';
+        return;
+    }
+    
+    let treeHTML = '<ul class="category-tree">';
+    
+    for (const cat of categories) {
+        const isExpanded = expandedCategories.has(cat.id);
+        const isSelected = selectedCategory === cat.id;
+        
+        treeHTML += `
+            <li class="tree-item">
+                <button class="tree-toggle ${isSelected ? 'active' : ''}" 
+                    onclick="toggleCategory('${cat.id}'); selectCategory('${cat.id}')">
+                    ${cat.subcategories && cat.subcategories.length ? `
+                        <span style="font-size:10px; margin-right:6px;">${isExpanded ? '▼' : '▶'}</span>
+                    ` : '<span style="width:16px; display:inline-block;"></span>'}
+                    <span class="tree-icon">${cat.icon || '📁'}</span>
+                    <strong>${cat.name?.en || cat.id}</strong>
+                </button>
+                
+                ${cat.subcategories && cat.subcategories.length ? `
+                    <div class="tree-children ${isExpanded ? 'expanded' : ''}">
+                        ${cat.subcategories.map(sub => `
+                            <div class="tree-child-item" onclick="selectSubcategory('${cat.id}', '${sub.id}')">
+                                <span class="tree-icon">└</span>
+                                <strong>${sub.name?.en || sub.id}</strong>
+                                ${sub.itemCount ? `<span style="float:right; color:#999; font-size:11px;">${sub.itemCount}</span>` : ''}
+                            </div>
+                        `).join('')}
+                    </div>
+                ` : ''}
+            </li>
+        `;
+    }
+    
+    treeHTML += '</ul>';
+    treeEl.innerHTML = treeHTML;
+}
+
+function toggleCategory(catId) {
+    if (expandedCategories.has(catId)) {
+        expandedCategories.delete(catId);
+    } else {
+        expandedCategories.add(catId);
+    }
+    loadCategoryTree();
+}
+
+function selectCategory(catId) {
+    selectedCategory = catId;
+    loadCategoryTree();
+}
+
+function selectSubcategory(catId, subId) {
+    selectedCategory = catId;
+}
+
+// Load Services
 async function loadServices() {
     const res = await fetch('/api/admin/services');
     const services = await res.json();
@@ -38,58 +105,7 @@ async function loadServices() {
     `).join('') : '<p>No services found.</p>';
 }
 
-async function loadCategories() {
-    const res = await fetch('/api/admin/categories');
-    const categories = await res.json();
-    const el = document.getElementById('categoriesList');
-    el.innerHTML = categories.length ? categories.map(c => `
-        <div style="padding:12px; background:#f8fafc; border-radius:6px; margin-bottom:12px; border-left:4px solid #2196F3;">
-            <div style="display:flex; justify-content:space-between; align-items:flex-start; margin-bottom:8px;">
-                <div style="flex:1;">
-                    <strong style="font-size:14px; color:#2196F3;">${c.name?.en || c.id}</strong>
-                    <p style="margin:4px 0; font-size:12px; color:#666;">ID: ${c.id}</p>
-                    ${c.description ? `<p style="margin:4px 0; font-size:12px; color:#555;">${c.description}</p>` : ''}
-                    ${c.icon ? `<p style="margin:4px 0; font-size:12px;">📌 Icon: ${c.icon}</p>` : ''}
-                </div>
-                <div style="display:flex; gap:8px;">
-                    <button onclick="toggleSubcategories('${c.id}')" style="padding:6px 12px; background:#2196F3; color:white; border:none; border-radius:4px; cursor:pointer; font-size:12px;">
-                        ${expandedCategories.has(c.id) ? '▼' : '▶'} Subcats
-                    </button>
-                    <button onclick="deleteCategory('${c.id}')" style="padding:6px 12px; background:#d32f2f; color:white; border:none; border-radius:4px; cursor:pointer; font-size:12px;">Delete</button>
-                </div>
-            </div>
-            ${c.subcategories && c.subcategories.length && expandedCategories.has(c.id) ? `
-                <div id="subcats_${c.id}" style="margin-top:12px; padding:8px; background:#ffffff; border-radius:4px; border-left:2px solid #2196F3;">
-                    <strong style="font-size:12px; color:#2196F3;">Subcategories:</strong>
-                    ${c.subcategories.map((sub, idx) => `
-                        <div style="margin-top:10px; padding:10px; background:#e3f2fd; border-radius:4px; border-left:2px solid #1976D2;">
-                            <p style="margin:0; font-size:12px;"><strong>${sub.name?.en || sub.id}</strong></p>
-                            <p style="margin:2px 0; font-size:11px; color:#666;">ID: ${sub.id}</p>
-                            ${sub.description ? `<p style="margin:4px 0; font-size:11px; color:#555;">${sub.description}</p>` : ''}
-                            ${sub.keywords ? `<p style="margin:4px 0; font-size:10px; color:#1976D2;">🏷️ Keywords: ${sub.keywords.join(', ')}</p>` : ''}
-                            ${sub.itemCount ? `<p style="margin:4px 0; font-size:10px; color:#1976D2;">📊 Items: ${sub.itemCount}</p>` : ''}
-                        </div>
-                    `).join('')}
-                    <button onclick="addSubcategory('${c.id}')" style="margin-top:10px; padding:6px 12px; background:#4CAF50; color:white; border:none; border-radius:4px; cursor:pointer; font-size:12px; width:100%;">+ Add Subcategory</button>
-                </div>
-            ` : ''}
-        </div>
-    `).join('') : '<p>No categories found.</p>';
-}
-
-function toggleSubcategories(catId) {
-    if (expandedCategories.has(catId)) {
-        expandedCategories.delete(catId);
-    } else {
-        expandedCategories.add(catId);
-    }
-    loadCategories();
-}
-
-function addSubcategory(catId) {
-    showSubcategoryForm(catId);
-}
-
+// Load Officers
 async function loadOfficers() {
     const res = await fetch('/api/admin/officers');
     const officers = await res.json();
@@ -113,6 +129,7 @@ async function loadOfficers() {
     `).join('') : '<p>No officers found.</p>';
 }
 
+// Load Ads
 async function loadAds() {
     const res = await fetch('/api/admin/ads');
     const ads = await res.json();
@@ -125,8 +142,8 @@ async function loadAds() {
                     <p style="margin:4px 0; font-size:12px; color:#666;">ID: ${a.id}</p>
                     ${a.body ? `<p style="margin:4px 0; font-size:12px; color:#555;">${a.body}</p>` : '<p style="margin:4px 0; font-size:12px; color:#999;">No description</p>'}
                     ${a.type ? `<p style="margin:4px 0; font-size:11px; color:#4CAF50;"><strong>Type:</strong> ${a.type}</p>` : ''}
-                    ${a.targetAudience ? `<p style="margin:4px 0; font-size:11px; color:#4CAF50;"><strong>Target:</strong> ${a.targetAudience.join(', ')}</p>` : ''}
-                    ${a.link ? `<p style="margin:4px 0; font-size:11px;">🔗 <a href="${a.link}" target="_blank">${a.link}</a></p>` : ''}
+                    ${a.targetAudience ? `<p style="margin:4px 0; font-size:11px; color:#4CAF50;"><strong>Target:</strong> ${Array.isArray(a.targetAudience) ? a.targetAudience.join(', ') : a.targetAudience}</p>` : ''}
+                    ${a.link ? `<p style="margin:4px 0; font-size:11px;">🔗 <a href="${a.link}" target="_blank" style="color:#4CAF50;">Link</a></p>` : ''}
                     ${a.startDate ? `<p style="margin:4px 0; font-size:11px;">📅 Start: ${a.startDate}</p>` : ''}
                     ${a.endDate ? `<p style="margin:4px 0; font-size:11px;">📅 End: ${a.endDate}</p>` : ''}
                     ${a.priority ? `<p style="margin:4px 0; font-size:11px;">⚡ Priority: ${a.priority}</p>` : ''}
@@ -137,6 +154,7 @@ async function loadAds() {
     `).join('') : '<p>No ads found.</p>';
 }
 
+// Form Functions
 function showServiceForm() {
     currentType = 'service';
     currentItem = null;
@@ -193,7 +211,7 @@ function showAdForm() {
         <input type="text" id="id" placeholder="Ad ID" required style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #cbd5e1; border-radius:6px;" />
         <input type="text" id="title" placeholder="Title" required style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #cbd5e1; border-radius:6px;" />
         <textarea id="body" placeholder="Description/Content" style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #cbd5e1; border-radius:6px; height:80px;"></textarea>
-        <select id="type" placeholder="Ad Type" style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #cbd5e1; border-radius:6px;">
+        <select id="type" style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #cbd5e1; border-radius:6px;">
             <option value="">Select Type</option>
             <option value="promotion">Promotion</option>
             <option value="training">Training Program</option>
@@ -202,10 +220,10 @@ function showAdForm() {
             <option value="important">Important Notice</option>
         </select>
         <input type="url" id="link" placeholder="Link/URL" style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #cbd5e1; border-radius:6px;" />
-        <input type="text" id="targetAudience" placeholder="Target Audience (comma-separated, e.g. youth,students)" style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #cbd5e1; border-radius:6px;" />
-        <input type="date" id="startDate" placeholder="Start Date" style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #cbd5e1; border-radius:6px;" />
-        <input type="date" id="endDate" placeholder="End Date" style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #cbd5e1; border-radius:6px;" />
-        <select id="priority" placeholder="Priority" style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #cbd5e1; border-radius:6px;">
+        <input type="text" id="targetAudience" placeholder="Target Audience (comma-separated)" style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #cbd5e1; border-radius:6px;" />
+        <input type="date" id="startDate" style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #cbd5e1; border-radius:6px;" />
+        <input type="date" id="endDate" style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #cbd5e1; border-radius:6px;" />
+        <select id="priority" style="width:100%; padding:8px; margin-bottom:10px; border:1px solid #cbd5e1; border-radius:6px;">
             <option value="">Select Priority</option>
             <option value="low">Low</option>
             <option value="medium">Medium</option>
@@ -247,7 +265,6 @@ async function submitForm(e) {
         }
     });
     
-    // Handle specific transformations for different types
     if (currentType === 'service') {
         payload.name = { en: payload.name_en };
         delete payload.name_en;
@@ -269,10 +286,6 @@ async function submitForm(e) {
             payload.itemCount = parseInt(payload.itemCount);
         }
         
-        // Add to subcategories array of parent category
-        const res = await fetch(`/api/admin/categories?id=${parentId}`, { method: 'GET' });
-        // Since GET with id param might not work, we need to use a different approach
-        // For now, we'll call a special endpoint
         const addRes = await fetch(`/api/admin/categories/add-subcategory`, {
             method: 'POST',
             headers: { 'Content-Type': 'application/json' },
@@ -282,7 +295,7 @@ async function submitForm(e) {
         if (addRes.ok) {
             alert('Subcategory added successfully!');
             closeForm();
-            loadCategories();
+            loadCategoryTree();
         } else {
             alert('Error adding subcategory!');
         }
@@ -319,7 +332,7 @@ async function deleteService(id) {
 async function deleteCategory(id) {
     if (confirm('Delete this category?')) {
         await fetch(`/api/admin/categories?id=${id}`, { method: 'DELETE' });
-        loadCategories();
+        loadCategoryTree();
     }
 }
 
@@ -338,8 +351,8 @@ async function deleteAd(id) {
 }
 
 window.onload = () => {
+    loadCategoryTree();
     loadServices();
-    loadCategories();
     loadOfficers();
     loadAds();
 };
