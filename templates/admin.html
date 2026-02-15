@@ -38,6 +38,7 @@
         <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e0e0e0;">
             <button onclick="showTab('overview')" id="tab-overview" class="tab-btn active-tab" style="padding:12px 20px; background:none; border:none; border-bottom:3px solid #0b3b8c; cursor:pointer; font-weight:600; color:#0b3b8c;">Overview</button>
             <button onclick="showTab('subcategories')" id="tab-subcategories" class="tab-btn" style="padding:12px 20px; background:none; border:none; border-bottom:3px solid transparent; cursor:pointer; font-weight:500; color:#666;">Subcategory Reports</button>
+            <button onclick="showTab('crud')" id="tab-crud" class="tab-btn" style="padding:12px 20px; background:none; border:none; border-bottom:3px solid transparent; cursor:pointer; font-weight:500; color:#666;">Manage Services</button>
             <button onclick="showTab('engagements')" id="tab-engagements" class="tab-btn" style="padding:12px 20px; background:none; border:none; border-bottom:3px solid transparent; cursor:pointer; font-weight:500; color:#666;">Engagements</button>
         </div>
         
@@ -69,7 +70,10 @@
         <div id="tab-content-subcategories" class="tab-content" style="display:none;">
             <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
                 <h2>Subcategory Analytics</h2>
-                <button onclick="exportSubcategoryReport()" style="padding:8px 16px; background:#388e3c; color:white; border:none; border-radius:6px; cursor:pointer;">📊 Export Subcategory Report</button>
+                <div>
+                    <button onclick="exportSubcategoryReportPDF()" style="padding:8px 16px; background:#f44336; color:white; border:none; border-radius:6px; cursor:pointer; margin-right:10px;">📄 Export as PDF</button>
+                    <button onclick="exportSubcategoryReport()" style="padding:8px 16px; background:#388e3c; color:white; border:none; border-radius:6px; cursor:pointer;">📊 Export as CSV</button>
+                </div>
             </div>
             
             <!-- Summary Cards -->
@@ -117,6 +121,59 @@
             </div>
         </div>
         
+        <!-- CRUD Management Tab -->
+        <div id="tab-content-crud" class="tab-content" style="display:none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>Service Management (CRUD)</h2>
+                <button onclick="showAddServiceModal()" style="padding:10px 20px; background:#4CAF50; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:600;">➕ Add New Service</button>
+            </div>
+            
+            <!-- Filters -->
+            <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #333;">Category</label>
+                        <select id="filter-category" onchange="loadServicesList()" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px;">
+                            <option value="">All Categories</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1; min-width: 200px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #333;">Subcategory</label>
+                        <select id="filter-subcategory" onchange="loadServicesList()" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px;">
+                            <option value="">All Subcategories</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1; min-width: 200px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #333;">Search</label>
+                        <input type="text" id="filter-search" oninput="loadServicesList()" placeholder="Search services..." style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px;">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Services Table -->
+            <div style="background:white; padding:20px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+                <div id="services-table-container" style="overflow-x: auto;">
+                    <table id="servicesTable" style="width:100%; border-collapse:collapse; font-size:13px;">
+                        <thead>
+                            <tr style="background:#f5f5f5;">
+                                <th style="padding:12px; text-align:left; border-bottom: 2px solid #e0e0e0;">ID</th>
+                                <th style="padding:12px; text-align:left; border-bottom: 2px solid #e0e0e0;">Service Name</th>
+                                <th style="padding:12px; text-align:left; border-bottom: 2px solid #e0e0e0;">Category</th>
+                                <th style="padding:12px; text-align:left; border-bottom: 2px solid #e0e0e0;">Subcategory</th>
+                                <th style="padding:12px; text-align:center; border-bottom: 2px solid #e0e0e0;">Fee</th>
+                                <th style="padding:12px; text-align:center; border-bottom: 2px solid #e0e0e0;">Processing Time</th>
+                                <th style="padding:12px; text-align:center; border-bottom: 2px solid #e0e0e0;">Status</th>
+                                <th style="padding:12px; text-align:center; border-bottom: 2px solid #e0e0e0;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="servicesTableBody">
+                            <tr><td colspan="8" style="text-align:center; padding:20px; color:#999;">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
         <!-- Engagements Tab -->
         <div id="tab-content-engagements" class="tab-content" style="display:none;">
             <h3>Recent Engagements</h3>
@@ -141,6 +198,83 @@
                 </table>
             </div>
         </div>
+    </div>
+</div>
+
+<!-- Add/Edit Service Modal -->
+<div id="serviceModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; overflow-y:auto;">
+    <div style="max-width: 800px; margin: 50px auto; background: white; border-radius: 12px; padding: 30px; position:relative;">
+        <button onclick="closeServiceModal()" style="position:absolute; top:15px; right:15px; background:#f44336; color:white; border:none; width:30px; height:30px; border-radius:50%; cursor:pointer; font-size:18px;">×</button>
+        
+        <h2 id="modalTitle">Add New Service</h2>
+        
+        <form id="serviceForm" onsubmit="saveService(event)">
+            <input type="hidden" id="service-id">
+            <input type="hidden" id="service-subcategory-id">
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; margin-bottom:5px; font-weight:600;">Category *</label>
+                <select id="service-category" required onchange="loadSubcategoriesForForm()" style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:6px;">
+                    <option value="">Select Category</option>
+                </select>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; margin-bottom:5px; font-weight:600;">Subcategory *</label>
+                <select id="service-subcategory" required style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:6px;">
+                    <option value="">Select Subcategory</option>
+                </select>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; margin-bottom:5px; font-weight:600;">Service Name (English) *</label>
+                <input type="text" id="service-title-en" required style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:6px;">
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; margin-bottom:5px; font-weight:600;">Service Name (Sinhala)</label>
+                <input type="text" id="service-title-si" style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:6px;">
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; margin-bottom:5px; font-weight:600;">Service Name (Tamil)</label>
+                <input type="text" id="service-title-ta" style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:6px;">
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; margin-bottom:5px; font-weight:600;">Description *</label>
+                <textarea id="service-description" required rows="3" style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:6px;"></textarea>
+            </div>
+            
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:15px;">
+                <div>
+                    <label style="display:block; margin-bottom:5px; font-weight:600;">Fee *</label>
+                    <input type="text" id="service-fee" required placeholder="e.g., 1000 LKR" style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:6px;">
+                </div>
+                <div>
+                    <label style="display:block; margin-bottom:5px; font-weight:600;">Processing Time *</label>
+                    <input type="text" id="service-time" required placeholder="e.g., 5 days" style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:6px;">
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; margin-bottom:5px; font-weight:600;">Requirements (one per line)</label>
+                <textarea id="service-requirements" rows="4" placeholder="Requirement 1&#10;Requirement 2&#10;Requirement 3" style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:6px;"></textarea>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; margin-bottom:5px; font-weight:600;">Status</label>
+                <select id="service-status" style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:6px;">
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+            </div>
+            
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button type="submit" style="flex:1; padding:12px; background:#4CAF50; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:600;">Save Service</button>
+                <button type="button" onclick="closeServiceModal()" style="flex:1; padding:12px; background:#999; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:600;">Cancel</button>
+            </div>
+        </form>
     </div>
 </div>
 
