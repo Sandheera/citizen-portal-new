@@ -112,11 +112,59 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 .u-tag{background:rgba(79,142,247,.1);color:var(--blue);font-size:10px;font-weight:600;padding:2px 7px;border-radius:5px;}
 .u-meta{display:flex;gap:12px;margin-top:6px;flex-wrap:wrap;}
 .u-mi{font-size:10.5px;color:var(--muted2);display:flex;align-items:center;gap:3px;}
-.cat-card{border-radius:12px;overflow:hidden;cursor:pointer;position:relative;aspect-ratio:16/9;border:2px solid transparent;transition:all .3s var(--sp);}
-.cat-card:hover{transform:translateY(-3px) scale(1.02);border-color:var(--blue);box-shadow:0 10px 32px rgba(0,0,0,.5);}
-.cat-card img{width:100%;height:100%;object-fit:cover;display:block;}
-.cat-ov{position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.85) 0%,transparent 55%);display:flex;flex-direction:column;justify-content:flex-end;padding:12px;}
-.cat-name{font-size:13px;font-weight:800;color:white;}.cat-sub{font-size:10px;color:rgba(255,255,255,.6);margin-top:2px;}
+/* ─── PORTAL PHOTO CARDS ───────────────────────────── */
+.pcat-card{
+  position:relative;border-radius:14px;overflow:hidden;cursor:pointer;
+  aspect-ratio:4/3;border:2px solid transparent;
+  transition:all .35s var(--sp);
+  animation:fadeUp .4s var(--ease) both;
+  animation-delay:calc(var(--ci,0)*.06s);
+}
+.pcat-card:hover{
+  transform:translateY(-6px) scale(1.02);
+  border-color:var(--blue);
+  box-shadow:0 16px 40px rgba(0,0,0,.5);
+}
+.pcat-card img{
+  width:100%;height:100%;object-fit:cover;display:block;
+  transition:transform .6s var(--ease);
+}
+.pcat-card:hover img{transform:scale(1.08);}
+.pcat-ov{
+  position:absolute;inset:0;
+  background:linear-gradient(to top,rgba(7,11,20,.92) 0%,rgba(7,11,20,.3) 55%,transparent 100%);
+  display:flex;flex-direction:column;justify-content:flex-end;
+  padding:14px;transition:all .3s;
+}
+.pcat-card:hover .pcat-ov{background:linear-gradient(to top,rgba(37,99,235,.85) 0%,rgba(37,99,235,.2) 55%,transparent 100%);}
+.pcat-icon{
+  position:absolute;top:12px;right:12px;
+  width:36px;height:36px;border-radius:9px;
+  background:rgba(0,0,0,.4);backdrop-filter:blur(8px);
+  display:flex;align-items:center;justify-content:center;
+  font-size:18px;border:1px solid rgba(255,255,255,.15);
+  transition:all .3s var(--sp);
+}
+.pcat-card:hover .pcat-icon{background:var(--blue2);transform:scale(1.1) rotate(-5deg);}
+.pcat-name{font-size:14px;font-weight:800;color:white;line-height:1.25;margin-bottom:4px;}
+.pcat-meta{display:flex;align-items:center;gap:7px;}
+.pcat-sub-count{font-size:10.5px;color:rgba(255,255,255,.6);font-weight:600;}
+.pcat-badge{
+  background:rgba(79,142,247,.25);border:1px solid rgba(79,142,247,.4);
+  color:#93c5fd;font-size:9.5px;font-weight:700;
+  padding:2px 7px;border-radius:6px;
+}
+/* Selected state */
+.pcat-card.selected{
+  border-color:var(--cyan);
+  box-shadow:0 0 0 3px rgba(34,211,238,.2),0 12px 32px rgba(0,0,0,.4);
+}
+.pcat-card.selected .pcat-ov{background:linear-gradient(to top,rgba(6,182,212,.85) 0%,rgba(6,182,212,.2) 55%,transparent 100%);}
+/* Hero slide */
+.hero-slide{min-width:100%;height:100%;object-fit:cover;display:block;}
+/* Shimmer loading */
+.shimmer{background:linear-gradient(90deg,var(--bg3) 25%,var(--panel2) 50%,var(--bg3) 75%);background-size:200% 100%;animation:shimmer 1.4s infinite;}
+@keyframes shimmer{0%{background-position:200% 0}100%{background-position:-200% 0}}
 .drawer{background:var(--panel2);border:1px solid var(--border2);border-radius:13px;padding:18px;margin-bottom:14px;animation:fadeUp .25s var(--ease);border-left:3px solid var(--blue);}
 .drawer h3{font-size:15px;font-weight:800;margin-bottom:11px;display:flex;align-items:center;gap:9px;}
 .drawer .dg{display:grid;grid-template-columns:repeat(3,1fr);gap:11px;margin-bottom:13px;}
@@ -178,20 +226,20 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 </header>
 <div class="layout">
 <aside class="sidebar">
+  <div class="s-sec">Portal</div>
+  <ul class="s-nav">
+    <li><a class="active" onclick="nav('portal')" id="n-portal"><span class="ico">🏠</span>Portal Home</a></li>
+    <li><a href="/shop" target="_blank"><span class="ico">🛍️</span>Shop</a></li>
+    <li><a href="/profile" target="_blank"><span class="ico">👤</span>Profile</a></li>
+    <li><a href="/portal" target="_blank"><span class="ico">🔗</span>Public Portal</a></li>
+  </ul>
   <div class="s-sec">Analytics</div>
   <ul class="s-nav">
-    <li><a class="active" onclick="nav('overview')" id="n-overview"><span class="ico">📊</span>Overview</a></li>
+    <li><a onclick="nav('overview')" id="n-overview"><span class="ico">📊</span>Overview</a></li>
     <li><a onclick="nav('users')" id="n-users"><span class="ico">👥</span>Users<span class="bdg" id="users-bdg">0</span></a></li>
     <li><a onclick="nav('shop')" id="n-shop"><span class="ico">🛒</span>Shop &amp; Orders</a></li>
     <li><a onclick="nav('behavior')" id="n-behavior"><span class="ico">🎯</span>Behavior</a></li>
     <li><a onclick="nav('consent')" id="n-consent"><span class="ico">🔒</span>Consent</a></li>
-  </ul>
-  <div class="s-sec">Portal</div>
-  <ul class="s-nav">
-    <li><a onclick="nav('portal')" id="n-portal"><span class="ico">🏠</span>Portal Home</a></li>
-    <li><a href="/shop" target="_blank"><span class="ico">🛍️</span>Shop</a></li>
-    <li><a href="/profile" target="_blank"><span class="ico">👤</span>Profile</a></li>
-    <li><a href="/portal" target="_blank"><span class="ico">🔗</span>Public Portal</a></li>
   </ul>
   <div class="s-sec">Admin</div>
   <ul class="s-nav">
@@ -211,7 +259,7 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 <main class="main">
 
 <!-- OVERVIEW -->
-<section class="page active" id="page-overview">
+<section class="page" id="page-overview">
   <div class="ph">
     <div><h1>Dashboard Overview</h1><p id="ov-updated">Loading live data…</p></div>
     <div class="ph-act">
@@ -371,39 +419,99 @@ body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
 </section>
 
 <!-- PORTAL -->
-<section class="page" id="page-portal">
+<section class="page active" id="page-portal">
   <div class="ph">
-    <div><h1>🏠 Portal Home</h1><p>Categories, services &amp; applications</p></div>
+    <div><h1>🏠 Portal Home</h1><p>Manage categories, services &amp; applications</p></div>
     <div class="ph-act">
       <div style="display:flex;gap:4px;" id="plang-btns">
         <button class="btn bg sm on" onclick="setPortalLang('en',this)">EN</button>
         <button class="btn bg sm" onclick="setPortalLang('si',this)">සිංහල</button>
         <button class="btn bg sm" onclick="setPortalLang('ta',this)">தமிழ்</button>
       </div>
-      <a href="/portal" target="_blank" class="btn bp sm">🔗 Portal</a>
+      <a href="/portal" target="_blank" class="btn bp sm">🔗 Open Portal</a>
       <button class="btn bg sm" onclick="loadPortal()">↻</button>
     </div>
   </div>
-  <div class="pb" style="overflow-y:auto;flex:1;display:flex;gap:14px;">
-    <div style="width:200px;flex-shrink:0;">
-      <div class="pnl" style="height:100%;"><div class="pnl-hd"><h3>📁 Categories</h3></div>
-      <div id="p-cats" style="padding:5px;overflow-y:auto;max-height:560px;"></div></div>
+  <div style="overflow-y:auto;flex:1;">
+
+    <!-- PORTAL HERO BANNER -->
+    <div id="portal-hero" style="position:relative;height:200px;overflow:hidden;background:var(--bg2);">
+      <div id="hero-slides" style="display:flex;height:100%;transition:transform .8s cubic-bezier(.4,0,.2,1);">
+        <!-- slides injected by JS -->
+      </div>
+      <!-- overlay -->
+      <div style="position:absolute;inset:0;background:linear-gradient(90deg,rgba(7,11,20,.85) 0%,rgba(7,11,20,.3) 50%,transparent 100%);pointer-events:none;"></div>
+      <!-- hero text -->
+      <div style="position:absolute;left:32px;top:50%;transform:translateY(-50%);">
+        <div style="font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:2px;color:var(--cyan);margin-bottom:7px;">CitizenPortal</div>
+        <div id="hero-slide-title" style="font-size:24px;font-weight:900;color:white;margin-bottom:6px;line-height:1.2;transition:opacity .4s;">Government Services</div>
+        <div id="hero-slide-sub" style="font-size:13px;color:rgba(255,255,255,.6);transition:opacity .4s;">Click a category to explore</div>
+      </div>
+      <!-- slide dots -->
+      <div id="hero-dots" style="position:absolute;bottom:14px;left:32px;display:flex;gap:6px;"></div>
+      <!-- arrows -->
+      <button onclick="heroSlide(-1)" style="position:absolute;right:56px;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:white;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);transition:all .2s;" onmouseover="this.style.background='rgba(255,255,255,.22)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">‹</button>
+      <button onclick="heroSlide(1)" style="position:absolute;right:16px;top:50%;transform:translateY(-50%);width:34px;height:34px;border-radius:50%;background:rgba(255,255,255,.12);border:1px solid rgba(255,255,255,.2);color:white;font-size:16px;cursor:pointer;display:flex;align-items:center;justify-content:center;backdrop-filter:blur(8px);transition:all .2s;" onmouseover="this.style.background='rgba(255,255,255,.22)'" onmouseout="this.style.background='rgba(255,255,255,.12)'">›</button>
     </div>
-    <div style="width:220px;flex-shrink:0;">
-      <div class="pnl" style="height:100%;"><div class="pnl-hd"><h3 id="p-sub-title">Subcategories</h3></div>
-      <div id="p-subs" style="padding:5px;overflow-y:auto;max-height:560px;"></div></div>
-    </div>
-    <div style="flex:1;">
-      <div id="p-apps-view">
-        <div class="pnl gap">
-          <div class="pnl-hd"><h3>📋 All Applications</h3><button class="btn bg sm" onclick="loadApps()">↻</button></div>
-          <div class="g4" style="padding:12px;" id="p-app-stats"></div>
-          <div style="overflow-x:auto;"><table class="tbl"><thead><tr><th>ID</th><th>User</th><th>Subcategory</th><th>Status</th><th>Submitted</th><th>Actions</th></tr></thead>
-          <tbody id="p-apps-tbody"></tbody></table></div>
+
+    <!-- CATEGORY PHOTO GRID -->
+    <div style="padding:22px 26px 0;">
+      <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+        <h2 style="font-size:16px;font-weight:800;display:flex;align-items:center;gap:8px;">📁 Service Categories <span id="cat-count" style="font-size:12px;color:var(--muted);font-weight:500;"></span></h2>
+        <div style="display:flex;gap:7px;align-items:center;">
+          <input id="cat-search" placeholder="🔍 Search categories…" oninput="filterCatCards(this.value)"
+            style="padding:6px 12px;background:var(--bg3);border:1px solid var(--border2);border-radius:8px;color:var(--text);font-size:12px;font-family:inherit;outline:none;width:200px;">
+          <button class="btn bg sm" onclick="loadPortal()">↻ Refresh</button>
         </div>
       </div>
-      <div id="p-items-view" style="display:none;"></div>
+      <!-- PHOTO CARD GRID -->
+      <div id="portal-cat-grid" style="display:grid;grid-template-columns:repeat(auto-fill,minmax(200px,1fr));gap:14px;margin-bottom:22px;"></div>
     </div>
+
+    <!-- SELECTED CATEGORY DETAIL -->
+    <div id="portal-cat-detail" style="display:none;padding:0 26px 22px;">
+      <div class="pnl">
+        <div class="pnl-hd">
+          <h3 id="detail-title">Category</h3>
+          <div style="display:flex;gap:7px;">
+            <button class="btn bg sm" onclick="document.getElementById('portal-cat-detail').style.display='none'">✕ Close</button>
+          </div>
+        </div>
+        <div style="padding:16px;">
+          <!-- sub tabs -->
+          <div id="detail-subs" style="display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px;"></div>
+          <!-- items table -->
+          <div id="detail-items"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- BOTTOM ROW: Applications + Stats -->
+    <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;padding:0 26px 26px;">
+
+      <!-- Applications panel -->
+      <div class="pnl">
+        <div class="pnl-hd">
+          <h3>📋 All Applications</h3>
+          <button class="btn bg sm" onclick="loadApps()">↻</button>
+        </div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:9px;padding:12px;" id="p-app-stats"></div>
+        <div style="overflow-x:auto;max-height:300px;overflow-y:auto;">
+          <table class="tbl"><thead><tr><th>ID</th><th>User</th><th>Subcategory</th><th>Status</th><th>Submitted</th><th>Actions</th></tr></thead>
+          <tbody id="p-apps-tbody"></tbody></table>
+        </div>
+      </div>
+
+      <!-- Portal stats panel -->
+      <div class="pnl">
+        <div class="pnl-hd"><h3>📊 Portal Stats</h3></div>
+        <div style="padding:14px;" id="portal-stats-body">
+          <div class="empty"><div class="ei">📊</div><p>Loading…</p></div>
+        </div>
+      </div>
+
+    </div>
+
   </div>
 </section>
 
@@ -445,7 +553,15 @@ function nav(name){
   document.querySelectorAll('.s-nav li a').forEach(a=>a.classList.remove('active'));
   document.getElementById('page-'+name)?.classList.add('active');
   document.getElementById('n-'+name)?.classList.add('active');
-  ({users:loadUsers,shop:loadShop,behavior:loadBehavior,consent:loadConsent,portal:loadPortal})[name]?.();
+  const loaders={
+    overview: ()=>{if(!dashData) loadDash(); else {}},
+    users:loadUsers,
+    shop:loadShop,
+    behavior:loadBehavior,
+    consent:loadConsent,
+    portal:loadPortal
+  };
+  loaders[name]?.();
 }
 setInterval(()=>{document.getElementById('topbar-time').textContent=new Date().toLocaleTimeString();},1000);
 
@@ -561,10 +677,10 @@ async function loadCats(){
     document.getElementById('cat-grid').innerHTML='<div style="grid-column:span 4;" class="empty"><div class="ei">📁</div><h3>No categories</h3><p>Restart Flask — auto-seed runs on startup</p></div>';return;
   }
   document.getElementById('cat-grid').innerHTML=allCats.slice(0,8).map(c=>`
-    <div class="cat-card" onclick="showCatDetail('${c.id}')">
+    <div class="pcat-card" style="aspect-ratio:16/9;" onclick="showCatDetail('${c.id}')">
       <img src="${CAT_IMGS[c.id]||'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=600&q=70'}" alt="" loading="lazy">
-      <div class="cat-ov"><div class="cat-name">${c.icon||'📁'} ${c.name?.en||c.id}</div>
-        <div class="cat-sub">${c.subcategories?.length||0} subcategories</div></div>
+      <div class="pcat-ov"><div class="pcat-name">${c.icon||'📁'} ${c.name?.en||c.id}</div>
+        <div class="pcat-sub-count">${c.subcategories?.length||0} subcategories</div></div>
     </div>`).join('');
 }
 
@@ -874,68 +990,192 @@ async function deleteUser(){
 }
 
 /* ── PORTAL ─────────────────────────────────────────── */
+const HERO_SLIDES=[
+  {id:'cat_it',      title:'IT & Digital Services',    sub:'Online government services, digital ID, e-governance'},
+  {id:'cat_education',title:'Education & Scholarships', sub:'Schools, universities, grants and academic records'},
+  {id:'cat_health',  title:'Health & Medical',          sub:'Healthcare registrations, medical certificates'},
+  {id:'cat_transport',title:'Transport & Licensing',    sub:'Driving licences, vehicle registration, road tax'},
+  {id:'cat_business', title:'Business & Trade',         sub:'Company registration, trade licences, permits'},
+  {id:'cat_tourism',  title:'Tourism & Culture',        sub:'Visas, tourist permits, cultural heritage sites'},
+];
+let heroIdx=0, heroTimer=null;
+
+function buildHeroSlider(){
+  const track=document.getElementById('hero-slides');
+  const dots=document.getElementById('hero-dots');
+  if(!track||!dots) return;
+  track.innerHTML=HERO_SLIDES.map(s=>`
+    <img class="hero-slide" src="${CAT_IMGS[s.id]||'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=1400&q=70'}"
+      alt="${s.title}" loading="lazy">`).join('');
+  dots.innerHTML=HERO_SLIDES.map((_,i)=>`
+    <button onclick="goHeroSlide(${i})" id="hdot-${i}"
+      style="width:${i===0?'20px':'7px'};height:7px;border-radius:8px;border:none;cursor:pointer;
+      background:${i===0?'var(--cyan)':'rgba(255,255,255,.3)'};transition:all .3s;padding:0;"></button>`).join('');
+  updateHeroText();
+  if(heroTimer) clearInterval(heroTimer);
+  heroTimer=setInterval(()=>heroSlide(1),5000);
+}
+
+function heroSlide(dir){
+  heroIdx=(heroIdx+dir+HERO_SLIDES.length)%HERO_SLIDES.length;
+  goHeroSlide(heroIdx);
+}
+
+function goHeroSlide(i){
+  heroIdx=i;
+  const track=document.getElementById('hero-slides');
+  if(track) track.style.transform=`translateX(-${i*100}%)`;
+  document.querySelectorAll('[id^="hdot-"]').forEach((d,j)=>{
+    d.style.width=j===i?'20px':'7px';
+    d.style.background=j===i?'var(--cyan)':'rgba(255,255,255,.3)';
+  });
+  updateHeroText();
+}
+
+function updateHeroText(){
+  const s=HERO_SLIDES[heroIdx];
+  const t=document.getElementById('hero-slide-title');
+  const sub=document.getElementById('hero-slide-sub');
+  if(t){t.style.opacity='0';setTimeout(()=>{t.textContent=s.title;t.style.opacity='1';},200);}
+  if(sub){sub.style.opacity='0';setTimeout(()=>{sub.textContent=s.sub;sub.style.opacity='1';},250);}
+}
+
 async function loadPortal(){
+  buildHeroSlider();
   try{const r=await fetch('/api/categories');allCats=await r.json();}catch(e){allCats=[];}
-  renderPortalCats();loadApps();
+  renderPortalCatGrid(allCats);
+  loadApps();
+  loadPortalStats();
 }
-function renderPortalCats(){
-  const el=document.getElementById('p-cats');
-  if(!allCats.length){el.innerHTML='<div class="empty" style="padding:16px"><div class="ei" style="font-size:24px">📁</div><p style="font-size:11px">No categories. Restart Flask.</p></div>';return;}
-  el.innerHTML=allCats.map(c=>`
-    <div onclick="selCat('${c.id}')" id="pc-${c.id}" style="padding:7px 9px;border-radius:7px;cursor:pointer;border:1px solid transparent;margin-bottom:2px;transition:all .14s">
-      <div style="display:flex;align-items:center;gap:6px;">
-        <span style="font-size:13px">${c.icon||'📁'}</span>
-        <span id="pcn-${c.id}" style="font-size:12px;font-weight:600;color:var(--muted)">${c.name?.[portalLang]||c.name?.en||c.id}</span>
-        <span style="margin-left:auto;font-size:9.5px;background:rgba(79,142,247,.1);color:var(--blue);padding:1px 5px;border-radius:5px;font-weight:700">${c.subcategories?.length||0}</span>
+
+function renderPortalCatGrid(cats){
+  const grid=document.getElementById('portal-cat-grid');
+  const countEl=document.getElementById('cat-count');
+  if(!grid) return;
+  if(countEl) countEl.textContent=`(${cats.length} categories)`;
+  if(!cats.length){
+    grid.innerHTML=`<div class="empty" style="grid-column:span 4"><div class="ei">📁</div><h3>No categories</h3><p>Restart Flask — auto-seed runs on startup</p></div>`;
+    return;
+  }
+  grid.innerHTML=cats.map((c,i)=>{
+    const img=CAT_IMGS[c.id]||'https://images.unsplash.com/photo-1497366754035-f200968a6e72?w=600&q=70';
+    const subs=c.subcategories?.length||0;
+    return`<div class="pcat-card" style="--ci:${i}" id="pcc-${c.id}" onclick="selectPortalCat('${c.id}')">
+      <img src="${img}" alt="${c.name?.en||c.id}" loading="lazy">
+      <div class="pcat-icon">${c.icon||'📁'}</div>
+      <div class="pcat-ov">
+        <div class="pcat-name">${c.name?.[portalLang]||c.name?.en||c.id}</div>
+        <div class="pcat-meta">
+          <span class="pcat-sub-count">${subs} subcategories</span>
+          <span class="pcat-badge">${(c.subcategories||[]).reduce((s,sub)=>s+(sub.itemCount||0),0)} services</span>
+        </div>
       </div>
-    </div>`).join('');
+    </div>`;
+  }).join('');
 }
-function selCat(id){
+
+function filterCatCards(q){
+  const lq=q.toLowerCase();
+  const filtered=q?allCats.filter(c=>(c.name?.en||c.id).toLowerCase().includes(lq)||(c.description||'').toLowerCase().includes(lq)):allCats;
+  renderPortalCatGrid(filtered);
+}
+
+function selectPortalCat(id){
   const cat=allCats.find(c=>c.id===id);if(!cat) return;
-  document.querySelectorAll('[id^="pc-"]').forEach(el=>{el.style.background='transparent';el.style.borderColor='transparent';});
-  document.querySelectorAll('[id^="pcn-"]').forEach(el=>{el.style.color='var(--muted)';});
-  const el=document.getElementById('pc-'+id);
-  if(el){el.style.background='rgba(79,142,247,.08)';el.style.borderColor='rgba(79,142,247,.2)';}
-  document.getElementById('pcn-'+id).style.color='var(--blue)';
-  document.getElementById('p-sub-title').textContent=cat.name?.[portalLang]||cat.name?.en;
-  document.getElementById('p-subs').innerHTML=(cat.subcategories||[]).map(sub=>`
-    <div onclick="selSub('${cat.id}','${sub.id}')" style="padding:8px 9px;border-radius:7px;cursor:pointer;border:1px solid var(--border);margin-bottom:3px;transition:all .13s" onmouseover="this.style.background='rgba(79,142,247,.06)'" onmouseout="this.style.background='transparent'">
-      <div style="font-size:12px;font-weight:600;color:var(--text)">${sub.name?.[portalLang]||sub.name?.en||sub.id}</div>
-      <div style="font-size:10.5px;color:var(--muted);margin-top:2px">${sub.itemCount||0} services</div>
-    </div>`).join('');
+  // toggle selection
+  const wasSelected=document.getElementById('pcc-'+id)?.classList.contains('selected');
+  document.querySelectorAll('.pcat-card').forEach(c=>c.classList.remove('selected'));
+  const detail=document.getElementById('portal-cat-detail');
+  if(wasSelected){detail.style.display='none';return;}
+  document.getElementById('pcc-'+id)?.classList.add('selected');
+
+  // scroll to detail
+  detail.style.display='block';
+  detail.scrollIntoView({behavior:'smooth',block:'nearest'});
+
+  // build detail header
+  const subs=cat.subcategories||[];
+  const totalSvcs=subs.reduce((s,sub)=>s+(sub.itemCount||0),0);
+  document.getElementById('detail-title').innerHTML=`
+    ${cat.icon||'📁'} ${cat.name?.[portalLang]||cat.name?.en}
+    <span class="pill p-b" style="font-size:11px;margin-left:8px;">${subs.length} subs</span>
+    <span class="pill p-g" style="font-size:11px;margin-left:4px;">${totalSvcs} services</span>`;
+
+  // subcategory tabs
+  document.getElementById('detail-subs').innerHTML=subs.map(sub=>`
+    <button class="btn bg sm" onclick="loadDetailSub('${sub.id}',this)"
+      style="font-size:12px;border-radius:8px;padding:6px 12px;"
+      onmouseover="this.style.borderColor='var(--blue)'" onmouseout="this.style.borderColor=''">
+      ${sub.name?.[portalLang]||sub.name?.en||sub.id}
+      <span style="background:rgba(79,142,247,.15);color:var(--blue);font-size:9.5px;font-weight:700;padding:1px 5px;border-radius:4px;margin-left:4px;">${sub.itemCount||0}</span>
+    </button>`).join('');
+
+  document.getElementById('detail-items').innerHTML=`<div class="empty" style="padding:20px"><p>Click a subcategory above to see services</p></div>`;
 }
-async function selSub(catId,subId){
-  const cat=allCats.find(c=>c.id===catId);const sub=cat?.subcategories?.find(s=>s.id===subId);if(!sub) return;
+
+async function loadDetailSub(subId,btn){
+  document.querySelectorAll('#detail-subs .btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  document.getElementById('detail-items').innerHTML=`<div style="padding:14px;display:flex;align-items:center;gap:9px;color:var(--muted);font-size:13px;"><div class="shimmer" style="width:18px;height:18px;border-radius:50%;"></div>Loading services…</div>`;
   try{
     const items=await(await fetch('/api/subcategory/'+subId+'/items')).json();
-    document.getElementById('p-apps-view').style.display='none';
-    document.getElementById('p-items-view').style.display='block';
-    document.getElementById('p-items-view').innerHTML=`<div class="pnl">
-      <div class="pnl-hd"><h3>${sub.name?.[portalLang]||sub.name?.en} (${items.length})</h3>
-        <button class="btn bg sm" onclick="document.getElementById('p-items-view').style.display='none';document.getElementById('p-apps-view').style.display='block'">← Applications</button></div>
-      <div style="overflow-x:auto;"><table class="tbl"><thead><tr><th>Service</th><th>Fee</th><th>Processing</th><th>Requirements</th><th>Status</th></tr></thead>
-      <tbody>${items.map(it=>`<tr><td><b>${it.title?.[portalLang]||it.title?.en||it.title}</b></td><td><span class="pill p-g">${it.fee||'Free'}</span></td><td>${it.processingTime||'—'}</td><td>${(it.requirements||[]).length}</td><td><span class="pill ${it.status==='active'?'p-g':'p-m'}">${it.status||'active'}</span></td></tr>`).join('')}
-      </tbody></table></div></div>`;
-  }catch(e){}
+    document.getElementById('detail-items').innerHTML=items.length
+      ?`<table class="tbl"><thead><tr><th>Service</th><th>Fee</th><th>Processing</th><th>Requirements</th><th>Status</th></tr></thead>
+        <tbody>${items.map(it=>`<tr>
+          <td><b>${it.title?.[portalLang]||it.title?.en||it.title}</b></td>
+          <td><span class="pill p-g">${it.fee||'Free'}</span></td>
+          <td>${it.processingTime||'—'}</td>
+          <td>${(it.requirements||[]).length}</td>
+          <td><span class="pill ${it.status==='active'?'p-g':'p-m'}">${it.status||'active'}</span></td>
+        </tr>`).join('')}</tbody></table>`
+      :'<div class="empty" style="padding:20px"><p>No services in this subcategory</p></div>';
+  }catch(e){document.getElementById('detail-items').innerHTML='<div style="padding:14px;color:var(--rose);font-size:13px;">⚠ Could not load services</div>';}
 }
-async function loadApps(){
+
+async function loadPortalStats(){
   try{
-    const r=await fetch('/api/admin/applications/all');if(!r.ok) return;
-    const apps=await r.json();
-    const st=apps.reduce((s,a)=>{s[a.status]=(s[a.status]||0)+1;return s;},{});
-    document.getElementById('p-app-stats').innerHTML=`
-      <div class="sc" style="--c:var(--blue)"><div class="sc-lbl">Total</div><div class="sc-val">${apps.length}</div></div>
-      <div class="sc" style="--c:var(--amber)"><div class="sc-lbl">Pending</div><div class="sc-val">${st.pending||0}</div></div>
-      <div class="sc" style="--c:var(--green)"><div class="sc-lbl">Approved</div><div class="sc-val">${st.approved||0}</div></div>
-      <div class="sc" style="--c:var(--rose)"><div class="sc-lbl">Rejected</div><div class="sc-val">${st.rejected||0}</div></div>`;
-    document.getElementById('p-apps-tbody').innerHTML=apps.length
-      ?apps.map(a=>`<tr><td><b>#${a._id.slice(-6).toUpperCase()}</b></td><td style="font-size:11px">${(a.user_id||'anon').slice(0,13)}</td><td style="font-size:11px">${a.subcategory_id||'—'}</td><td><span class="pill ${aPill(a.status)}">${a.status||'pending'}</span></td><td style="font-size:10.5px;color:var(--muted2)">${a.submitted_at?new Date(a.submitted_at).toLocaleDateString():'—'}</td><td><div style="display:flex;gap:3px">${a.status==='pending'?`<button class="btn bs sm" onclick="aApprove('${a._id}')">✅</button><button class="btn bd sm" onclick="aReject('${a._id}')">❌</button>`:'—'}</div></td></tr>`).join('')
-      :'<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--muted)">No applications yet</td></tr>';
+    const d=await(await fetch('/api/dashboard/stats')).json();
+    const u=d.users||{},a=d.applications||{},b=d.behavior||{};
+    document.getElementById('portal-stats-body').innerHTML=`
+      <div style="display:flex;flex-direction:column;gap:11px;">
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 13px;background:var(--bg3);border-radius:9px;">
+          <span style="font-size:12.5px;color:var(--muted);font-weight:600;">👥 Registered Users</span>
+          <span style="font-size:18px;font-weight:900;color:var(--blue)">${u.total||0}</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 13px;background:var(--bg3);border-radius:9px;">
+          <span style="font-size:12.5px;color:var(--muted);font-weight:600;">📋 Total Applications</span>
+          <span style="font-size:18px;font-weight:900;color:var(--purple)">${a.total||0}</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 13px;background:var(--bg3);border-radius:9px;">
+          <span style="font-size:12.5px;color:var(--muted);font-weight:600;">⚡ Behavior Events</span>
+          <span style="font-size:18px;font-weight:900;color:var(--cyan)">${b.total_events||0}</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 13px;background:var(--bg3);border-radius:9px;">
+          <span style="font-size:12.5px;color:var(--muted);font-weight:600;">📁 Categories</span>
+          <span style="font-size:18px;font-weight:900;color:var(--green)">${allCats.length}</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 13px;background:var(--bg3);border-radius:9px;">
+          <span style="font-size:12.5px;color:var(--muted);font-weight:600;">🔍 Total Searches</span>
+          <span style="font-size:18px;font-weight:900;color:var(--amber)">${b.by_type?.search||0}</span>
+        </div>
+        <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 13px;background:var(--bg3);border-radius:9px;">
+          <span style="font-size:12.5px;color:var(--muted);font-weight:600;">✅ Approved Apps</span>
+          <span style="font-size:18px;font-weight:900;color:var(--green)">${a.by_status?.approved||0}</span>
+        </div>
+        <div style="margin-top:6px;display:flex;gap:7px;flex-wrap:wrap;">
+          <a href="/portal" target="_blank" class="btn bp sm" style="flex:1;justify-content:center;">🔗 Open Portal</a>
+          <button class="btn bg sm" style="flex:1;justify-content:center;" onclick="nav('overview')">📊 Analytics</button>
+        </div>
+      </div>`;
   }catch(e){}
 }
-async function aApprove(id){await fetch('/api/admin/applications/'+id+'/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({notes:'Approved'})});toast('✅ Approved','success');loadApps();}
-async function aReject(id){const notes=prompt('Rejection reason:');if(!notes) return;await fetch('/api/admin/applications/'+id+'/reject',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({notes})});toast('❌ Rejected','success');loadApps();}
-function setPortalLang(lang,btn){portalLang=lang;document.querySelectorAll('#plang-btns .btn').forEach(b=>{b.classList.remove('on');});btn.classList.add('on');renderPortalCats();}
+
+function setPortalLang(lang,btn){
+  portalLang=lang;
+  document.querySelectorAll('#plang-btns .btn').forEach(b=>b.classList.remove('on'));
+  btn.classList.add('on');
+  renderPortalCatGrid(allCats);
+}
 function setLang(lang,btn){document.querySelectorAll('#lang-btns .btn').forEach(b=>b.classList.remove('on'));btn.classList.add('on');}
 
 /* ── HELPERS ────────────────────────────────────────── */
@@ -954,9 +1194,29 @@ async function quickSeed(){
 }
 function refreshAll(){loadDash();loadCats();}
 
+async function loadApps(){
+  try{
+    const r=await fetch('/api/admin/applications/all');if(!r.ok) return;
+    const apps=await r.json();
+    const st=apps.reduce((s,a)=>{s[a.status]=(s[a.status]||0)+1;return s;},{});
+    document.getElementById('p-app-stats').innerHTML=`
+      <div class="sc" style="--c:var(--blue)"><div class="sc-lbl">Total</div><div class="sc-val">${apps.length}</div></div>
+      <div class="sc" style="--c:var(--amber)"><div class="sc-lbl">Pending</div><div class="sc-val">${st.pending||0}</div></div>
+      <div class="sc" style="--c:var(--green)"><div class="sc-lbl">Approved</div><div class="sc-val">${st.approved||0}</div></div>
+      <div class="sc" style="--c:var(--rose)"><div class="sc-lbl">Rejected</div><div class="sc-val">${st.rejected||0}</div></div>`;
+    document.getElementById('p-apps-tbody').innerHTML=apps.length
+      ?apps.map(a=>`<tr><td><b>#${a._id.slice(-6).toUpperCase()}</b></td><td style="font-size:11px">${(a.user_id||'anon').slice(0,13)}</td><td style="font-size:11px">${a.subcategory_id||'—'}</td><td><span class="pill ${aPill(a.status)}">${a.status||'pending'}</span></td><td style="font-size:10.5px;color:var(--muted2)">${a.submitted_at?new Date(a.submitted_at).toLocaleDateString():'—'}</td><td><div style="display:flex;gap:3px">${a.status==='pending'?`<button class="btn bs sm" onclick="aApprove('${a._id}')">✅</button><button class="btn bd sm" onclick="aReject('${a._id}')">❌</button>`:'—'}</div></td></tr>`).join('')
+      :'<tr><td colspan="6" style="text-align:center;padding:20px;color:var(--muted)">No applications yet</td></tr>';
+  }catch(e){}
+}
+async function aApprove(id){await fetch('/api/admin/applications/'+id+'/approve',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({notes:'Approved'})});toast('✅ Approved','success');loadApps();}
+async function aReject(id){const notes=prompt('Rejection reason:');if(!notes) return;await fetch('/api/admin/applications/'+id+'/reject',{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify({notes})});toast('❌ Rejected','success');loadApps();}
+
 window.onload=async()=>{
-  await loadDash();
-  await loadCats();
+  // Portal loads first (it's the default active page)
+  await loadPortal();
+  // Load dashboard stats in background for the analytics badge
+  loadDash();
   setInterval(loadDash,30000);
 };
 </script>
