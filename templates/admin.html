@@ -1,0 +1,283 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - Citizen Portal</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <script src="https://cdn.jsdelivr.net/npm/chart.js@3.9.1/dist/chart.min.js"></script>
+</head>
+<body>
+<div style="padding: 20px;">
+    <h1>Citizen Services Portal - Admin Dashboard</h1>
+    
+    <!-- Login Box -->
+    <div id="login-box">
+        <div style="max-width: 400px; margin: 50px auto; background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 12px rgba(0,0,0,0.1);">
+            <h2>Admin Login</h2>
+            <form id="login-form">
+                <label>Username</label>
+                <input name="username" type="text" style="width:100%; padding:8px; margin-bottom:12px; border: 1px solid #cbd5e1; border-radius:6px;" />
+                
+                <label>Password</label>
+                <input name="password" type="password" style="width:100%; padding:8px; margin-bottom:20px; border: 1px solid #cbd5e1; border-radius:6px;" />
+                
+                <button type="submit" style="width:100%; padding:10px; background:#0b3b8c; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:500;">Login</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Dashboard (hidden until login) -->
+    <div id="dashboard" style="display:none;">
+        <div style="text-align:right; margin-bottom:20px;">
+            <button id="logoutBtn" style="padding:8px 16px; background:#d32f2f; color:white; border:none; border-radius:6px; cursor:pointer;">Logout</button>
+            <button onclick="rebuildIndex()" style="padding:8px 16px; background:#1976d2; color:white; border:none; border-radius:6px; cursor:pointer; margin-left:10px;">Rebuild AI Index</button>
+        </div>
+        
+        <!-- Navigation Tabs -->
+        <div style="display: flex; gap: 10px; margin-bottom: 20px; border-bottom: 2px solid #e0e0e0;">
+            <button onclick="showTab('overview')" id="tab-overview" class="tab-btn active-tab" style="padding:12px 20px; background:none; border:none; border-bottom:3px solid #0b3b8c; cursor:pointer; font-weight:600; color:#0b3b8c;">Overview</button>
+            <button onclick="showTab('subcategories')" id="tab-subcategories" class="tab-btn" style="padding:12px 20px; background:none; border:none; border-bottom:3px solid transparent; cursor:pointer; font-weight:500; color:#666;">Subcategory Reports</button>
+            <button onclick="showTab('crud')" id="tab-crud" class="tab-btn" style="padding:12px 20px; background:none; border:none; border-bottom:3px solid transparent; cursor:pointer; font-weight:500; color:#666;">Manage Services</button>
+            <button onclick="showTab('engagements')" id="tab-engagements" class="tab-btn" style="padding:12px 20px; background:none; border:none; border-bottom:3px solid transparent; cursor:pointer; font-weight:500; color:#666;">Engagements</button>
+        </div>
+        
+        <!-- Overview Tab -->
+        <div id="tab-content-overview" class="tab-content">
+            <h2>Analytics & Insights</h2>
+            <div style="display:flex; flex-wrap:wrap; gap:20px; margin-bottom:30px;">
+                <div style="flex:1; min-width:350px; background:white; padding:20px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+                    <canvas id="ageChart"></canvas>
+                </div>
+                <div style="flex:1; min-width:350px; background:white; padding:20px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+                    <canvas id="jobChart"></canvas>
+                </div>
+                <div style="flex:1; min-width:350px; background:white; padding:20px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+                    <canvas id="serviceChart"></canvas>
+                </div>
+                <div style="flex:1; min-width:350px; background:white; padding:20px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+                    <canvas id="desireChart"></canvas>
+                </div>
+            </div>
+            
+            <h3>Premium Help Suggestions (Users with Repeated Questions)</h3>
+            <div id="premiumList" style="background:white; padding:20px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.08); margin-bottom:30px;">
+                <!-- filled by JS -->
+            </div>
+        </div>
+        
+        <!-- Subcategory Reports Tab -->
+        <div id="tab-content-subcategories" class="tab-content" style="display:none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>Subcategory Analytics</h2>
+                <div>
+                    <button onclick="exportSubcategoryReportPDF()" style="padding:8px 16px; background:#f44336; color:white; border:none; border-radius:6px; cursor:pointer; margin-right:10px;">📄 Export as PDF</button>
+                    <button onclick="exportSubcategoryReport()" style="padding:8px 16px; background:#388e3c; color:white; border:none; border-radius:6px; cursor:pointer;">📊 Export as CSV</button>
+                </div>
+            </div>
+            
+            <!-- Summary Cards -->
+            <div style="display: flex; gap: 15px; margin-bottom: 25px; flex-wrap: wrap;">
+                <div style="flex: 1; min-width: 200px; background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); padding: 20px; border-radius: 12px; color: white; box-shadow: 0 4px 12px rgba(102,126,234,0.3);">
+                    <div style="font-size: 14px; opacity: 0.9;">Total Subcategories</div>
+                    <div id="total-subcategories" style="font-size: 32px; font-weight: 700; margin-top: 5px;">-</div>
+                </div>
+                <div style="flex: 1; min-width: 200px; background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%); padding: 20px; border-radius: 12px; color: white; box-shadow: 0 4px 12px rgba(240,147,251,0.3);">
+                    <div style="font-size: 14px; opacity: 0.9;">Total Views</div>
+                    <div id="total-views" style="font-size: 32px; font-weight: 700; margin-top: 5px;">-</div>
+                </div>
+                <div style="flex: 1; min-width: 200px; background: linear-gradient(135deg, #4facfe 0%, #00f2fe 100%); padding: 20px; border-radius: 12px; color: white; box-shadow: 0 4px 12px rgba(79,172,254,0.3);">
+                    <div style="font-size: 14px; opacity: 0.9;">Unique Users</div>
+                    <div id="total-users" style="font-size: 32px; font-weight: 700; margin-top: 5px;">-</div>
+                </div>
+                <div style="flex: 1; min-width: 200px; background: linear-gradient(135deg, #fa709a 0%, #fee140 100%); padding: 20px; border-radius: 12px; color: white; box-shadow: 0 4px 12px rgba(250,112,154,0.3);">
+                    <div style="font-size: 14px; opacity: 0.9;">Avg. Views/Subcategory</div>
+                    <div id="avg-views" style="font-size: 32px; font-weight: 700; margin-top: 5px;">-</div>
+                </div>
+            </div>
+            
+            <!-- Subcategory Table -->
+            <div style="background:white; padding:20px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+                <h3 style="margin-top: 0;">Top Subcategories by Engagement</h3>
+                <div id="subcategory-table-container" style="overflow-x: auto;">
+                    <table id="subcategoryTable" style="width:100%; border-collapse:collapse; font-size:13px;">
+                        <thead>
+                            <tr style="background:#f5f5f5;">
+                                <th style="padding:12px; text-align:left; border-bottom: 2px solid #e0e0e0;">Rank</th>
+                                <th style="padding:12px; text-align:left; border-bottom: 2px solid #e0e0e0;">Category</th>
+                                <th style="padding:12px; text-align:left; border-bottom: 2px solid #e0e0e0;">Subcategory</th>
+                                <th style="padding:12px; text-align:center; border-bottom: 2px solid #e0e0e0;">Total Views</th>
+                                <th style="padding:12px; text-align:center; border-bottom: 2px solid #e0e0e0;">Unique Users</th>
+                                <th style="padding:12px; text-align:center; border-bottom: 2px solid #e0e0e0;">Items</th>
+                                <th style="padding:12px; text-align:left; border-bottom: 2px solid #e0e0e0;">Top Age Group</th>
+                                <th style="padding:12px; text-align:left; border-bottom: 2px solid #e0e0e0;">Top Job</th>
+                            </tr>
+                        </thead>
+                        <tbody id="subcategoryTableBody">
+                            <tr><td colspan="8" style="text-align:center; padding:20px; color:#999;">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- CRUD Management Tab -->
+        <div id="tab-content-crud" class="tab-content" style="display:none;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                <h2>Service Management (CRUD)</h2>
+                <button onclick="showAddServiceModal()" style="padding:10px 20px; background:#4CAF50; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:600;">➕ Add New Service</button>
+            </div>
+            
+            <!-- Filters -->
+            <div style="background: white; padding: 20px; border-radius: 10px; margin-bottom: 20px; box-shadow: 0 2px 8px rgba(0,0,0,0.08);">
+                <div style="display: flex; gap: 15px; flex-wrap: wrap;">
+                    <div style="flex: 1; min-width: 200px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #333;">Category</label>
+                        <select id="filter-category" onchange="loadServicesList()" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px;">
+                            <option value="">All Categories</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1; min-width: 200px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #333;">Subcategory</label>
+                        <select id="filter-subcategory" onchange="loadServicesList()" style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px;">
+                            <option value="">All Subcategories</option>
+                        </select>
+                    </div>
+                    <div style="flex: 1; min-width: 200px;">
+                        <label style="display: block; margin-bottom: 5px; font-weight: 500; color: #333;">Search</label>
+                        <input type="text" id="filter-search" oninput="loadServicesList()" placeholder="Search services..." style="width: 100%; padding: 10px; border: 2px solid #e0e0e0; border-radius: 6px;">
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Services Table -->
+            <div style="background:white; padding:20px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+                <div id="services-table-container" style="overflow-x: auto;">
+                    <table id="servicesTable" style="width:100%; border-collapse:collapse; font-size:13px;">
+                        <thead>
+                            <tr style="background:#f5f5f5;">
+                                <th style="padding:12px; text-align:left; border-bottom: 2px solid #e0e0e0;">ID</th>
+                                <th style="padding:12px; text-align:left; border-bottom: 2px solid #e0e0e0;">Service Name</th>
+                                <th style="padding:12px; text-align:left; border-bottom: 2px solid #e0e0e0;">Category</th>
+                                <th style="padding:12px; text-align:left; border-bottom: 2px solid #e0e0e0;">Subcategory</th>
+                                <th style="padding:12px; text-align:center; border-bottom: 2px solid #e0e0e0;">Fee</th>
+                                <th style="padding:12px; text-align:center; border-bottom: 2px solid #e0e0e0;">Processing Time</th>
+                                <th style="padding:12px; text-align:center; border-bottom: 2px solid #e0e0e0;">Status</th>
+                                <th style="padding:12px; text-align:center; border-bottom: 2px solid #e0e0e0;">Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="servicesTableBody">
+                            <tr><td colspan="8" style="text-align:center; padding:20px; color:#999;">Loading...</td></tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Engagements Tab -->
+        <div id="tab-content-engagements" class="tab-content" style="display:none;">
+            <h3>Recent Engagements</h3>
+            <div style="background:white; padding:20px; border-radius:10px; box-shadow:0 2px 8px rgba(0,0,0,0.08);">
+                <button id="exportCsv" style="padding:8px 16px; background:#388e3c; color:white; border:none; border-radius:6px; cursor:pointer; margin-bottom:15px;">Export CSV</button>
+                <table border="1" id="engTable" style="width:100%; border-collapse:collapse; font-size:12px;">
+                    <thead>
+                        <tr style="background:#f5f5f5;">
+                            <th style="padding:10px; text-align:left;">Age</th>
+                            <th style="padding:10px; text-align:left;">Job</th>
+                            <th style="padding:10px; text-align:left;">Desires</th>
+                            <th style="padding:10px; text-align:left;">Question</th>
+                            <th style="padding:10px; text-align:left;">Service</th>
+                            <th style="padding:10px; text-align:left;">Category</th>
+                            <th style="padding:10px; text-align:left;">Subcategory</th>
+                            <th style="padding:10px; text-align:left;">Timestamp</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <!-- filled by JS -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Add/Edit Service Modal -->
+<div id="serviceModal" style="display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.5); z-index:1000; overflow-y:auto;">
+    <div style="max-width: 800px; margin: 50px auto; background: white; border-radius: 12px; padding: 30px; position:relative;">
+        <button onclick="closeServiceModal()" style="position:absolute; top:15px; right:15px; background:#f44336; color:white; border:none; width:30px; height:30px; border-radius:50%; cursor:pointer; font-size:18px;">×</button>
+        
+        <h2 id="modalTitle">Add New Service</h2>
+        
+        <form id="serviceForm" onsubmit="saveService(event)">
+            <input type="hidden" id="service-id">
+            <input type="hidden" id="service-subcategory-id">
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; margin-bottom:5px; font-weight:600;">Category *</label>
+                <select id="service-category" required onchange="loadSubcategoriesForForm()" style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:6px;">
+                    <option value="">Select Category</option>
+                </select>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; margin-bottom:5px; font-weight:600;">Subcategory *</label>
+                <select id="service-subcategory" required style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:6px;">
+                    <option value="">Select Subcategory</option>
+                </select>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; margin-bottom:5px; font-weight:600;">Service Name (English) *</label>
+                <input type="text" id="service-title-en" required style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:6px;">
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; margin-bottom:5px; font-weight:600;">Service Name (Sinhala)</label>
+                <input type="text" id="service-title-si" style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:6px;">
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; margin-bottom:5px; font-weight:600;">Service Name (Tamil)</label>
+                <input type="text" id="service-title-ta" style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:6px;">
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; margin-bottom:5px; font-weight:600;">Description *</label>
+                <textarea id="service-description" required rows="3" style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:6px;"></textarea>
+            </div>
+            
+            <div style="display:grid; grid-template-columns: 1fr 1fr; gap:15px; margin-bottom:15px;">
+                <div>
+                    <label style="display:block; margin-bottom:5px; font-weight:600;">Fee *</label>
+                    <input type="text" id="service-fee" required placeholder="e.g., 1000 LKR" style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:6px;">
+                </div>
+                <div>
+                    <label style="display:block; margin-bottom:5px; font-weight:600;">Processing Time *</label>
+                    <input type="text" id="service-time" required placeholder="e.g., 5 days" style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:6px;">
+                </div>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; margin-bottom:5px; font-weight:600;">Requirements (one per line)</label>
+                <textarea id="service-requirements" rows="4" placeholder="Requirement 1&#10;Requirement 2&#10;Requirement 3" style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:6px;"></textarea>
+            </div>
+            
+            <div style="margin-bottom: 15px;">
+                <label style="display:block; margin-bottom:5px; font-weight:600;">Status</label>
+                <select id="service-status" style="width:100%; padding:10px; border:2px solid #e0e0e0; border-radius:6px;">
+                    <option value="active">Active</option>
+                    <option value="inactive">Inactive</option>
+                </select>
+            </div>
+            
+            <div style="display:flex; gap:10px; margin-top:20px;">
+                <button type="submit" style="flex:1; padding:12px; background:#4CAF50; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:600;">Save Service</button>
+                <button type="button" onclick="closeServiceModal()" style="flex:1; padding:12px; background:#999; color:white; border:none; border-radius:6px; cursor:pointer; font-weight:600;">Cancel</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+<script src="/static/admin.js"></script>
+</body>
+</html>

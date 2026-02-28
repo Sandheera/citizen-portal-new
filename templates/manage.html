@@ -1,0 +1,261 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Manage Services - Admin</title>
+    <link rel="stylesheet" href="/static/style.css">
+    <style>
+        .admin-container {
+            display: flex;
+            gap: 20px;
+            max-width: 1400px;
+        }
+        .sidebar {
+            width: 280px;
+            background: white;
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+            height: fit-content;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .main-content {
+            flex: 1;
+        }
+        .category-tree {
+            list-style: none;
+            padding: 0;
+            margin: 0;
+        }
+        .tree-item {
+            margin-bottom: 2px;
+        }
+        .tree-toggle {
+            background: none;
+            border: none;
+            cursor: pointer;
+            padding: 8px 12px;
+            width: 100%;
+            text-align: left;
+            border-radius: 6px;
+            font-size: 13px;
+            font-weight: 500;
+            color: #0b3b8c;
+            transition: all 0.2s;
+        }
+        .tree-toggle:hover {
+            background: #f0f4f8;
+        }
+        .tree-toggle.active {
+            background: #0b3b8c;
+            color: white;
+        }
+        .tree-children {
+            display: none;
+            padding-left: 12px;
+            border-left: 2px solid #e0e0e0;
+            margin-left: 4px;
+        }
+        .tree-children.expanded {
+            display: block;
+        }
+        .tree-child-item {
+            padding: 6px 10px;
+            margin: 2px 0;
+            border-radius: 4px;
+            font-size: 12px;
+            color: #555;
+            cursor: pointer;
+            transition: all 0.2s;
+            border-left: 3px solid transparent;
+        }
+        .tree-child-item:hover {
+            background: #f5f5f5;
+            border-left-color: #2196F3;
+        }
+        .tree-child-item.active {
+            background: #e3f2fd;
+            border-left-color: #2196F3;
+            color: #1976D2;
+            font-weight: 500;
+        }
+        .tree-icon {
+            margin-right: 6px;
+        }
+        .content-panel {
+            background: white;
+            padding: 25px;
+            border-radius: 10px;
+            box-shadow: 0 2px 8px rgba(0,0,0,0.08);
+        }
+        .panel-header {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 2px solid #f0f0f0;
+        }
+        .panel-header h2 {
+            margin: 0;
+            color: #0b3b8c;
+        }
+        .panel-header .btn-add {
+            padding: 8px 16px;
+            background: #4CAF50;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 13px;
+            transition: all 0.2s;
+        }
+        .panel-header .btn-add:hover {
+            background: #45a049;
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            z-index: 1000;
+            left: 0;
+            top: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.6);
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+        }
+        .modal-content {
+            background-color: white;
+            padding: 30px;
+            border-radius: 10px;
+            box-shadow: 0 4px 20px rgba(0,0,0,0.3);
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+        }
+        .modal-content h2 {
+            margin-top: 0;
+            color: #0b3b8c;
+            margin-bottom: 20px;
+        }
+        .modal-content input,
+        .modal-content textarea,
+        .modal-content select {
+            width: 100%;
+            padding: 10px;
+            margin-bottom: 12px;
+            border: 1px solid #cbd5e1;
+            border-radius: 6px;
+            font-size: 13px;
+            box-sizing: border-box;
+        }
+        .modal-content button {
+            width: 100%;
+            padding: 12px;
+            margin-top: 8px;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            font-size: 14px;
+            font-weight: 500;
+            transition: all 0.2s;
+        }
+        .modal-content button[type="submit"] {
+            background: #0b3b8c;
+            color: white;
+        }
+        .modal-content button[type="submit"]:hover {
+            background: #082854;
+        }
+        .modal-content button[type="button"] {
+            background: #e0e0e0;
+            color: #333;
+        }
+        .modal-content button[type="button"]:hover {
+            background: #d0d0d0;
+        }
+    </style>
+</head>
+<body>
+<div style="padding: 20px;">
+    <h1>Manage Services & Content</h1>
+    
+    <div class="admin-container">
+        <!-- Sidebar with Categories Tree -->
+        <div class="sidebar">
+            <h3 style="margin-top: 0; color: #0b3b8c;">📂 Categories</h3>
+            <button onclick="showCategoryForm()" style="padding:8px 12px; background:#4CAF50; color:white; border:none; border-radius:6px; cursor:pointer; font-size:12px; width:100%; margin-bottom:15px;">+ Add Category</button>
+            <div id="categoriesTree" class="category-tree">
+                Loading categories...
+            </div>
+        </div>
+        
+        <!-- Main Content Area -->
+        <div class="main-content">
+            <!-- Services Management -->
+            <div class="content-panel" style="margin-bottom: 25px;">
+                <div class="panel-header">
+                    <h2>📋 Services Management</h2>
+                    <button onclick="showServiceForm()" class="btn-add">+ Add Service</button>
+                </div>
+                <div id="servicesList">
+                    Loading...
+                </div>
+            </div>
+            
+            <!-- Officers Management -->
+            <div class="content-panel" style="margin-bottom: 25px;">
+                <div class="panel-header">
+                    <h2>👥 Officers & Staff</h2>
+                    <button onclick="showOfficerForm()" class="btn-add">+ Add Officer</button>
+                </div>
+                <div id="officersList">
+                    Loading...
+                </div>
+            </div>
+            
+            <!-- Ads Management -->
+            <div class="content-panel">
+                <div class="panel-header">
+                    <h2>📢 Ads & Announcements</h2>
+                    <button onclick="showAdForm()" class="btn-add">+ Add Advertisement</button>
+                </div>
+                <div id="adsList">
+                    Loading...
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <div id="formModal" class="modal" style="display:none;">
+        <div class="modal-content" style="max-width:600px;">
+            <h2 id="formTitle">Form</h2>
+            <form id="dataForm" onsubmit="submitForm(event)">
+                <div id="formFields"></div>
+                <button type="submit" style="width:100%; padding:10px; background:#0b3b8c; color:white; border:none; border-radius:6px; cursor:pointer; margin-top:15px;">Save</button>
+                <button type="button" onclick="closeForm()" style="width:100%; padding:10px; background:#999; color:white; border:none; border-radius:6px; cursor:pointer; margin-top:8px;">Cancel</button>
+            </form>
+        </div>
+    </div>
+    
+    <!-- Modal Form -->
+    <div id="formModal" class="modal">
+        <div class="modal-content">
+            <h2 id="formTitle">Form</h2>
+            <form id="dataForm" onsubmit="submitForm(event)">
+                <div id="formFields"></div>
+                <button type="submit">Save</button>
+                <button type="button" onclick="closeForm()">Cancel</button>
+            </form>
+        </div>
+    </div>
+</div>
+
+<script src="/static/manage.js"></script>
+</body>
+</html>

@@ -1,0 +1,177 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CitizenPortal — Admin Login</title>
+<style>
+:root {
+  --bg:#070b14;--panel:#111827;--border:rgba(255,255,255,0.09);
+  --blue:#4f8ef7;--blue2:#2563eb;--cyan:#22d3ee;--green:#10b981;
+  --rose:#f43f5e;--text:#f0f4ff;--muted:#8896b3;
+  --spring:cubic-bezier(.34,1.56,.64,1);--ease:cubic-bezier(.4,0,.2,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;display:flex;align-items:stretch;overflow:hidden;}
+.bg{position:fixed;inset:0;z-index:0;pointer-events:none;background:radial-gradient(ellipse 800px 600px at 15% 10%,rgba(79,142,247,0.13) 0%,transparent 70%),radial-gradient(ellipse 600px 500px at 85% 90%,rgba(34,211,238,0.08) 0%,transparent 60%);animation:bgP 12s ease-in-out infinite alternate;}
+@keyframes bgP{from{opacity:.8;transform:scale(1)}to{opacity:1;transform:scale(1.04)}}
+.grid{position:fixed;inset:0;z-index:0;pointer-events:none;background-image:linear-gradient(rgba(79,142,247,0.035) 1px,transparent 1px),linear-gradient(90deg,rgba(79,142,247,0.035) 1px,transparent 1px);background-size:56px 56px;}
+.left{flex:1;display:flex;flex-direction:column;justify-content:center;padding:60px 56px;position:relative;z-index:1;animation:fL .6s var(--ease) both;}
+@keyframes fL{from{opacity:0;transform:translateX(-24px)}to{opacity:1;transform:translateX(0)}}
+.logo{font-size:42px;font-weight:900;letter-spacing:-1px;line-height:1;margin-bottom:10px;background:linear-gradient(135deg,#fff 0%,var(--blue) 50%,var(--cyan) 100%);-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;}
+.logo-sub{font-size:12px;font-weight:700;letter-spacing:3.5px;text-transform:uppercase;color:var(--muted);margin-bottom:52px;}
+.feats{display:flex;flex-direction:column;gap:10px;max-width:360px;}
+.feat{display:flex;align-items:center;gap:14px;padding:15px 18px;border-radius:13px;border:1px solid var(--border);background:rgba(255,255,255,0.025);transition:all .25s var(--spring);animation:fI .5s var(--ease) both;animation-delay:calc(var(--d,0)*80ms + 300ms);}
+@keyframes fI{from{opacity:0;transform:translateX(-16px)}to{opacity:1;transform:translateX(0)}}
+.feat:hover{background:rgba(79,142,247,0.07);border-color:rgba(79,142,247,0.25);transform:translateX(8px);}
+.fi{width:38px;height:38px;border-radius:10px;display:flex;align-items:center;justify-content:center;font-size:18px;flex-shrink:0;}
+.fn{font-size:14px;font-weight:700;margin-bottom:2px;}
+.fd{font-size:12px;color:var(--muted);}
+.sep{width:1px;background:var(--border);margin:40px 0;z-index:1;animation:sI .6s .15s var(--ease) both;}
+@keyframes sI{from{opacity:0}to{opacity:1}}
+.right{width:460px;flex-shrink:0;display:flex;align-items:center;justify-content:center;padding:40px 36px;position:relative;z-index:1;animation:fR .6s .1s var(--ease) both;}
+@keyframes fR{from{opacity:0;transform:translateX(24px)}to{opacity:1;transform:translateX(0)}}
+.card{width:100%;background:rgba(17,24,39,0.92);border:1px solid var(--border);border-radius:22px;padding:38px 34px 32px;backdrop-filter:blur(24px);box-shadow:0 24px 64px rgba(0,0,0,.45),0 0 0 1px rgba(255,255,255,0.04) inset;animation:cU .55s .2s var(--spring) both;}
+@keyframes cU{from{opacity:0;transform:scale(.94) translateY(18px)}to{opacity:1;transform:scale(1) translateY(0)}}
+.card-head{text-align:center;margin-bottom:30px;}
+.shield{width:62px;height:62px;border-radius:18px;background:linear-gradient(135deg,var(--blue2),var(--cyan));display:flex;align-items:center;justify-content:center;font-size:28px;margin:0 auto 16px;box-shadow:0 8px 28px rgba(37,99,235,0.45);animation:sP 3s ease-in-out infinite;}
+@keyframes sP{0%,100%{box-shadow:0 8px 28px rgba(37,99,235,.45)}50%{box-shadow:0 8px 40px rgba(37,99,235,.75),0 0 0 10px rgba(37,99,235,.06)}}
+.ct{font-size:24px;font-weight:800;letter-spacing:-.3px;margin-bottom:5px;}
+.cs{font-size:13px;color:var(--muted);}
+.err{display:none;align-items:center;gap:9px;background:rgba(244,63,94,.1);border:1px solid rgba(244,63,94,.25);border-radius:10px;padding:11px 14px;margin-bottom:18px;font-size:13px;font-weight:600;color:var(--rose);}
+.err.on{display:flex;animation:shk .4s var(--spring);}
+@keyframes shk{0%,100%{transform:translateX(0)}20%{transform:translateX(-7px)}40%{transform:translateX(7px)}60%{transform:translateX(-4px)}80%{transform:translateX(4px)}}
+.field{margin-bottom:16px;}
+.field label{display:block;font-size:11px;font-weight:700;text-transform:uppercase;letter-spacing:.9px;color:var(--muted);margin-bottom:7px;}
+.fw{position:relative;}
+.fi2{position:absolute;left:13px;top:50%;transform:translateY(-50%);font-size:16px;pointer-events:none;transition:transform .2s var(--spring);}
+.fw:focus-within .fi2{transform:translateY(-50%) scale(1.15);}
+.field input{width:100%;padding:12px 42px;background:rgba(255,255,255,0.04);border:1.5px solid rgba(255,255,255,0.1);border-radius:11px;color:var(--text);font-size:14.5px;font-family:inherit;outline:none;transition:border-color .2s,background .2s,box-shadow .2s,transform .2s;}
+.field input::placeholder{color:var(--muted);}
+.field input:focus{border-color:var(--blue);background:rgba(79,142,247,0.06);box-shadow:0 0 0 4px rgba(79,142,247,0.13);transform:translateY(-1px);}
+.eye{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;color:var(--muted);font-size:15px;cursor:pointer;padding:4px;transition:color .2s,transform .2s var(--spring);}
+.eye:hover{color:var(--text);transform:translateY(-50%) scale(1.2);}
+.sbtn{width:100%;padding:14px;background:linear-gradient(135deg,var(--blue2),#1d4ed8);color:#fff;border:none;border-radius:12px;font-size:15px;font-weight:800;font-family:inherit;cursor:pointer;position:relative;overflow:hidden;transition:transform .25s var(--spring),box-shadow .25s;box-shadow:0 4px 18px rgba(37,99,235,.4);margin-top:4px;}
+.sbtn:hover{transform:translateY(-3px);box-shadow:0 10px 32px rgba(37,99,235,.55);}
+.sbtn:active{transform:translateY(-1px) scale(.99);}
+.sbtn.busy{pointer-events:none;opacity:.75;}
+.bt{transition:opacity .18s;}
+.sbtn.busy .bt{opacity:0;}
+.sp{position:absolute;inset:0;display:flex;align-items:center;justify-content:center;opacity:0;transition:opacity .18s;}
+.sbtn.busy .sp{opacity:1;}
+.ring{width:22px;height:22px;border:3px solid rgba(255,255,255,.3);border-top-color:#fff;border-radius:50%;animation:spin .65s linear infinite;}
+@keyframes spin{to{transform:rotate(360deg)}}
+.pl{margin-top:18px;text-align:center;}
+.pl a{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;color:var(--muted);text-decoration:none;padding:7px 16px;border-radius:8px;border:1px solid var(--border);transition:all .2s var(--spring);}
+.pl a:hover{color:var(--text);border-color:rgba(255,255,255,.18);background:rgba(255,255,255,0.04);transform:translateY(-2px);}
+.cf{margin-top:20px;display:flex;justify-content:center;gap:12px;font-size:11.5px;color:#4d5f7a;}
+.cf a{color:inherit;text-decoration:none;}
+.live{position:fixed;top:18px;right:22px;z-index:10;display:flex;align-items:center;gap:7px;background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.22);border-radius:20px;padding:5px 14px;font-size:12px;font-weight:700;color:var(--green);}
+.ld{width:7px;height:7px;border-radius:50%;background:var(--green);animation:lP 2s ease-in-out infinite;}
+@keyframes lP{0%,100%{opacity:1}50%{opacity:.4}}
+@media(max-width:860px){.left,.sep{display:none;}.right{width:100%;padding:24px 16px;}}
+</style>
+</head>
+<body>
+
+<div class="bg"></div>
+<div class="grid"></div>
+<div class="live"><div class="ld"></div>System Online</div>
+
+<div class="left">
+  <div class="logo">CitizenPortal</div>
+  <div class="logo-sub">Admin Command Center</div>
+  <div class="feats">
+    <div class="feat" style="--d:0"><div class="fi" style="background:rgba(79,142,247,.12);border:1px solid rgba(79,142,247,.2)">📊</div><div><div class="fn">Live Dashboard</div><div class="fd">Real-time analytics &amp; KPIs</div></div></div>
+    <div class="feat" style="--d:1"><div class="fi" style="background:rgba(34,211,238,.1);border:1px solid rgba(34,211,238,.2)">👥</div><div><div class="fn">User Management</div><div class="fd">Profiles, consent &amp; behavior</div></div></div>
+    <div class="feat" style="--d:2"><div class="fi" style="background:rgba(16,185,129,.1);border:1px solid rgba(16,185,129,.2)">🛍</div><div><div class="fn">Shop &amp; Orders</div><div class="fd">Products, revenue &amp; history</div></div></div>
+    <div class="feat" style="--d:3"><div class="fi" style="background:rgba(245,158,11,.1);border:1px solid rgba(245,158,11,.2)">📋</div><div><div class="fn">Applications</div><div class="fd">Track all citizen submissions</div></div></div>
+    <div class="feat" style="--d:4"><div class="fi" style="background:rgba(167,139,250,.1);border:1px solid rgba(167,139,250,.2)">🔒</div><div><div class="fn">Privacy &amp; Consent</div><div class="fd">GDPR compliance overview</div></div></div>
+  </div>
+</div>
+
+<div class="sep"></div>
+
+<div class="right">
+  <div class="card">
+    <div class="card-head">
+      <div class="shield">🛡</div>
+      <div class="ct">Admin Login</div>
+      <div class="cs">Sign in to access the command center</div>
+    </div>
+
+    <div class="err" id="err"><span>⚠️</span><span id="etxt">Invalid username or password</span></div>
+
+    <div class="field">
+      <label>Username</label>
+      <div class="fw">
+        <span class="fi2">👤</span>
+        <input id="u" type="text" placeholder="admin" autocomplete="username" autofocus>
+      </div>
+    </div>
+
+    <div class="field">
+      <label>Password</label>
+      <div class="fw">
+        <span class="fi2">🔑</span>
+        <input id="p" type="password" placeholder="••••••••" autocomplete="current-password">
+        <button class="eye" id="eye" type="button" onclick="togglePw()">👁</button>
+      </div>
+    </div>
+
+    <button class="sbtn" id="btn" onclick="doLogin()">
+      <span class="bt">Sign In to Dashboard →</span>
+      <div class="sp"><div class="ring"></div></div>
+    </button>
+
+    <div class="pl"><a href="/portal">🏛 Go to Citizen Portal</a></div>
+    <div class="cf"><span>© 2025 CitizenPortal</span><a href="#">Help</a><a href="#">Privacy</a></div>
+  </div>
+</div>
+
+<script>
+function togglePw(){
+  var i=document.getElementById('p'),e=document.getElementById('eye');
+  i.type=i.type==='password'?'text':'password';
+  e.textContent=i.type==='password'?'👁':'🙈';
+}
+function showErr(msg){
+  var el=document.getElementById('err');
+  document.getElementById('etxt').textContent=msg;
+  el.classList.remove('on');
+  void el.offsetWidth;
+  el.classList.add('on');
+}
+function setBusy(on){document.getElementById('btn').classList.toggle('busy',on);}
+
+async function doLogin(){
+  var u=document.getElementById('u').value.trim();
+  var p=document.getElementById('p').value;
+  if(!u||!p){showErr('Please enter username and password.');return;}
+  setBusy(true);
+  try{
+    var res=await fetch('/login',{
+      method:'POST',
+      credentials:'same-origin',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({username:u,password:p})
+    });
+    var data={};
+    try{data=await res.json();}catch(e){}
+    if(res.ok&&data.ok){
+      window.location.replace(data.redirect||'/dashboard');
+    } else {
+      setBusy(false);
+      showErr(data.error||'Login failed. Check your credentials.');
+      document.getElementById('p').value='';
+      document.getElementById('p').focus();
+    }
+  } catch(err){
+    setBusy(false);
+    showErr('Cannot reach server. Is Flask running on port 5000?');
+  }
+}
+document.addEventListener('keydown',function(e){if(e.key==='Enter')doLogin();});
+</script>
+</body>
+</html>

@@ -1,0 +1,300 @@
+╔════════════════════════════════════════════════════════════════════════════╗
+║                  CITIZEN PORTAL - HIERARCHICAL ADMIN PANEL                  ║
+║                              VISUAL REFERENCE                               ║
+╚════════════════════════════════════════════════════════════════════════════╝
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                           ADMIN PANEL LAYOUT                                │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+┌──────────────────┐  ┌─────────────────────────────────────────────────────┐
+│   SIDEBAR 280px  │  │            MAIN CONTENT AREA (FLEX)                 │
+│                  │  │                                                      │
+│  📂 Categories   │  │  ┌─────────────────────────────────────────────────┐ │
+│  [+ Add Cat]     │  │  │ 📋 SERVICES MANAGEMENT                          │ │
+│                  │  │  │ [+ Add Service]                                 │ │
+│  💻 IT & Digital │  │  │                                                 │ │
+│   └─ Cert (5)    │  │  │ ┌────────────────────────────────────────────┐ │ │
+│   └─ Train (12)  │  │  │ │ Ministry of IT                             │ │ │
+│   └─ Support (8) │  │  │ │ ID: ministry_it                            │ │ │
+│                  │  │  │ │ Category: IT & Digital                     │ │ │
+│  🏥 Health       │  │  │ │ Contact: xxx@it.gov.lk                     │ │ │
+│   └─ Cert (7)    │  │  │ │ Hotline: +94-xxx-xxxx                      │ │ │
+│   └─ Vaccine (6) │  │  │ │ [Delete]                                   │ │ │
+│   └─ Insurance(9)│  │  │ └────────────────────────────────────────────┘ │ │
+│   └─ Wellness(5) │  │  │                                                 │ │
+│                  │  │  │ (More services...)                              │ │
+│  📚 Education    │  │  │                                                 │ │
+│   └─ Enroll (8)  │  │  │ ┌─────────────────────────────────────────────┐ │ │
+│   └─ Exams (4)   │  │  │ 👥 OFFICERS & STAFF                         │ │ │
+│   └─ Scholar(15) │  │  │ [+ Add Officer]                             │ │ │
+│   └─ Cert (6)    │  │  │                                               │ │ │
+│                  │  │  │ ┌────────────────────────────────────────────┐ │ │
+│  🚗 Transport    │  │  │ │ Ms. Nayana Perera                          │ │ │
+│   └─ Vehicle (7) │  │  │ │ Director - Digital Services                │ │ │
+│   └─ License(10) │  │  │ │ Email: nayana@it.gov.lk                    │ │ │
+│   └─ Permits (6) │  │  │ │ Phone: +94-71-123-4567                     │ │ │
+│   └─ Public(12)  │  │  │ │ Specialization: Digital Transformation     │ │ │
+│                  │  │  │ │ [Delete]                                   │ │ │
+│  🏠 Land         │  │  │ └────────────────────────────────────────────┘ │ │
+│   └─ Land Reg(8) │  │  │                                                 │ │
+│   └─ Housing (9) │  │  │ (More officers...)                              │ │
+│   └─ Docs (5)    │  │  │                                                 │ │
+│                  │  │  │ ┌─────────────────────────────────────────────┐ │ │
+│  🗳️ Elections    │  │  │ 📢 ADS & ANNOUNCEMENTS                      │ │ │
+│   └─ Voter (6)   │  │  │ [+ Add Advertisement]                       │ │ │
+│   └─ Poll (4)    │  │  │                                               │ │ │
+│   └─ Candidate(3)│  │  │ ┌────────────────────────────────────────────┐ │ │
+│                  │  │  │ │ Free Digital Skills Training                │ │ │
+│                  │  │  │ │ Type: training                              │ │ │
+│                  │  │  │ │ Target: youth, unemployed                   │ │ │
+│                  │  │  │ │ Start: 2026-02-15 | End: 2026-03-15        │ │ │
+│                  │  │  │ │ Priority: High                              │ │ │
+│                  │  │  │ │ [Delete]                                    │ │ │
+│                  │  │  │ └────────────────────────────────────────────┘ │ │
+│                  │  │  │                                                 │ │
+│                  │  │  │ (More ads...)                                   │ │
+│                  │  │  └─────────────────────────────────────────────────┘ │
+└──────────────────┘  └─────────────────────────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        FORM MODAL STRUCTURE                                 │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+                    ┌──────────────────────────────────┐
+                    │  ✕  Add Category                 │
+                    ├──────────────────────────────────┤
+                    │                                  │
+                    │ [Category ID_____________]       │
+                    │ [Category Name_________]         │
+                    │ [Description___________]         │
+                    │ [Icon (emoji/code)___]           │
+                    │ [Color (hex)__________]          │
+                    │                                  │
+                    │ [Save]              [Cancel]     │
+                    │                                  │
+                    └──────────────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    USER INTERACTION FLOW                                    │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+SCENARIO 1: Viewing Category Details
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  User clicks category → Category highlights
+         ↓
+  User clicks ▶ arrow → Expands subcategories
+         ↓
+  Shows all subcategories with item counts
+         ↓
+  User can click "+ Add Subcategory" → Opens form
+
+SCENARIO 2: Adding New Content
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  User clicks "+ Add" button → Form modal opens
+         ↓
+  Fills all required fields (marked with *)
+         ↓
+  Clicks "Save" → Form submits to API
+         ↓
+  API validates and saves to MongoDB
+         ↓
+  Success response → Page reloads
+         ↓
+  New item appears in list
+
+SCENARIO 3: Editing Existing Content
+━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━
+  User finds existing item → Clicks "Delete"
+         ↓
+  Confirms deletion → Sends DELETE request
+         ↓
+  Item removed from database
+         ↓
+  List updates to reflect change
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                        COLOR SCHEME REFERENCE                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+PRIMARY COLORS:
+  ┌─────────────────────────────────┐
+  │ Header & Primary: #0b3b8c (Navy)│ ← Category toggle, main text
+  │ Success: #4CAF50 (Green)        │ ← Add buttons, Save button
+  │ Danger: #d32f2f (Red)           │ ← Delete buttons
+  │ Background: #f8fafc (Light)     │ ← Card backgrounds
+  └─────────────────────────────────┘
+
+CATEGORY-SPECIFIC COLORS:
+  💻 IT & Digital:        #1976D2 (Blue)
+  🏥 Health & Medical:    #D32F2F (Red)
+  📚 Education:           #4CAF50 (Green)
+  🚗 Transport:           #FF9800 (Orange)
+  🏠 Land & Housing:      #8E7CC3 (Purple)
+  🗳️ Elections:            #2196F3 (Light Blue)
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    RESPONSIVE BREAKPOINTS                                   │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+DESKTOP (1024px+):
+  ┌─────────────┐ ┌──────────────────────┐
+  │ Sidebar     │ │ Main Content         │
+  │ (280px)     │ │ (Flexible)           │
+  │ Fixed       │ │ 3 panels stacked     │
+  └─────────────┘ └──────────────────────┘
+
+TABLET (768px - 1023px):
+  ┌─────────────┐ ┌──────────────┐
+  │ Sidebar     │ │ Main Content │
+  │ (250px)     │ │ (Responsive) │
+  │ Scrollable  │ │ 1-2 per row  │
+  └─────────────┘ └──────────────┘
+
+MOBILE (<768px):
+  ┌────────────────────────┐
+  │ Sidebar (Hidden/Toggle)│
+  ├────────────────────────┤
+  │ Main Content           │
+  │ (Full Width)           │
+  │ 1 per row              │
+  └────────────────────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                     DATA FLOW DIAGRAM                                       │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+                           BROWSER
+                        ┌──────────┐
+                        │   User   │
+                        └────┬─────┘
+                             │
+                    ┌────────▼────────┐
+                    │   HTML + CSS    │
+                    │   manage.html   │
+                    └────────┬────────┘
+                             │
+                    ┌────────▼────────┐
+                    │   JavaScript    │
+                    │   manage.js     │
+                    │  - Tree logic   │
+                    │  - Form handler │
+                    │  - API caller   │
+                    └────────┬────────┘
+                             │
+                    REST API │ (JSON)
+                             │
+                        ┌────▼─────┐
+                        │   Flask   │
+                        │   app.py  │
+                        │  /api/*   │
+                        └────┬─────┘
+                             │
+                        ┌────▼──────┐
+                        │  MongoDB   │
+                        │ Collections│
+                        │ - Categories
+                        │ - Services
+                        │ - Officers
+                        │ - Ads
+                        └───────────┘
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    CATEGORY EXPANSION EXAMPLE                               │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+COLLAPSED STATE:
+  ▶ 💻 IT & Digital Services
+
+EXPANDED STATE:
+  ▼ 💻 IT & Digital Services
+     └ 💻 Digital Certificates (5)
+     └ 🎓 IT Training Programs (12)
+     └ 🆘 Technical Support (8)
+
+ITEM DETAILS ON EXPANSION:
+  ▼ 💻 IT & Digital Services
+     └ 💻 Digital Certificates (5)
+        ID: subcat_digital_cert
+        Description: Apply for and manage certificates
+        Keywords: certificate, digital, e-signature
+        [+ Add to this subcategory]
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                  REQUIRED vs OPTIONAL FIELDS                                │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+CATEGORY FORM:
+  * Category ID         (required)
+  * Category Name       (required)
+  • Description         (optional)
+  • Icon                (optional - defaults to 📁)
+  • Color               (optional - defaults to blue)
+
+OFFICER FORM:
+  * Officer ID          (required)
+  * Name                (required)
+  * Role/Position       (required)
+  • Department          (optional)
+  • Email               (optional)
+  • Phone               (optional)
+  • Specialization      (optional)
+  • Bio                 (optional)
+
+SERVICE FORM:
+  * Service ID          (required)
+  * Service Name        (required)
+  • Category            (optional)
+  • Description         (optional)
+  • Contact Email       (optional)
+  • Hotline             (optional)
+  • Website             (optional)
+  • Requirements        (optional - comma separated)
+
+AD FORM:
+  * Ad ID               (required)
+  * Title               (required)
+  • Body                (optional)
+  • Type                (optional - dropdown)
+  • Link                (optional - URL)
+  • Target Audience     (optional - comma separated)
+  • Start Date          (optional)
+  • End Date            (optional)
+  • Priority            (optional - dropdown)
+
+┌─────────────────────────────────────────────────────────────────────────────┐
+│                    SUBCATEGORY ADDITION FLOW                                │
+└─────────────────────────────────────────────────────────────────────────────┘
+
+1. FIND CATEGORY
+   └─ Locate "Health & Medical Services" in sidebar
+
+2. EXPAND CATEGORY  
+   └─ Click ▶ arrow to expand subcategories
+
+3. VIEW OPTIONS
+   └─ See existing subcategories
+   └─ See "+ Add Subcategory" button
+
+4. ADD SUBCATEGORY
+   └─ Click button → Form modal opens
+
+5. FILL FORM
+   └─ ID: subcat_health_insurance
+   └─ Name: Health Insurance Plans
+   └─ Description: Government health insurance information
+   └─ Keywords: insurance, health, coverage, benefits
+   └─ Item Count: 9
+
+6. SAVE
+   └─ Click Save → API call
+   └─ MongoDB updated with new subcategory
+   └─ Sidebar refreshes to show new item
+
+7. VERIFY
+   └─ Check "Health & Medical Services" 
+   └─ Expand and see new subcategory listed
+
+═══════════════════════════════════════════════════════════════════════════════
+                    END OF VISUAL REFERENCE GUIDE
+═══════════════════════════════════════════════════════════════════════════════

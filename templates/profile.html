@@ -1,0 +1,1852 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>My Profile — Citizen Portal</title>
+<link href="https://fonts.googleapis.com/css2?family=Fraunces:wght@600;700;900&family=DM+Sans:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+<style>
+/* ═══════════════════════ DESIGN SYSTEM ═══════════════════════ */
+:root {
+  --ink:     #07090e;
+  --ink2:    #111827;
+  --gold:    #f59e0b;
+  --gold2:   #d97706;
+  --teal:    #0ea5e9;
+  --teal2:   #0284c7;
+  --green:   #10b981;
+  --rose:    #f43f5e;
+  --purple:  #8b5cf6;
+  --blue:    #3b82f6;
+  --surface: #ffffff;
+  --surf2:   #f8fafc;
+  --surf3:   #f1f5f9;
+  --border:  #e2e8f0;
+  --text:    #1e293b;
+  --muted:   #64748b;
+  --muted2:  #94a3b8;
+  --shadow:  0 4px 20px rgba(7,9,14,.07);
+  --shadow2: 0 12px 48px rgba(7,9,14,.14);
+  --r:       14px;
+  --sp:  cubic-bezier(.34,1.56,.64,1);
+  --sm:  cubic-bezier(.4,0,.2,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:'DM Sans',sans-serif;background:var(--surf2);color:var(--text);min-height:100vh;}
+::-webkit-scrollbar{width:5px;}::-webkit-scrollbar-thumb{background:var(--border);border-radius:10px;}
+
+/* ── NAVBAR ─────────────────────────────────────────────────── */
+nav{
+  position:sticky;top:0;z-index:200;
+  background:rgba(7,9,14,.96);backdrop-filter:blur(20px);
+  padding:0 28px;display:flex;align-items:center;height:60px;
+  border-bottom:1px solid rgba(255,255,255,.06);gap:12px;
+}
+.n-brand{font-family:'Fraunces',serif;font-size:20px;font-weight:900;
+  color:white;text-decoration:none;margin-right:20px;letter-spacing:-.5px;
+}
+.n-brand span{color:var(--gold);}
+.nav-links{display:flex;gap:2px;flex:1;}
+.nav-links a{
+  color:rgba(255,255,255,.6);text-decoration:none;font-size:13px;font-weight:500;
+  padding:6px 13px;border-radius:8px;transition:all .2s;display:flex;align-items:center;gap:5px;
+}
+.nav-links a:hover{color:white;background:rgba(255,255,255,.08);}
+.nav-links a.active{color:var(--gold);}
+.n-right{display:flex;gap:8px;align-items:center;margin-left:auto;}
+.n-uid{
+  font-size:11px;font-weight:700;color:rgba(255,255,255,.4);
+  padding:5px 10px;background:rgba(255,255,255,.04);border-radius:7px;
+  letter-spacing:.5px;
+}
+.n-btn{
+  padding:6px 14px;border-radius:8px;border:1px solid rgba(255,255,255,.12);
+  background:transparent;color:rgba(255,255,255,.7);font-size:12.5px;font-weight:600;
+  cursor:pointer;font-family:inherit;transition:all .2s;text-decoration:none;
+}
+.n-btn:hover{background:rgba(255,255,255,.08);color:white;}
+.n-btn.gold{background:linear-gradient(135deg,var(--gold2),var(--gold));color:white;
+  border-color:transparent;box-shadow:0 2px 8px rgba(245,158,11,.3);}
+
+/* ── HERO ───────────────────────────────────────────────────── */
+.hero{
+  background:linear-gradient(135deg, #07090e 0%, #111827 50%, #1e1b4b 100%);
+  padding:40px 28px 0;position:relative;overflow:hidden;
+}
+.hero::before{
+  content:'';position:absolute;inset:0;
+  background:
+    radial-gradient(ellipse 600px 400px at -10% -20%,rgba(245,158,11,.07),transparent 60%),
+    radial-gradient(ellipse 500px 400px at 110% 120%,rgba(139,92,246,.07),transparent 60%);
+}
+.hero-inner{
+  max-width:1200px;margin:0 auto;display:flex;align-items:flex-start;
+  gap:24px;position:relative;z-index:1;
+}
+.hero-avatar-wrap{
+  width:88px;height:88px;border-radius:24px;flex-shrink:0;
+  background:linear-gradient(135deg,var(--teal2),var(--purple));
+  display:flex;align-items:center;justify-content:center;
+  font-size:40px;box-shadow:0 8px 24px rgba(0,0,0,.4);
+  cursor:pointer;transition:transform .3s var(--sp);
+}
+.hero-avatar-wrap:hover{transform:scale(1.06);}
+.hero-info{flex:1;}
+.hero-info h1{
+  font-family:'Fraunces',serif;font-size:30px;font-weight:900;
+  color:white;margin-bottom:5px;line-height:1.1;
+}
+.hero-info p{font-size:14px;color:rgba(255,255,255,.55);margin-bottom:12px;}
+.hero-badges{display:flex;flex-wrap:wrap;gap:7px;}
+.hero-badge{
+  background:rgba(255,255,255,.08);border:1px solid rgba(255,255,255,.1);
+  color:rgba(255,255,255,.7);font-size:11.5px;font-weight:600;
+  padding:4px 10px;border-radius:8px;display:flex;align-items:center;gap:5px;
+}
+.hero-right{display:flex;flex-direction:column;align-items:center;gap:8px;}
+.completion-wrap{
+  background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.08);
+  border-radius:16px;padding:14px;text-align:center;
+}
+.completion-wrap .clbl{font-size:9px;font-weight:800;text-transform:uppercase;
+  letter-spacing:1.2px;color:rgba(255,255,255,.4);margin-bottom:6px;}
+.completion-ring-wrap{position:relative;}
+.completion-ring-wrap svg{transform:rotate(-90deg);}
+.completion-text{
+  position:absolute;inset:0;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;
+}
+.completion-text .cpct{font-family:'Fraunces',serif;font-size:18px;font-weight:900;color:white;}
+.completion-text .clabel{font-size:8.5px;color:rgba(255,255,255,.4);text-transform:uppercase;letter-spacing:1px;}
+
+/* Hero Tabs (sub-nav inside hero) */
+.hero-tabs{
+  max-width:1200px;margin:0 auto;position:relative;z-index:1;
+  display:flex;gap:2px;margin-top:24px;padding-top:4px;overflow-x:auto;
+}
+.htab{
+  padding:11px 18px;font-size:13px;font-weight:600;border:none;
+  background:transparent;color:rgba(255,255,255,.45);cursor:pointer;
+  font-family:inherit;transition:all .2s;white-space:nowrap;border-radius:0;
+  position:relative;display:flex;align-items:center;gap:6px;
+}
+.htab:hover{color:rgba(255,255,255,.8);}
+.htab.active{color:white;}
+.htab.active::after{
+  content:'';position:absolute;bottom:0;left:0;right:0;height:2.5px;
+  background:var(--gold);border-radius:2px 2px 0 0;
+}
+
+/* ── LAYOUT ─────────────────────────────────────────────────── */
+.main-layout{
+  max-width:1200px;margin:0 auto;padding:24px 28px;
+  display:grid;grid-template-columns:200px 1fr;gap:20px;align-items:start;
+}
+
+/* ── SIDEBAR ────────────────────────────────────────────────── */
+.prof-sidebar{
+  background:white;border-radius:var(--r);box-shadow:var(--shadow);
+  overflow:hidden;position:sticky;top:76px;
+}
+.ps-section{
+  padding:7px 10px 3px;font-size:9.5px;font-weight:800;
+  text-transform:uppercase;letter-spacing:1.2px;color:var(--muted2);
+}
+.ps-nav{list-style:none;padding:4px 8px 8px;}
+.ps-nav li button{
+  display:flex;align-items:center;gap:8px;width:100%;padding:9px 10px;
+  border-radius:9px;font-size:13px;font-weight:500;color:var(--muted);
+  border:none;background:transparent;cursor:pointer;font-family:inherit;
+  transition:all .15s;text-align:left;
+}
+.ps-nav li button:hover{background:var(--surf3);color:var(--text);}
+.ps-nav li button.active{
+  background:linear-gradient(135deg,rgba(14,165,233,.08),rgba(14,165,233,.04));
+  color:var(--teal2);font-weight:700;
+}
+.ps-nav li button .ico{font-size:15px;width:18px;text-align:center;}
+.ps-divider{height:1px;background:var(--border);margin:8px 0;}
+
+/* ── SECTIONS ───────────────────────────────────────────────── */
+.prof-section{display:none;}
+.prof-section.active{display:block;animation:fadeUp .3s var(--sm);}
+@keyframes fadeUp{from{opacity:0;transform:translateY(8px)}to{opacity:1;transform:translateY(0)}}
+
+/* ── CARDS ──────────────────────────────────────────────────── */
+.card{
+  background:white;border-radius:var(--r);box-shadow:var(--shadow);
+  margin-bottom:18px;overflow:hidden;
+}
+.card-hd{
+  padding:16px 22px;border-bottom:1px solid var(--surf3);
+  display:flex;align-items:center;justify-content:space-between;
+}
+.card-hd h3{
+  font-family:'Fraunces',serif;font-size:17px;font-weight:700;
+  display:flex;align-items:center;gap:8px;
+}
+.card-body{padding:22px;}
+
+/* ── FORM ───────────────────────────────────────────────────── */
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px;}
+.form-grid.three{grid-template-columns:1fr 1fr 1fr;}
+.fg{display:flex;flex-direction:column;gap:5px;}
+.fg.full{grid-column:1/-1;}
+.fg label{
+  font-size:11px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.7px;color:var(--muted);
+}
+.fg input,.fg select,.fg textarea{
+  padding:10px 13px;border:1.5px solid var(--border);border-radius:10px;
+  font-size:13.5px;font-family:inherit;outline:none;
+  transition:all .2s;background:var(--surf2);color:var(--text);
+}
+.fg input::placeholder{color:var(--muted2);}
+.fg input:focus,.fg select:focus,.fg textarea:focus{
+  border-color:var(--teal);box-shadow:0 0 0 3px rgba(14,165,233,.1);
+  background:white;
+}
+.fg textarea{resize:vertical;min-height:72px;}
+.fg select option{background:white;}
+
+/* ── SAVE BUTTON ────────────────────────────────────────────── */
+.save-btn{
+  margin-top:18px;padding:11px 26px;
+  background:linear-gradient(135deg,#0369a1,var(--teal));
+  color:white;border:none;border-radius:10px;font-weight:700;font-size:14px;
+  font-family:inherit;cursor:pointer;
+  transition:transform .2s var(--sp),box-shadow .2s;
+  display:inline-flex;align-items:center;gap:7px;
+}
+.save-btn:hover{transform:translateY(-2px);box-shadow:0 8px 24px rgba(14,165,233,.35);}
+.save-btn.saving{opacity:.7;pointer-events:none;}
+.btn-sm2{
+  padding:8px 16px;border-radius:9px;border:1.5px solid var(--border);
+  background:white;color:var(--text);font-size:12.5px;font-weight:700;
+  cursor:pointer;font-family:inherit;transition:all .2s;
+  display:inline-flex;align-items:center;gap:5px;
+}
+.btn-sm2:hover{background:var(--surf3);border-color:var(--muted2);}
+.btn-sm2.gold{background:linear-gradient(135deg,var(--gold2),var(--gold));
+  color:white;border-color:transparent;}
+.btn-sm2.red{background:var(--rose);color:white;border-color:transparent;}
+
+/* ── TAGS ───────────────────────────────────────────────────── */
+.tags-area{
+  display:flex;flex-wrap:wrap;gap:7px;padding:10px;
+  border:1.5px solid var(--border);border-radius:10px;min-height:48px;
+  cursor:text;background:var(--surf2);transition:all .2s;
+}
+.tags-area:focus-within{border-color:var(--teal);background:white;}
+.tag-chip{
+  background:linear-gradient(135deg,#e0f2fe,#bae6fd);color:#0369a1;
+  padding:4px 10px;border-radius:20px;font-size:12.5px;font-weight:600;
+  display:flex;align-items:center;gap:5px;
+}
+.tag-chip button{background:none;border:none;cursor:pointer;color:#0369a1;
+  font-size:13px;padding:0;line-height:1;}
+.tag-input{border:none;outline:none;font-family:inherit;font-size:13.5px;
+  flex:1;min-width:100px;background:transparent;color:var(--text);}
+
+/* ── EDUCATION / HISTORY CARDS ──────────────────────────────── */
+.edu-card{
+  background:var(--surf2);border-radius:12px;padding:14px 16px;
+  margin-bottom:10px;display:flex;gap:14px;align-items:flex-start;
+  border-left:3.5px solid var(--teal);
+  animation:fadeUp .3s var(--sm) both;animation-delay:calc(var(--i,0)*.04s);
+}
+.edu-icon{font-size:26px;}
+.edu-body{flex:1;}
+.edu-degree{font-weight:700;font-size:14.5px;margin-bottom:3px;}
+.edu-inst{color:var(--muted);font-size:12.5px;}
+.edu-year{
+  margin-left:auto;background:var(--teal2);color:white;
+  padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;
+  white-space:nowrap;height:fit-content;
+}
+.add-dashed{
+  width:100%;padding:12px;border:2px dashed var(--border);border-radius:10px;
+  background:transparent;cursor:pointer;font-size:13.5px;color:var(--muted);
+  transition:all .2s;font-family:inherit;
+}
+.add-dashed:hover{border-color:var(--teal);color:var(--teal);background:rgba(14,165,233,.03);}
+.form-inline{
+  background:var(--surf2);border:1.5px solid var(--border);border-radius:12px;
+  padding:16px;margin-bottom:12px;display:none;
+}
+.form-inline.open{display:block;animation:fadeUp .25s var(--sm);}
+
+/* ── INTEREST GRID ──────────────────────────────────────────── */
+.interest-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(120px,1fr));gap:9px;}
+.int-chip{
+  padding:12px 8px;border-radius:11px;border:1.5px solid var(--border);
+  text-align:center;cursor:pointer;transition:all .2s var(--sp);
+  font-size:12.5px;font-weight:600;background:white;color:var(--muted);
+}
+.int-chip:hover{border-color:var(--teal);transform:translateY(-2px);
+  box-shadow:var(--shadow);color:var(--text);}
+.int-chip.sel{
+  border-color:var(--gold);background:linear-gradient(135deg,#fef3c7,#fffbeb);
+  color:#92400e;box-shadow:0 2px 12px rgba(245,158,11,.2);
+}
+.int-chip .ic{font-size:22px;display:block;margin-bottom:4px;}
+
+/* ── CONSENT TOGGLE ─────────────────────────────────────────── */
+.consent-row{
+  display:flex;align-items:center;gap:14px;padding:14px 18px;
+  border-radius:11px;background:var(--surf2);margin-bottom:10px;
+  border:1.5px solid transparent;transition:all .2s;
+}
+.consent-row:hover{background:#f0f9ff;border-color:rgba(14,165,233,.15);}
+.cr-ico{font-size:22px;flex-shrink:0;}
+.cr-info{flex:1;}
+.cr-info h4{font-size:14px;font-weight:700;margin-bottom:2px;}
+.cr-info p{font-size:12px;color:var(--muted);line-height:1.5;}
+.toggle-sw{position:relative;width:48px;height:26px;flex-shrink:0;}
+.toggle-sw input{opacity:0;width:0;height:0;position:absolute;}
+.ts-slider{
+  position:absolute;inset:0;border-radius:26px;background:#cbd5e1;
+  cursor:pointer;transition:background .25s,box-shadow .2s;
+}
+.ts-slider::before{
+  content:'';position:absolute;width:20px;height:20px;
+  left:3px;top:3px;border-radius:50%;background:white;
+  transition:transform .25s var(--sp);box-shadow:0 2px 4px rgba(0,0,0,.15);
+}
+.toggle-sw input:checked+.ts-slider{background:var(--green);box-shadow:0 0 0 3px rgba(16,185,129,.15);}
+.toggle-sw input:checked+.ts-slider::before{transform:translateX(22px);}
+
+/* ── ACTIVITY ───────────────────────────────────────────────── */
+.stat-row{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:18px;}
+.stat-box{
+  background:var(--surf2);border-radius:12px;padding:14px;text-align:center;
+  border:1.5px solid var(--border);
+}
+.stat-box .sv{font-family:'Fraunces',serif;font-size:28px;font-weight:900;color:var(--ink2);}
+.stat-box .sl{font-size:11px;color:var(--muted);font-weight:700;text-transform:uppercase;
+  letter-spacing:.5px;margin-top:2px;}
+.event-feed{max-height:320px;overflow-y:auto;}
+.ev-item{
+  display:flex;align-items:center;gap:10px;padding:9px 12px;
+  border-radius:8px;font-size:13px;transition:background .15s;
+}
+.ev-item:hover{background:var(--surf2);}
+.ev-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0;}
+.ev-label{font-weight:600;color:var(--text);flex:1;}
+.ev-meta{font-size:11px;color:var(--muted2);}
+.ev-time{font-size:11px;color:var(--muted2);white-space:nowrap;margin-left:auto;}
+
+/* ── DATA ACTIONS ───────────────────────────────────────────── */
+.dact-card{
+  display:flex;align-items:center;gap:16px;padding:18px 20px;
+  border-radius:12px;border:1.5px solid var(--border);margin-bottom:12px;
+  transition:all .2s;
+}
+.dact-card:hover{border-color:var(--teal);box-shadow:var(--shadow);}
+.dact-ico{font-size:30px;}
+.dact-info h4{font-weight:700;margin-bottom:3px;}
+.dact-info p{font-size:12.5px;color:var(--muted);line-height:1.5;}
+.dact-btn{margin-left:auto;flex-shrink:0;}
+
+/* ── APPLICATIONS SECTION ───────────────────────────────────── */
+.app-card{
+  background:var(--surf2);border-radius:11px;padding:13px 16px;margin-bottom:8px;
+  display:flex;gap:12px;align-items:center;border:1.5px solid var(--border);
+  transition:all .2s;
+}
+.app-card:hover{background:white;box-shadow:var(--shadow);}
+.app-id{
+  font-family:'Fraunces',serif;font-size:14px;font-weight:700;
+  color:var(--teal2);min-width:70px;
+}
+.app-info{flex:1;}
+.app-info .ai-sub{font-weight:700;font-size:13px;color:var(--text);}
+.app-info .ai-item{font-size:12px;color:var(--muted);}
+.app-date{font-size:11.5px;color:var(--muted2);}
+.apill{padding:3px 10px;border-radius:20px;font-size:11px;font-weight:700;}
+.ap-pending{background:rgba(245,158,11,.1);color:#b45309;}
+.ap-approved{background:rgba(16,185,129,.1);color:#065f46;}
+.ap-rejected{background:rgba(244,63,94,.1);color:#9f1239;}
+.ap-processing{background:rgba(139,92,246,.1);color:#5b21b6;}
+.ap-cancelled{background:rgba(100,116,139,.1);color:#475569;}
+
+/* ── ORDERS SECTION ─────────────────────────────────────────── */
+.order-card{
+  background:var(--surf2);border-radius:11px;padding:14px 16px;margin-bottom:8px;
+  border:1.5px solid var(--border);transition:all .2s;
+}
+.order-card:hover{background:white;box-shadow:var(--shadow);}
+.order-hd{display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;}
+.order-num{font-weight:800;font-size:14px;color:var(--text);
+  font-family:'Fraunces',serif;}
+.order-total{font-weight:800;font-size:15px;color:var(--green);}
+.order-items{font-size:12px;color:var(--muted);line-height:1.6;}
+
+/* ── PROGRESS SECTION ───────────────────────────────────────── */
+.prog-item{margin-bottom:14px;}
+.prog-hd{display:flex;justify-content:space-between;font-size:12.5px;margin-bottom:5px;}
+.prog-hd span:first-child{font-weight:700;color:var(--text);}
+.prog-hd span:last-child{color:var(--muted);}
+.prog-bar{height:6px;background:var(--surf3);border-radius:10px;overflow:hidden;}
+.prog-fill{height:100%;border-radius:10px;transition:width .8s var(--sp);}
+
+/* ── MODAL ──────────────────────────────────────────────────── */
+.modal-ov{
+  position:fixed;inset:0;background:rgba(7,9,14,.6);z-index:500;
+  display:flex;align-items:center;justify-content:center;
+  backdrop-filter:blur(6px);animation:fadeIn .2s var(--sm);
+}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.modal-box{
+  background:white;border-radius:18px;width:95%;max-width:520px;
+  overflow:hidden;box-shadow:0 32px 80px rgba(0,0,0,.25);
+  animation:mpop .3s var(--sp) both;
+}
+@keyframes mpop{from{opacity:0;transform:scale(.93)}to{opacity:1;transform:scale(1)}}
+.modal-hd{padding:18px 22px;border-bottom:1px solid var(--surf3);
+  display:flex;align-items:center;justify-content:space-between;}
+.modal-hd h3{font-family:'Fraunces',serif;font-size:18px;font-weight:700;}
+.modal-cl{width:30px;height:30px;border-radius:8px;border:1.5px solid var(--border);
+  background:white;cursor:pointer;font-size:17px;transition:all .2s;}
+.modal-cl:hover{background:var(--surf3);}
+.modal-body{padding:20px 22px;}
+
+/* ── TOAST ──────────────────────────────────────────────────── */
+.toast{
+  position:fixed;bottom:24px;right:24px;z-index:999;
+  background:var(--ink);color:white;padding:11px 18px;border-radius:12px;
+  font-size:13.5px;font-weight:600;box-shadow:0 8px 28px rgba(0,0,0,.25);
+  display:flex;align-items:center;gap:8px;
+  animation:fadeUp .3s var(--sp) both;
+}
+.toast.success{background:var(--green);}
+.toast.error{background:var(--rose);}
+
+/* ── QUICK STATS BAR ────────────────────────────────────────── */
+.qsbar{
+  background:rgba(255,255,255,.05);border-top:1px solid rgba(255,255,255,.05);
+  padding:14px 28px;display:flex;gap:28px;max-width:1200px;margin:0 auto;
+}
+.qsbar-item{display:flex;align-items:center;gap:8px;}
+.qsbar-val{font-family:'Fraunces',serif;font-size:22px;font-weight:900;color:white;}
+.qsbar-lbl{font-size:11px;color:rgba(255,255,255,.4);font-weight:700;
+  text-transform:uppercase;letter-spacing:.8px;}
+
+/* ── RESPONSIVE ─────────────────────────────────────────────── */
+@media(max-width:768px){
+  .main-layout{grid-template-columns:1fr;}
+  .prof-sidebar{display:none;}
+  .hero-inner{flex-direction:column;}
+  .form-grid,.form-grid.three{grid-template-columns:1fr;}
+  .stat-row{grid-template-columns:1fr 1fr;}
+  .hero-tabs{margin:0 -28px;padding:0 28px;}
+}
+</style>
+</head>
+<body>
+
+<nav>
+  <a href="/" class="n-brand">🏛 Citizen<span>Portal</span></a>
+  <div class="nav-links">
+    <a href="/portal">🏠 Portal</a>
+    <a href="/shop">🛍️ Shop</a>
+    <a href="/profile" class="active">👤 Profile</a>
+    <a href="/dashboard">📊 Dashboard</a>
+  </div>
+  <div class="n-right">
+    <span class="n-uid" id="nav-uid">Loading…</span>
+    <a href="/portal" class="n-btn">← Portal Home</a>
+  </div>
+</nav>
+
+<!-- HERO -->
+<div class="hero">
+  <div class="hero-inner">
+    <div class="hero-avatar-wrap" id="hero-avatar" onclick="pickAvatar()">👤</div>
+    <div class="hero-info">
+      <h1 id="hero-name">Your Profile</h1>
+      <p id="hero-sub">Citizen Portal Member</p>
+      <div class="hero-badges" id="hero-badges">
+        <div class="hero-badge">🆔 <span id="hero-uid">—</span></div>
+      </div>
+    </div>
+    <div class="hero-right">
+      <div class="completion-wrap">
+        <div class="clbl">Completion</div>
+        <div class="completion-ring-wrap">
+          <svg width="76" height="76" viewBox="0 0 76 76">
+            <circle cx="38" cy="38" r="30" fill="none" stroke="rgba(255,255,255,.1)" stroke-width="8"/>
+            <circle id="comp-ring" cx="38" cy="38" r="30" fill="none" stroke="var(--gold)"
+              stroke-width="8" stroke-linecap="round"
+              stroke-dasharray="188" stroke-dashoffset="188"
+              style="transition:stroke-dashoffset 1.2s var(--sm)"/>
+          </svg>
+          <div class="completion-text">
+            <span class="cpct" id="comp-pct">0%</span>
+            <span class="clabel">done</span>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Quick stats bar -->
+  <div class="qsbar" id="qsbar" style="display:none">
+    <div class="qsbar-item">
+      <div>
+        <div class="qsbar-val" id="qs-apps">0</div>
+        <div class="qsbar-lbl">Applications</div>
+      </div>
+    </div>
+    <div class="qsbar-item">
+      <div>
+        <div class="qsbar-val" id="qs-orders">0</div>
+        <div class="qsbar-lbl">Orders</div>
+      </div>
+    </div>
+    <div class="qsbar-item">
+      <div>
+        <div class="qsbar-val" id="qs-events">0</div>
+        <div class="qsbar-lbl">Activities</div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Hero tabs -->
+  <div class="hero-tabs">
+    <button class="htab active" onclick="showSec('personal',this)">👤 Personal</button>
+    <button class="htab" onclick="showSec('family',this)">👨‍👩‍👧 Family</button>
+    <button class="htab" onclick="showSec('education',this)">🎓 Education</button>
+    <button class="htab" onclick="showSec('career',this)">💼 Career</button>
+    <button class="htab" onclick="showSec('interests',this)">🎯 Interests</button>
+    <button class="htab" onclick="showSec('applications',this)">📋 Applications</button>
+    <button class="htab" onclick="showSec('orders',this)">🛒 Orders</button>
+    <button class="htab" onclick="showSec('activity',this)">📊 Activity</button>
+    <button class="htab" onclick="showSec('consent',this)">🔒 Privacy</button>
+    <button class="htab" onclick="showSec('notifications',this)">🔔 Notifications</button>
+    <button class="htab" onclick="showSec('certificates',this)">🏅 Certificates</button>
+    <button class="htab" onclick="showSec('referrals',this)">🤝 Referrals</button>
+    <button class="htab" onclick="showSec('settings',this)">⚙️ Settings</button>
+  </div>
+</div>
+
+<!-- MAIN LAYOUT -->
+<div class="main-layout">
+
+  <!-- SIDEBAR -->
+  <aside class="prof-sidebar">
+    <div class="ps-section">Profile</div>
+    <ul class="ps-nav">
+      <li><button class="active" onclick="showSec('personal',this)"><span class="ico">👤</span> Personal</button></li>
+      <li><button onclick="showSec('family',this)"><span class="ico">👨‍👩‍👧</span> Family</button></li>
+      <li><button onclick="showSec('education',this)"><span class="ico">🎓</span> Education</button></li>
+      <li><button onclick="showSec('career',this)"><span class="ico">💼</span> Career & Skills</button></li>
+      <li><button onclick="showSec('interests',this)"><span class="ico">🎯</span> Interests</button></li>
+    </ul>
+    <div class="ps-divider"></div>
+    <div class="ps-section">Records</div>
+    <ul class="ps-nav">
+      <li><button onclick="showSec('applications',this)"><span class="ico">📋</span> Applications</button></li>
+      <li><button onclick="showSec('orders',this)"><span class="ico">🛒</span> Orders</button></li>
+      <li><button onclick="showSec('activity',this)"><span class="ico">📊</span> Activity</button></li>
+    </ul>
+    <div class="ps-divider"></div>
+    <div class="ps-divider"></div>
+    <div class="ps-section">More</div>
+    <ul class="ps-nav">
+      <li><button onclick="showSec('notifications',this)"><span class="ico">🔔</span> Notifications</button></li>
+      <li><button onclick="showSec('certificates',this)"><span class="ico">🏅</span> Certificates</button></li>
+      <li><button onclick="showSec('referrals',this)"><span class="ico">🤝</span> Referrals</button></li>
+      <li><button onclick="showSec('settings',this)"><span class="ico">⚙️</span> Account Settings</button></li>
+    </ul>
+    <div class="ps-divider"></div>
+    <div class="ps-section">Settings</div>
+    <ul class="ps-nav">
+      <li><button onclick="showSec('consent',this)"><span class="ico">🔒</span> Privacy & Consent</button></li>
+      <li><button onclick="showSec('data',this)"><span class="ico">📦</span> My Data</button></li>
+      <li><button onclick="confirmDelete()" style="color:var(--rose)!important">
+        <span class="ico">🗑</span> Delete Account</button></li>
+    </ul>
+  </aside>
+
+  <!-- CONTENT AREA -->
+  <div id="prof-content">
+
+    <!-- ═══ PERSONAL ═══ -->
+    <div class="prof-section active" id="sec-personal">
+      <div class="card">
+        <div class="card-hd">
+          <h3>👤 Personal Information</h3>
+          <button class="btn-sm2" onclick="savePersonal()">💾 Save</button>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="fg"><label>Full Name</label><input id="p-name" placeholder="Your full name"></div>
+            <div class="fg"><label>Date of Birth</label><input id="p-dob" type="date"></div>
+            <div class="fg"><label>Gender</label>
+              <select id="p-gender">
+                <option value="">Select</option>
+                <option value="male">Male</option>
+                <option value="female">Female</option>
+                <option value="other">Other</option>
+                <option value="prefer_not">Prefer not to say</option>
+              </select>
+            </div>
+            <div class="fg"><label>NIC / Passport No.</label><input id="p-nic" placeholder="NIC or passport"></div>
+            <div class="fg"><label>Email</label><input id="p-email" type="email" placeholder="your@email.com"></div>
+            <div class="fg"><label>Phone</label><input id="p-phone" placeholder="+94 xxx xxx xxx"></div>
+            <div class="fg full"><label>Home Address</label><input id="p-address" placeholder="Street, City, Province"></div>
+            <div class="fg"><label>District</label><input id="p-district" placeholder="e.g. Colombo"></div>
+            <div class="fg"><label>Province</label>
+              <select id="p-province">
+                <option value="">Select province</option>
+                <option>Western</option><option>Central</option><option>Southern</option>
+                <option>Northern</option><option>Eastern</option><option>North Western</option>
+                <option>North Central</option><option>Uva</option><option>Sabaragamuwa</option>
+              </select>
+            </div>
+            <div class="fg"><label>Nationality</label><input id="p-nationality" value="Sri Lankan"></div>
+          </div>
+          <button class="save-btn" onclick="savePersonal()">💾 Save Personal Info</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ FAMILY ═══ -->
+    <div class="prof-section" id="sec-family">
+      <div class="card">
+        <div class="card-hd">
+          <h3>👨‍👩‍👧 Family Details</h3>
+          <button class="btn-sm2 gold" onclick="saveFamily()">💾 Save Family</button>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="fg"><label>Marital Status</label>
+              <select id="f-marital">
+                <option value="">Select</option>
+                <option value="single">Single</option>
+                <option value="married">Married</option>
+                <option value="divorced">Divorced</option>
+                <option value="widowed">Widowed</option>
+                <option value="separated">Separated</option>
+              </select>
+            </div>
+            <div class="fg"><label>Number of Children</label>
+              <input id="f-children" type="number" min="0" max="20" placeholder="0" oninput="updateChildrenSlots()">
+            </div>
+            <div class="fg"><label>Spouse / Partner Name</label><input id="f-spouse" placeholder="Partner's full name"></div>
+            <div class="fg"><label>Number of Dependents</label>
+              <input id="f-dependents" type="number" min="0" placeholder="0">
+            </div>
+            <div class="fg"><label>Emergency Contact Name</label><input id="f-emergency" placeholder="Emergency contact person"></div>
+            <div class="fg"><label>Relationship to Emergency</label>
+              <select id="f-relationship">
+                <option value="">Select</option>
+                <option value="parent">Parent</option>
+                <option value="sibling">Sibling</option>
+                <option value="spouse">Spouse</option>
+                <option value="child">Child</option>
+                <option value="friend">Friend</option>
+                <option value="other">Other</option>
+              </select>
+            </div>
+            <div class="fg"><label>Emergency Contact Phone</label><input id="f-ephone" placeholder="+94 xxx xxx xxx"></div>
+            <div class="fg"><label>Family Income (LKR/month)</label><input id="f-income" type="number" placeholder="Monthly household income"></div>
+          </div>
+
+          <!-- Children Details -->
+          <div style="margin-top:20px;">
+            <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;
+              color:var(--muted);margin-bottom:10px;">Children Details</div>
+            <div id="children-slots"></div>
+            <button class="add-dashed" onclick="addChildSlot()">+ Add Child Details</button>
+          </div>
+
+          <button class="save-btn" onclick="saveFamily()">💾 Save Family Info</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ EDUCATION ═══ -->
+    <div class="prof-section" id="sec-education">
+      <div class="card">
+        <div class="card-hd">
+          <h3>🎓 Education History</h3>
+          <button class="btn-sm2" onclick="openEduForm()">+ Add</button>
+        </div>
+        <div class="card-body">
+          <div class="form-inline" id="edu-form">
+            <div class="form-grid">
+              <div class="fg"><label>Degree / Qualification</label><input id="edu-degree" placeholder="e.g. BSc Computer Science"></div>
+              <div class="fg"><label>Institution</label><input id="edu-inst" placeholder="University or school name"></div>
+              <div class="fg"><label>Year Completed</label><input id="edu-year" type="number" placeholder="2020" min="1950" max="2030"></div>
+              <div class="fg"><label>Grade / GPA</label><input id="edu-grade" placeholder="e.g. 3.8 / A"></div>
+              <div class="fg full"><label>Field of Study</label><input id="edu-field" placeholder="e.g. Computer Science, Law, Medicine"></div>
+            </div>
+            <div style="display:flex;gap:8px;margin-top:12px;">
+              <button class="save-btn" onclick="saveEduEntry()" style="margin-top:0">✅ Add Education</button>
+              <button class="btn-sm2" onclick="closeEduForm()">Cancel</button>
+            </div>
+          </div>
+          <div id="edu-list"></div>
+          <button class="add-dashed" onclick="openEduForm()" style="margin-top:4px">+ Add Education / Qualification</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CAREER ═══ -->
+    <div class="prof-section" id="sec-career">
+      <div class="card">
+        <div class="card-hd">
+          <h3>💼 Career & Skills</h3>
+          <button class="btn-sm2 gold" onclick="saveCareer()">💾 Save</button>
+        </div>
+        <div class="card-body">
+          <div class="form-grid">
+            <div class="fg"><label>Job Title / Role</label><input id="c-title" placeholder="e.g. Software Engineer"></div>
+            <div class="fg"><label>Company / Organization</label><input id="c-company" placeholder="Where you work"></div>
+            <div class="fg"><label>Industry</label>
+              <select id="c-industry">
+                <option value="">Select industry</option>
+                <option>Technology</option><option>Healthcare</option><option>Education</option>
+                <option>Finance & Banking</option><option>Government</option><option>Retail & Trade</option>
+                <option>Agriculture</option><option>Manufacturing</option><option>Tourism & Hospitality</option>
+                <option>Construction</option><option>Legal</option><option>Media & Arts</option>
+                <option>Self-employed</option><option>Student</option><option>Other</option>
+              </select>
+            </div>
+            <div class="fg"><label>Employment Type</label>
+              <select id="c-emptype">
+                <option value="">Select</option>
+                <option value="full_time">Full-time</option>
+                <option value="part_time">Part-time</option>
+                <option value="contract">Contract</option>
+                <option value="freelance">Freelance</option>
+                <option value="self_employed">Self-employed</option>
+                <option value="student">Student</option>
+                <option value="unemployed">Unemployed</option>
+                <option value="retired">Retired</option>
+              </select>
+            </div>
+            <div class="fg"><label>Years of Experience</label><input id="c-exp" type="number" min="0" placeholder="0"></div>
+            <div class="fg"><label>Monthly Income (LKR)</label><input id="c-income" type="number" placeholder="e.g. 150000"></div>
+            <div class="fg"><label>LinkedIn Profile</label><input id="c-linkedin" placeholder="linkedin.com/in/username"></div>
+            <div class="fg"><label>Department (if govt.)</label><input id="c-dept" placeholder="e.g. Ministry of Finance"></div>
+          </div>
+
+          <!-- Skills -->
+          <div style="margin-top:20px;">
+            <div style="font-size:12px;font-weight:700;text-transform:uppercase;letter-spacing:.7px;
+              color:var(--muted);margin-bottom:8px;">Skills</div>
+            <div class="tags-area" onclick="this.querySelector('.tag-input').focus()" id="skills-area">
+              <input class="tag-input" id="skill-input" placeholder="Type skill and press Enter…"
+                onkeydown="addSkill(event)">
+            </div>
+          </div>
+
+          <button class="save-btn" onclick="saveCareer()">💾 Save Career Info</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ INTERESTS ═══ -->
+    <div class="prof-section" id="sec-interests">
+      <div class="card">
+        <div class="card-hd">
+          <h3>🎯 Interests & Preferences</h3>
+          <button class="btn-sm2 gold" onclick="saveInterests()">💾 Save</button>
+        </div>
+        <div class="card-body">
+          <p style="font-size:13px;color:var(--muted);margin-bottom:16px;">
+            Select topics that interest you to help us personalise your portal experience.
+          </p>
+          <div class="interest-grid" id="int-grid"></div>
+
+          <div style="margin-top:24px;">
+            <div style="font-family:'Fraunces',serif;font-size:16px;font-weight:700;margin-bottom:14px;">
+              📚 Learning Preferences
+            </div>
+            <div class="form-grid">
+              <div class="fg"><label>Preferred Learning Style</label>
+                <select id="learn-style">
+                  <option value="">Select</option>
+                  <option value="visual">Visual</option>
+                  <option value="reading">Reading / Writing</option>
+                  <option value="hands_on">Hands-on / Practical</option>
+                  <option value="audio">Audio / Podcast</option>
+                  <option value="group">Group Learning</option>
+                </select>
+              </div>
+              <div class="fg"><label>Preferred Language</label>
+                <select id="learn-lang">
+                  <option value="">Select</option>
+                  <option value="english">English</option>
+                  <option value="sinhala">සිංහල (Sinhala)</option>
+                  <option value="tamil">தமிழ் (Tamil)</option>
+                </select>
+              </div>
+              <div class="fg"><label>Hours per week</label>
+                <select id="learn-hours">
+                  <option value="">Select</option>
+                  <option value="1-3">1-3 hours</option>
+                  <option value="3-7">3-7 hours</option>
+                  <option value="7-14">7-14 hours</option>
+                  <option value="14+">14+ hours</option>
+                </select>
+              </div>
+              <div class="fg"><label>Learning Goal</label>
+                <input id="learn-goal" placeholder="e.g. Career change, upskilling">
+              </div>
+            </div>
+          </div>
+          <button class="save-btn" onclick="saveInterests()">💾 Save Interests</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ APPLICATIONS ═══ -->
+    <div class="prof-section" id="sec-applications">
+      <div class="card">
+        <div class="card-hd">
+          <h3>📋 My Applications</h3>
+          <button class="btn-sm2" onclick="loadApplications()">🔄 Refresh</button>
+        </div>
+        <div class="card-body">
+          <div class="stat-row" id="app-stats-row" style="margin-bottom:16px;"></div>
+          <div id="app-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ ORDERS ═══ -->
+    <div class="prof-section" id="sec-orders">
+      <div class="card">
+        <div class="card-hd">
+          <h3>🛒 My Shop Orders</h3>
+          <a href="/shop" class="btn-sm2">🛍️ Go to Shop</a>
+        </div>
+        <div class="card-body">
+          <div id="orders-list"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ ACTIVITY ═══ -->
+    <div class="prof-section" id="sec-activity">
+      <div class="card">
+        <div class="card-hd">
+          <h3>📊 My Activity</h3>
+          <button class="btn-sm2" onclick="loadActivity()">🔄 Refresh</button>
+        </div>
+        <div class="card-body">
+          <div class="stat-row" id="act-stats"></div>
+
+          <div style="font-size:13px;font-weight:700;margin-bottom:12px;color:var(--text);">
+            Event Breakdown
+          </div>
+          <div id="act-progress" style="margin-bottom:20px;"></div>
+
+          <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text);">
+            Recent Searches
+          </div>
+          <div id="act-searches" style="display:flex;flex-wrap:wrap;gap:7px;margin-bottom:20px;"></div>
+
+          <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--text);">
+            Live Event Feed
+          </div>
+          <div class="event-feed" id="act-feed"></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CONSENT ═══ -->
+    <div class="prof-section" id="sec-consent">
+      <div class="card">
+        <div class="card-hd">
+          <h3>🔒 Privacy & Consent</h3>
+          <button class="btn-sm2 gold" onclick="saveConsent()">💾 Save Preferences</button>
+        </div>
+        <div class="card-body">
+          <p style="font-size:13px;color:var(--muted);margin-bottom:18px;line-height:1.6;">
+            Control how your data is used. These preferences are stored securely and can be changed at any time.
+          </p>
+          <div class="consent-row">
+            <div class="cr-ico">✉️</div>
+            <div class="cr-info">
+              <h4>Email Marketing</h4>
+              <p>Receive personalised service alerts, updates and government announcements by email.</p>
+            </div>
+            <label class="toggle-sw">
+              <input type="checkbox" id="c-email">
+              <span class="ts-slider"></span>
+            </label>
+          </div>
+          <div class="consent-row">
+            <div class="cr-ico">📢</div>
+            <div class="cr-info">
+              <h4>Personalised Ads</h4>
+              <p>Allow us to show relevant advertisements tailored to your interests and usage patterns.</p>
+            </div>
+            <label class="toggle-sw">
+              <input type="checkbox" id="c-ads">
+              <span class="ts-slider"></span>
+            </label>
+          </div>
+          <div class="consent-row">
+            <div class="cr-ico">📊</div>
+            <div class="cr-info">
+              <h4>Usage Analytics</h4>
+              <p>Help us improve the portal by sharing anonymised usage data and behaviour analytics.</p>
+            </div>
+            <label class="toggle-sw">
+              <input type="checkbox" id="c-analytics">
+              <span class="ts-slider"></span>
+            </label>
+          </div>
+          <div class="consent-row">
+            <div class="cr-ico">🔗</div>
+            <div class="cr-info">
+              <h4>Data Sharing</h4>
+              <p>Allow sharing of your anonymised data with partner government agencies for integrated services.</p>
+            </div>
+            <label class="toggle-sw">
+              <input type="checkbox" id="c-sharing">
+              <span class="ts-slider"></span>
+            </label>
+          </div>
+          <button class="save-btn" onclick="saveConsent()">💾 Save Consent Preferences</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ MY DATA ═══ -->
+    <div class="prof-section" id="sec-data">
+      <div class="card">
+        <div class="card-hd"><h3>📦 My Data</h3></div>
+        <div class="card-body">
+          <div class="dact-card">
+            <div class="dact-ico">📥</div>
+            <div class="dact-info">
+              <h4>Export My Data</h4>
+              <p>Download a complete copy of all data associated with your account — profile, applications, orders, consent and activity logs in JSON format.</p>
+            </div>
+            <button class="btn-sm2 gold dact-btn" onclick="exportData()">📥 Export</button>
+          </div>
+          <div class="dact-card">
+            <div class="dact-ico">🔍</div>
+            <div class="dact-info">
+              <h4>View Activity Log</h4>
+              <p>See a complete history of your interactions, searches and clicks on the portal.</p>
+            </div>
+            <button class="btn-sm2 dact-btn" onclick="showSec('activity',null)">View Activity</button>
+          </div>
+          <div class="dact-card" style="border-color:rgba(244,63,94,.2);background:rgba(244,63,94,.02);">
+            <div class="dact-ico">🗑️</div>
+            <div class="dact-info">
+              <h4 style="color:var(--rose)">Delete Account</h4>
+              <p>Permanently delete your profile, consent, and order data. Behavioural analytics will be anonymised. <strong>This cannot be undone.</strong></p>
+            </div>
+            <button class="btn-sm2 red dact-btn" onclick="confirmDelete()">🗑 Delete</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ NOTIFICATIONS ═══ -->
+    <div class="prof-section" id="sec-notifications">
+      <div class="card">
+        <div class="card-hd"><h3>🔔 Notification Preferences</h3></div>
+        <div class="card-body">
+          <p style="font-size:13.5px;color:var(--muted);margin-bottom:20px;">Choose how and when CitizenPortal notifies you about your applications, orders and important updates.</p>
+          <div style="display:flex;flex-direction:column;gap:0;">
+            <!-- notification rows -->
+            <div class="con-row" style="background:var(--surf3);border-radius:11px;margin-bottom:8px;">
+              <div style="font-size:26px">📱</div>
+              <div class="con-info"><h4>Application Status Updates</h4><p>Get notified when your applications are approved, rejected or require action.</p></div>
+              <label class="tswitch"><input type="checkbox" id="n-app" checked><span class="tslider"></span></label>
+            </div>
+            <div class="con-row" style="background:var(--surf3);border-radius:11px;margin-bottom:8px;">
+              <div style="font-size:26px">🛒</div>
+              <div class="con-info"><h4>Order & Shop Notifications</h4><p>Updates on your shop orders, delivery status and new products.</p></div>
+              <label class="tswitch"><input type="checkbox" id="n-order" checked><span class="tslider"></span></label>
+            </div>
+            <div class="con-row" style="background:var(--surf3);border-radius:11px;margin-bottom:8px;">
+              <div style="font-size:26px">🏛️</div>
+              <div class="con-info"><h4>Government Service Reminders</h4><p>Reminders for document renewals, deadlines and civic duties.</p></div>
+              <label class="tswitch"><input type="checkbox" id="n-gov" checked><span class="tslider"></span></label>
+            </div>
+            <div class="con-row" style="background:var(--surf3);border-radius:11px;margin-bottom:8px;">
+              <div style="font-size:26px">✉️</div>
+              <div class="con-info"><h4>Email Digest</h4><p>Weekly summary of your portal activity and new services available in your area.</p></div>
+              <label class="tswitch"><input type="checkbox" id="n-email"><span class="tslider"></span></label>
+            </div>
+            <div class="con-row" style="background:var(--surf3);border-radius:11px;margin-bottom:8px;">
+              <div style="font-size:26px">🎁</div>
+              <div class="con-info"><h4>Promotions &amp; Offers</h4><p>Special discounts, early access offers and promotional content from our partners.</p></div>
+              <label class="tswitch"><input type="checkbox" id="n-promo"><span class="tslider"></span></label>
+            </div>
+            <div class="con-row" style="background:var(--surf3);border-radius:11px;margin-bottom:8px;">
+              <div style="font-size:26px">⚠️</div>
+              <div class="con-info"><h4>Security Alerts</h4><p>Important alerts about your account security, login activity and data access.</p></div>
+              <label class="tswitch"><input type="checkbox" id="n-sec" checked><span class="tslider"></span></label>
+            </div>
+          </div>
+          <button class="save-btn save-btn-teal" onclick="saveNotifications()">💾 Save Notification Settings</button>
+        </div>
+      </div>
+      <!-- Notification History -->
+      <div class="card">
+        <div class="card-hd"><h3>📬 Recent Notifications</h3></div>
+        <div class="card-body" id="notif-list">
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="background:linear-gradient(90deg,rgba(6,182,212,.06),transparent);border-left:3px solid var(--teal);border-radius:10px;padding:13px 15px;display:flex;gap:12px;align-items:flex-start;">
+              <span style="font-size:22px">✅</span>
+              <div><div style="font-size:14px;font-weight:700;margin-bottom:3px;">Application Approved</div><div style="font-size:12.5px;color:var(--muted)">Your NIC renewal application #A1002 has been approved and is ready for collection.</div><div style="font-size:11px;color:var(--muted2);margin-top:5px;">2 hours ago</div></div>
+            </div>
+            <div style="background:linear-gradient(90deg,rgba(245,158,11,.06),transparent);border-left:3px solid var(--gold);border-radius:10px;padding:13px 15px;display:flex;gap:12px;align-items:flex-start;">
+              <span style="font-size:22px">📋</span>
+              <div><div style="font-size:14px;font-weight:700;margin-bottom:3px;">New Service Available</div><div style="font-size:12.5px;color:var(--muted)">Online passport renewal is now available in your district. Apply from the portal.</div><div style="font-size:11px;color:var(--muted2);margin-top:5px;">Yesterday</div></div>
+            </div>
+            <div style="background:linear-gradient(90deg,rgba(139,92,246,.06),transparent);border-left:3px solid var(--purple);border-radius:10px;padding:13px 15px;display:flex;gap:12px;align-items:flex-start;">
+              <span style="font-size:22px">🛒</span>
+              <div><div style="font-size:14px;font-weight:700;margin-bottom:3px;">Order Shipped</div><div style="font-size:12.5px;color:var(--muted)">Your IELTS Preparation Kit order #ORD-8820 has been dispatched and will arrive in 2-3 days.</div><div style="font-size:11px;color:var(--muted2);margin-top:5px;">3 days ago</div></div>
+            </div>
+            <div style="background:rgba(0,0,0,.02);border:1px solid var(--border);border-radius:10px;padding:13px 15px;display:flex;gap:12px;align-items:flex-start;">
+              <span style="font-size:22px">🎓</span>
+              <div><div style="font-size:14px;font-weight:700;margin-bottom:3px;">Profile 80% Complete</div><div style="font-size:12.5px;color:var(--muted)">Complete your education details to unlock access to scholarship services and academic records.</div><div style="font-size:11px;color:var(--muted2);margin-top:5px;">1 week ago</div></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ CERTIFICATES ═══ -->
+    <div class="prof-section" id="sec-certificates">
+      <div class="card">
+        <div class="card-hd"><h3>🏅 My Certificates &amp; Documents</h3>
+          <button class="btn-sm2 gold" onclick="requestCert()">+ Request Certificate</button>
+        </div>
+        <div class="card-body">
+          <p style="font-size:13.5px;color:var(--muted);margin-bottom:20px;">Official certificates and documents issued through the CitizenPortal. Download or share securely.</p>
+          <!-- Certificate cards -->
+          <div style="display:grid;grid-template-columns:repeat(auto-fill,minmax(300px,1fr));gap:14px;margin-bottom:20px;">
+            <div style="border:1.5px solid #e0f2fe;border-radius:13px;padding:18px;background:linear-gradient(135deg,#f0f9ff,#e0f2fe);position:relative;">
+              <div style="display:flex;align-items:center;gap:11px;margin-bottom:12px;">
+                <div style="width:44px;height:44px;border-radius:10px;background:var(--teal);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🆔</div>
+                <div><div style="font-weight:800;font-size:15px;color:var(--ink2)">NIC Certificate</div><div style="font-size:12px;color:var(--muted)">National Identity</div></div>
+                <span class="pill p-g" style="margin-left:auto">Valid</span>
+              </div>
+              <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Issued: Jan 15, 2024 · Expires: Jan 15, 2034<br>Cert No: <code style="background:rgba(0,0,0,.06);padding:1px 5px;border-radius:4px;">NIC-2024-001234</code></div>
+              <div style="display:flex;gap:7px;">
+                <button class="btn-sm2" style="font-size:12px;" onclick="toast('📥 Downloading…','info')">📥 Download</button>
+                <button class="btn-sm2" style="font-size:12px;" onclick="toast('🔗 Share link copied','success')">🔗 Share</button>
+              </div>
+            </div>
+            <div style="border:1.5px solid #ecfdf5;border-radius:13px;padding:18px;background:linear-gradient(135deg,#f0fdf4,#dcfce7);position:relative;">
+              <div style="display:flex;align-items:center;gap:11px;margin-bottom:12px;">
+                <div style="width:44px;height:44px;border-radius:10px;background:var(--green);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🎓</div>
+                <div><div style="font-weight:800;font-size:15px;color:var(--ink2)">Education Certificate</div><div style="font-size:12px;color:var(--muted)">Academic Records</div></div>
+                <span class="pill p-g" style="margin-left:auto">Verified</span>
+              </div>
+              <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Issued by Ministry of Education · 2022<br>Cert No: <code style="background:rgba(0,0,0,.06);padding:1px 5px;border-radius:4px;">EDU-2022-778821</code></div>
+              <div style="display:flex;gap:7px;">
+                <button class="btn-sm2" style="font-size:12px;" onclick="toast('📥 Downloading…','info')">📥 Download</button>
+                <button class="btn-sm2" style="font-size:12px;" onclick="toast('🔗 Share link copied','success')">🔗 Share</button>
+              </div>
+            </div>
+            <div style="border:1.5px solid #fef3c7;border-radius:13px;padding:18px;background:linear-gradient(135deg,#fffbeb,#fef3c7);position:relative;">
+              <div style="display:flex;align-items:center;gap:11px;margin-bottom:12px;">
+                <div style="width:44px;height:44px;border-radius:10px;background:var(--gold);display:flex;align-items:center;justify-content:center;font-size:22px;flex-shrink:0;">🏠</div>
+                <div><div style="font-weight:800;font-size:15px;color:var(--ink2)">Residence Certificate</div><div style="font-size:12px;color:var(--muted)">Address Proof</div></div>
+                <span class="pill p-a" style="margin-left:auto">Pending</span>
+              </div>
+              <div style="font-size:12px;color:var(--muted);margin-bottom:12px;">Requested: Feb 10, 2026 · Processing<br>Expected: Feb 28, 2026</div>
+              <div style="display:flex;gap:7px;">
+                <button class="btn-sm2" style="font-size:12px;opacity:.5;cursor:not-allowed;">📥 Pending</button>
+                <button class="btn-sm2" style="font-size:12px;" onclick="toast('📋 Status: Processing','info')">👁 Track</button>
+              </div>
+            </div>
+          </div>
+          <div style="background:var(--surf3);border-radius:11px;padding:16px;border:1.5px dashed var(--border);">
+            <div style="font-size:14px;font-weight:700;margin-bottom:6px;">🆕 Request a New Certificate</div>
+            <p style="font-size:12.5px;color:var(--muted);margin-bottom:12px;">Need a certificate not listed above? Submit a request and we'll process it within 3–5 business days.</p>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button class="btn-sm2 gold" onclick="toast('📋 Redirecting to services…','info');setTimeout(()=>window.location='/portal',1000)">📋 Apply via Portal</button>
+              <button class="btn-sm2" onclick="toast('📞 Support line: 1919','info')">📞 Contact Support</button>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ REFERRALS ═══ -->
+    <div class="prof-section" id="sec-referrals">
+      <div class="card">
+        <div class="card-hd"><h3>🤝 Refer a Friend</h3></div>
+        <div class="card-body">
+          <div style="background:linear-gradient(135deg,var(--ink2),#1e3a5f);border-radius:14px;padding:24px;color:white;margin-bottom:20px;position:relative;overflow:hidden;">
+            <div style="position:absolute;right:-20px;top:-20px;font-size:120px;opacity:.06;">🤝</div>
+            <div style="font-size:13px;font-weight:700;text-transform:uppercase;letter-spacing:1px;color:rgba(255,255,255,.5);margin-bottom:8px;">Your Referral Code</div>
+            <div id="ref-code" style="font-size:32px;font-weight:900;letter-spacing:4px;color:var(--gold);font-family:'DM Mono',monospace;margin-bottom:12px;">CP-XXXX</div>
+            <p style="font-size:13px;color:rgba(255,255,255,.65);margin-bottom:14px;">Share this code with friends. When they register and complete their first application, you both earn rewards!</p>
+            <div style="display:flex;gap:9px;flex-wrap:wrap;">
+              <button style="padding:9px 18px;border-radius:9px;background:var(--gold);color:var(--ink);border:none;font-weight:800;font-size:13px;cursor:pointer;font-family:inherit;" onclick="copyRefCode()">📋 Copy Code</button>
+              <button style="padding:9px 18px;border-radius:9px;background:rgba(255,255,255,.1);color:white;border:1px solid rgba(255,255,255,.2);font-weight:700;font-size:13px;cursor:pointer;font-family:inherit;" onclick="shareRef()">🔗 Share Link</button>
+            </div>
+          </div>
+          <div class="stat-grid" style="margin-bottom:20px;">
+            <div class="stat-box"><div class="sv" id="ref-total">0</div><div class="sl">Referrals Sent</div></div>
+            <div class="stat-box"><div class="sv" id="ref-joined" style="color:var(--green)">0</div><div class="sl">Joined</div></div>
+            <div class="stat-box"><div class="sv" id="ref-pts" style="color:var(--gold)">0</div><div class="sl">Points Earned</div></div>
+            <div class="stat-box"><div class="sv" id="ref-rank" style="color:var(--purple)">—</div><div class="sl">Your Rank</div></div>
+          </div>
+          <div style="background:var(--surf3);border-radius:11px;padding:16px;margin-bottom:16px;">
+            <div style="font-size:13.5px;font-weight:700;margin-bottom:12px;">How It Works</div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div style="display:flex;align-items:center;gap:12px;font-size:13.5px;"><div style="width:28px;height:28px;border-radius:50%;background:var(--teal);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0;">1</div>Share your unique referral code with friends &amp; family</div>
+              <div style="display:flex;align-items:center;gap:12px;font-size:13.5px;"><div style="width:28px;height:28px;border-radius:50%;background:var(--purple);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0;">2</div>They register on CitizenPortal and enter your code</div>
+              <div style="display:flex;align-items:center;gap:12px;font-size:13.5px;"><div style="width:28px;height:28px;border-radius:50%;background:var(--green);color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:13px;flex-shrink:0;">3</div>Both you and your friend earn 50 portal points each!</div>
+            </div>
+          </div>
+          <div>
+            <div style="font-size:13px;font-weight:700;margin-bottom:10px;color:var(--muted)">Your Referrals</div>
+            <div id="ref-list" style="color:var(--muted);font-size:13px;text-align:center;padding:20px;background:var(--surf3);border-radius:10px;">No referrals yet. Share your code to get started!</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- ═══ SETTINGS ═══ -->
+    <div class="prof-section" id="sec-settings">
+      <div class="card">
+        <div class="card-hd"><h3>⚙️ Account Settings</h3></div>
+        <div class="card-body">
+          <!-- Language -->
+          <div style="background:var(--surf3);border-radius:11px;padding:16px;margin-bottom:14px;">
+            <div style="font-size:14px;font-weight:700;margin-bottom:12px;">🌐 Language &amp; Region</div>
+            <div style="display:grid;grid-template-columns:1fr 1fr;gap:12px;">
+              <div class="fg"><label>Portal Language</label>
+                <select id="set-lang" onchange="applyLang(this.value)">
+                  <option value="en">English</option>
+                  <option value="si">සිංහල (Sinhala)</option>
+                  <option value="ta">தமிழ் (Tamil)</option>
+                </select>
+              </div>
+              <div class="fg"><label>Time Zone</label>
+                <select id="set-tz">
+                  <option value="Asia/Colombo" selected>Asia/Colombo (IST +5:30)</option>
+                  <option value="UTC">UTC</option>
+                </select>
+              </div>
+              <div class="fg"><label>Date Format</label>
+                <select id="set-date">
+                  <option value="dmy">DD/MM/YYYY</option>
+                  <option value="mdy">MM/DD/YYYY</option>
+                  <option value="ymd">YYYY-MM-DD</option>
+                </select>
+              </div>
+              <div class="fg"><label>Currency Display</label>
+                <select id="set-curr"><option value="LKR">LKR — Sri Lankan Rupee</option><option value="USD">USD — US Dollar</option></select>
+              </div>
+            </div>
+          </div>
+          <!-- Security -->
+          <div style="background:var(--surf3);border-radius:11px;padding:16px;margin-bottom:14px;">
+            <div style="font-size:14px;font-weight:700;margin-bottom:12px;">🔐 Security</div>
+            <div class="form-grid">
+              <div class="fg"><label>New Password</label><input type="password" id="set-pw" placeholder="New password"></div>
+              <div class="fg"><label>Confirm Password</label><input type="password" id="set-pw2" placeholder="Confirm new password"></div>
+              <div class="fg full">
+                <div style="display:flex;align-items:center;justify-content:space-between;background:rgba(16,185,129,.05);border:1px solid rgba(16,185,129,.2);border-radius:9px;padding:11px 14px;">
+                  <div><div style="font-size:13.5px;font-weight:700">Two-Factor Authentication</div><div style="font-size:12px;color:var(--muted)">Extra security for your account</div></div>
+                  <label class="tswitch"><input type="checkbox" id="set-2fa"><span class="tslider"></span></label>
+                </div>
+              </div>
+            </div>
+            <button class="save-btn" onclick="updatePassword()" style="margin-top:12px;">🔐 Update Password</button>
+          </div>
+          <!-- Appearance -->
+          <div style="background:var(--surf3);border-radius:11px;padding:16px;margin-bottom:14px;">
+            <div style="font-size:14px;font-weight:700;margin-bottom:12px;">🎨 Appearance</div>
+            <div style="display:flex;gap:10px;flex-wrap:wrap;">
+              <button onclick="setTheme('light',this)" style="padding:9px 18px;border-radius:9px;border:2px solid var(--teal);background:white;color:var(--ink2);font-weight:700;font-size:13px;cursor:pointer;font-family:inherit;">☀️ Light</button>
+              <button onclick="setTheme('dark',this)" style="padding:9px 18px;border-radius:9px;border:2px solid var(--border);background:var(--ink2);color:white;font-weight:700;font-size:13px;cursor:pointer;font-family:inherit;">🌙 Dark</button>
+              <button onclick="setTheme('auto',this)" style="padding:9px 18px;border-radius:9px;border:2px solid var(--border);background:var(--surf2);color:var(--muted);font-weight:700;font-size:13px;cursor:pointer;font-family:inherit;">🌓 Auto</button>
+            </div>
+          </div>
+          <!-- Connected Services -->
+          <div style="background:var(--surf3);border-radius:11px;padding:16px;margin-bottom:14px;">
+            <div style="font-size:14px;font-weight:700;margin-bottom:12px;">🔗 Connected Services</div>
+            <div style="display:flex;flex-direction:column;gap:8px;">
+              <div style="display:flex;align-items:center;justify-content:space-between;background:white;border:1px solid var(--border);border-radius:10px;padding:12px 14px;">
+                <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:22px">🏛️</span><div><div style="font-size:14px;font-weight:700">Government ID Portal</div><div style="font-size:12px;color:var(--muted)">Connected — NIC verified</div></div></div>
+                <span class="pill p-g">Active</span>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;background:white;border:1px solid var(--border);border-radius:10px;padding:12px 14px;">
+                <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:22px">📱</span><div><div style="font-size:14px;font-weight:700">eNIC Mobile App</div><div style="font-size:12px;color:var(--muted)">Not connected</div></div></div>
+                <button class="btn-sm2" style="font-size:12px;" onclick="toast('📱 Opening eNIC app link…','info')">Connect</button>
+              </div>
+              <div style="display:flex;align-items:center;justify-content:space-between;background:white;border:1px solid var(--border);border-radius:10px;padding:12px 14px;">
+                <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:22px">🏦</span><div><div style="font-size:14px;font-weight:700">Bank Account Link</div><div style="font-size:12px;color:var(--muted)">For fee payments</div></div></div>
+                <button class="btn-sm2" style="font-size:12px;" onclick="toast('🏦 Bank linking coming soon','info')">Link Bank</button>
+              </div>
+            </div>
+          </div>
+          <button class="save-btn save-btn-teal" onclick="saveSettings()">💾 Save Settings</button>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end #prof-content -->
+</div><!-- end .main-layout -->
+
+<!-- DELETE CONFIRM MODAL -->
+<div id="del-modal" class="modal-ov" style="display:none" onclick="if(event.target===this)this.style.display='none'">
+  <div class="modal-box" onclick="event.stopPropagation()">
+    <div class="modal-hd">
+      <h3>⚠️ Delete Account</h3>
+      <button class="modal-cl" onclick="document.getElementById('del-modal').style.display='none'">×</button>
+    </div>
+    <div class="modal-body">
+      <p style="color:var(--muted);font-size:14px;line-height:1.6;margin-bottom:20px;">
+        This will permanently delete your profile, consent records, and order data. Your behavioural analytics will be anonymised. <strong>This action cannot be undone.</strong>
+      </p>
+      <div style="display:flex;gap:10px;">
+        <button onclick="document.getElementById('del-modal').style.display='none'"
+          style="flex:1;padding:12px;border-radius:10px;border:1.5px solid var(--border);background:white;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">
+          Cancel
+        </button>
+        <button onclick="deleteAccount()"
+          style="flex:1;padding:12px;border-radius:10px;border:none;background:var(--rose);color:white;font-size:14px;font-weight:700;cursor:pointer;font-family:inherit;">
+          Delete Everything
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ══════════════════════════════════════════════
+   STATE & INIT
+══════════════════════════════════════════════ */
+const USER_ID = localStorage.getItem('user_id') || 'user_' + Math.random().toString(36).slice(2,10);
+localStorage.setItem('user_id', USER_ID);
+document.getElementById('nav-uid').textContent = 'ID: ' + USER_ID.slice(0,12);
+document.getElementById('hero-uid').textContent = USER_ID.slice(0,12) + '…';
+
+let profileData = {};
+let educationList = [];
+let skills = [];
+let selectedInterests = new Set();
+let childSlots = [];
+
+const AVATARS = ['👤','👨','👩','👨‍💼','👩‍💼','🧑‍💻','👨‍🔬','👩‍🏫','🧑‍🎓','👨‍⚕️'];
+let avatarIdx = 0;
+
+const INTERESTS = [
+  {k:'it',ico:'💻',l:'IT & Tech'},{k:'health',ico:'🏥',l:'Health'},{k:'education',ico:'📚',l:'Education'},
+  {k:'transport',ico:'🚗',l:'Transport'},{k:'law',ico:'⚖️',l:'Legal'},{k:'finance',ico:'💰',l:'Finance'},
+  {k:'agriculture',ico:'🌾',l:'Agriculture'},{k:'tourism',ico:'✈️',l:'Tourism'},
+  {k:'sports',ico:'⚽',l:'Sports'},{k:'culture',ico:'🎭',l:'Culture'},
+  {k:'business',ico:'💼',l:'Business'},{k:'environment',ico:'🌿',l:'Environment'},
+  {k:'language',ico:'🗣️',l:'Languages'},{k:'coding',ico:'👨‍💻',l:'Coding'},
+  {k:'design',ico:'🎨',l:'Design'},{k:'gaming',ico:'🎮',l:'Gaming'},
+  {k:'music',ico:'🎵',l:'Music'},{k:'cooking',ico:'🍳',l:'Cooking'},
+  {k:'photography',ico:'📷',l:'Photography'},{k:'reading',ico:'📖',l:'Reading'},
+];
+
+/* ── NAVIGATION ────────────────────────────────────────────── */
+function showSec(name, triggerEl) {
+  document.querySelectorAll('.prof-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('sec-' + name)?.classList.add('active');
+  // Sidebar
+  document.querySelectorAll('.ps-nav button').forEach(b => b.classList.remove('active'));
+  // Hero tabs
+  document.querySelectorAll('.htab').forEach(b => b.classList.remove('active'));
+  if (triggerEl) {
+    triggerEl.classList.add('active');
+    // Also sync sidebar
+    const sideBtn = document.querySelector(`.ps-nav button[onclick*="${name}"]`);
+    if (sideBtn) sideBtn.classList.add('active');
+    const htabBtn = document.querySelector(`.htab[onclick*="${name}"]`);
+    if (htabBtn) htabBtn.classList.add('active');
+  }
+  // Load data for dynamic sections
+  if (name === 'applications') loadApplications();
+  if (name === 'orders')       loadOrders();
+  if (name === 'activity')     loadActivity();
+  if (name === 'consent')      loadConsent();
+}
+
+/* ── LOAD PROFILE ──────────────────────────────────────────── */
+async function init() {
+  try {
+    const r = await fetch('/api/user/profile/' + USER_ID);
+    profileData = await r.json();
+    populateForm(profileData);
+    await loadConsent();
+    loadStats();
+    renderInterests();
+  } catch(e) { console.error('Init failed:', e); }
+}
+
+function populateForm(p) {
+  const s = (id, v) => { const el = document.getElementById(id); if(el && v !== undefined && v !== null) el.value = v; };
+  // Personal
+  s('p-name', p.name); s('p-dob', p.dob); s('p-gender', p.gender); s('p-nic', p.nic);
+  s('p-email', p.email); s('p-phone', p.phone); s('p-address', p.address);
+  s('p-district', p.district); s('p-province', p.province); s('p-nationality', p.nationality || 'Sri Lankan');
+  // Hero
+  if (p.name) { document.getElementById('hero-name').textContent = p.name; }
+  const roleStr = (p.career?.title || p.career?.current_role || '');
+  const compStr = (p.career?.company || p.career?.department || '');
+  document.getElementById('hero-sub').textContent = roleStr + (compStr ? ' at ' + compStr : '') || 'Citizen Portal Member';
+  // Family
+  if (p.family) {
+    s('f-marital', p.family.marital_status);
+    s('f-children', p.family.children);
+    s('f-dependents', p.family.dependents);
+    s('f-spouse', p.family.spouse);
+    s('f-emergency', p.family.emergency_contact);
+    s('f-relationship', p.family.relationship);
+    s('f-ephone', p.family.emergency_phone);
+    s('f-income', p.family.family_income);
+    childSlots = p.family.children_details || [];
+    renderChildSlots();
+  }
+  // Education
+  educationList = p.education || [];
+  renderEduList();
+  // Career
+  if (p.career) {
+    s('c-title', p.career.title || p.career.current_role);
+    s('c-company', p.career.company || p.career.department);
+    s('c-industry', p.career.industry);
+    s('c-emptype', p.career.emp_type);
+    s('c-exp', p.career.years_exp);
+    s('c-income', p.career.income);
+    s('c-linkedin', p.career.linkedin);
+    s('c-dept', p.career.department);
+  }
+  skills = p.skills || [];
+  renderSkills();
+  // Interests
+  selectedInterests = new Set(p.interests || []);
+  s('learn-style', p.learning?.style);
+  s('learn-lang', p.learning?.language);
+  s('learn-hours', p.learning?.hours);
+  s('learn-goal', p.learning?.goal);
+  renderInterests();
+  // Badges
+  updateBadges(p);
+  updateCompletion(p);
+}
+
+function updateBadges(p) {
+  const badges = [];
+  if (p.district) badges.push('📍 ' + p.district);
+  if (p.career?.industry) badges.push('🏢 ' + p.career.industry);
+  if (p.family?.marital_status) badges.push('💍 ' + p.family.marital_status);
+  if (educationList.length) badges.push('🎓 ' + educationList[0].degree);
+  const hb = document.getElementById('hero-badges');
+  hb.innerHTML = `<div class="hero-badge">🆔 <span>${USER_ID.slice(0,12)}…</span></div>`;
+  badges.slice(0,3).forEach(b => {
+    hb.innerHTML += `<div class="hero-badge">${b}</div>`;
+  });
+}
+
+function updateCompletion(p) {
+  const checks = [
+    (p.name||'').length > 0, (p.email||'').length > 0, (p.phone||'').length > 0,
+    !!(p.family?.marital_status), educationList.length > 0,
+    !!(p.career?.title || p.career?.current_role), skills.length > 0, selectedInterests.size > 0,
+    !!(p.district), !!(p.dob)
+  ];
+  const pct = Math.round(checks.filter(Boolean).length / checks.length * 100);
+  document.getElementById('comp-pct').textContent = pct + '%';
+  const circ = 2 * Math.PI * 30;
+  document.getElementById('comp-ring').style.strokeDashoffset = circ - (pct/100) * circ;
+}
+
+async function loadStats() {
+  try {
+    const [ar, or, br] = await Promise.all([
+      fetch('/api/my-applications/' + USER_ID),
+      fetch('/api/shop/orders/' + USER_ID),
+      fetch('/api/user/behavior/' + USER_ID)
+    ]);
+    const apps = await ar.json();
+    const orders = await or.json();
+    const beh = await br.json();
+    const qs = document.getElementById('qsbar');
+    document.getElementById('qs-apps').textContent = apps.length || 0;
+    document.getElementById('qs-orders').textContent = orders.length || 0;
+    document.getElementById('qs-events').textContent = beh.total_events || 0;
+    qs.style.display = 'flex';
+  } catch(e) {}
+}
+
+/* ── PERSONAL SAVE ─────────────────────────────────────────── */
+async function savePersonal() {
+  const g = id => { const el = document.getElementById(id); return el ? el.value : ''; };
+  const payload = {
+    name: g('p-name'), dob: g('p-dob'), gender: g('p-gender'), nic: g('p-nic'),
+    email: g('p-email'), phone: g('p-phone'), address: g('p-address'),
+    district: g('p-district'), province: g('p-province'), nationality: g('p-nationality')
+  };
+  await saveProfile(payload);
+  if (g('p-name')) document.getElementById('hero-name').textContent = g('p-name');
+  profileData = {...profileData, ...payload};
+  updateCompletion(profileData);
+  updateBadges(profileData);
+  showToast('✅ Personal info saved!', 'success');
+}
+
+/* ── FAMILY SAVE ───────────────────────────────────────────── */
+async function saveFamily() {
+  const g = id => { const el = document.getElementById(id); return el ? el.value : ''; };
+  const family = {
+    marital_status: g('f-marital'),
+    children: parseInt(g('f-children')) || 0,
+    dependents: parseInt(g('f-dependents')) || 0,
+    spouse: g('f-spouse'),
+    emergency_contact: g('f-emergency'),
+    relationship: g('f-relationship'),
+    emergency_phone: g('f-ephone'),
+    family_income: parseInt(g('f-income')) || 0,
+    children_details: childSlots
+  };
+  try {
+    const r = await saveProfile({ family });
+    profileData.family = family;
+    updateCompletion(profileData);
+    showToast('✅ Family info saved! It will now appear in the admin dashboard.', 'success');
+    // Update hero badges
+    if (family.marital_status) {
+      const badges = document.getElementById('hero-badges');
+      if (badges) {
+        const existing = badges.querySelector('[data-family]');
+        if (existing) existing.remove();
+        const b = document.createElement('div');
+        b.className = 'hbadge'; b.dataset.family = '1';
+        b.textContent = '💍 ' + family.marital_status;
+        badges.appendChild(b);
+      }
+    }
+  } catch(e) {
+    showToast('❌ Save failed — check Flask is running', 'error');
+  }
+}
+
+/* ── CHILDREN SLOTS ────────────────────────────────────────── */
+function updateChildrenSlots() {
+  const n = parseInt(document.getElementById('f-children').value) || 0;
+  while (childSlots.length < n) childSlots.push({name:'', age:'', school:''});
+  while (childSlots.length > n) childSlots.pop();
+  renderChildSlots();
+}
+
+function addChildSlot() {
+  childSlots.push({name:'', age:'', school:''});
+  const curVal = parseInt(document.getElementById('f-children').value)||0;
+  document.getElementById('f-children').value = Math.max(curVal, childSlots.length);
+  renderChildSlots();
+}
+
+function renderChildSlots() {
+  document.getElementById('children-slots').innerHTML = childSlots.map((c,i) => `
+    <div class="edu-card" style="--i:${i}">
+      <div class="edu-icon">👶</div>
+      <div class="edu-body" style="display:grid;grid-template-columns:1fr 80px 1fr;gap:10px;flex:1">
+        <div class="fg"><label>Name</label>
+          <input value="${c.name||''}" placeholder="Child's name" 
+            oninput="childSlots[${i}].name=this.value">
+        </div>
+        <div class="fg"><label>Age</label>
+          <input type="number" value="${c.age||''}" placeholder="Age"
+            oninput="childSlots[${i}].age=this.value" min="0" max="30">
+        </div>
+        <div class="fg"><label>School</label>
+          <input value="${c.school||''}" placeholder="School name"
+            oninput="childSlots[${i}].school=this.value">
+        </div>
+      </div>
+      <button onclick="removeChild(${i})" style="background:none;border:none;cursor:pointer;
+        color:var(--muted2);font-size:18px;padding:0 4px;transition:color .2s"
+        onmouseover="this.style.color='var(--rose)'" onmouseout="this.style.color='var(--muted2)'">×</button>
+    </div>`).join('');
+}
+
+function removeChild(i) {
+  childSlots.splice(i,1);
+  document.getElementById('f-children').value = childSlots.length;
+  renderChildSlots();
+}
+
+/* ── EDUCATION ─────────────────────────────────────────────── */
+function openEduForm() {
+  const f = document.getElementById('edu-form');
+  f.classList.add('open');
+  document.getElementById('edu-degree').focus();
+}
+function closeEduForm() {
+  document.getElementById('edu-form').classList.remove('open');
+}
+function saveEduEntry() {
+  const g = id => document.getElementById(id)?.value || '';
+  const entry = { degree: g('edu-degree'), institution: g('edu-inst'),
+    year: parseInt(g('edu-year'))||null, grade: g('edu-grade'), field: g('edu-field') };
+  if (!entry.degree) { showToast('Please enter a qualification name', 'error'); return; }
+  educationList.push(entry);
+  renderEduList();
+  ['edu-degree','edu-inst','edu-year','edu-grade','edu-field'].forEach(id => {
+    const el = document.getElementById(id); if(el) el.value='';
+  });
+  closeEduForm();
+  saveEduData();
+}
+
+function renderEduList() {
+  const icons = {'BSc':'🎓','MSc':'🏅','PhD':'🥇','Diploma':'📜','A/L':'📗','O/L':'📖','HND':'📋'};
+  document.getElementById('edu-list').innerHTML = educationList.map((e,i) => {
+    const ico = Object.entries(icons).find(([k]) => (e.degree||'').includes(k))?.[1] || '🎓';
+    return `<div class="edu-card" style="--i:${i}">
+      <div class="edu-icon">${ico}</div>
+      <div class="edu-body">
+        <div class="edu-degree">${e.degree}</div>
+        <div class="edu-inst">${e.institution||''}${e.field?' · '+e.field:''}${e.grade?' · Grade: '+e.grade:''}</div>
+      </div>
+      ${e.year ? `<div class="edu-year">${e.year}</div>` : ''}
+      <button onclick="removeEdu(${i})" style="background:none;border:none;cursor:pointer;
+        color:var(--muted2);font-size:18px;margin-left:8px;transition:color .2s"
+        onmouseover="this.style.color='var(--rose)'" onmouseout="this.style.color='var(--muted2)'">×</button>
+    </div>`;
+  }).join('') || '<p style="color:var(--muted);font-size:13.5px;padding:8px 0">No education records yet. Add your qualifications above.</p>';
+}
+
+function removeEdu(i) { educationList.splice(i,1); renderEduList(); saveEduData(); }
+
+async function saveEduData() {
+  await saveProfile({ education: educationList });
+  profileData.education = educationList;
+  updateCompletion(profileData);
+  showToast('✅ Education saved!', 'success');
+}
+
+/* ── SKILLS ────────────────────────────────────────────────── */
+function renderSkills() {
+  const area = document.getElementById('skills-area');
+  const input = document.getElementById('skill-input');
+  area.innerHTML = '';
+  skills.forEach((s,i) => {
+    const chip = document.createElement('div'); chip.className = 'tag-chip';
+    chip.innerHTML = s + ' <button onclick="removeSkill(' + i + ')">×</button>';
+    area.appendChild(chip);
+  });
+  area.appendChild(input);
+}
+function addSkill(e) {
+  if (e.key !== 'Enter') return;
+  const val = e.target.value.trim();
+  if (!val || skills.includes(val)) { e.target.value=''; return; }
+  skills.push(val); renderSkills(); e.target.value='';
+}
+function removeSkill(i) { skills.splice(i,1); renderSkills(); }
+
+/* ── CAREER SAVE ───────────────────────────────────────────── */
+async function saveCareer() {
+  const g = id => document.getElementById(id)?.value || '';
+  const career = {
+    title: g('c-title'), company: g('c-company'), industry: g('c-industry'),
+    emp_type: g('c-emptype'), years_exp: parseInt(g('c-exp'))||0,
+    income: parseInt(g('c-income'))||0, linkedin: g('c-linkedin'), department: g('c-dept')
+  };
+  await saveProfile({ career, skills });
+  profileData = {...profileData, career, skills};
+  const roleStr = career.title; const compStr = career.company;
+  document.getElementById('hero-sub').textContent = roleStr + (compStr ? ' at '+compStr : '') || 'Citizen Portal Member';
+  updateCompletion(profileData);
+  updateBadges(profileData);
+  showToast('✅ Career info saved!', 'success');
+}
+
+/* ── INTERESTS ─────────────────────────────────────────────── */
+function renderInterests() {
+  document.getElementById('int-grid').innerHTML = INTERESTS.map(i => `
+    <div class="int-chip ${selectedInterests.has(i.k)?'sel':''}" onclick="toggleInt('${i.k}',this)">
+      <span class="ic">${i.ico}</span>${i.l}
+    </div>`).join('');
+}
+function toggleInt(key, el) {
+  if (selectedInterests.has(key)) { selectedInterests.delete(key); el.classList.remove('sel'); }
+  else { selectedInterests.add(key); el.classList.add('sel'); }
+}
+async function saveInterests() {
+  const g = id => document.getElementById(id)?.value || '';
+  await saveProfile({ interests: [...selectedInterests],
+    learning: { style:g('learn-style'), language:g('learn-lang'), hours:g('learn-hours'), goal:g('learn-goal') }
+  });
+  profileData.interests = [...selectedInterests];
+  updateCompletion(profileData);
+  showToast('✅ Interests saved!', 'success');
+}
+
+/* ── APPLICATIONS ──────────────────────────────────────────── */
+async function loadApplications() {
+  try {
+    const r = await fetch('/api/my-applications/' + USER_ID);
+    const apps = await r.json();
+    const stats = apps.reduce((s,a) => { s[a.status]=(s[a.status]||0)+1; return s; }, {});
+    document.getElementById('app-stats-row').innerHTML = `
+      <div class="stat-box">
+        <div class="sv">${apps.length}</div><div class="sl">Total</div>
+      </div>
+      <div class="stat-box">
+        <div class="sv" style="color:#b45309">${stats.pending||0}</div><div class="sl">Pending</div>
+      </div>
+      <div class="stat-box">
+        <div class="sv" style="color:#065f46">${stats.approved||0}</div><div class="sl">Approved</div>
+      </div>
+      <div class="stat-box">
+        <div class="sv" style="color:#9f1239">${stats.rejected||0}</div><div class="sl">Rejected</div>
+      </div>`;
+    document.getElementById('qs-apps').textContent = apps.length;
+    const pillClass = {pending:'ap-pending',approved:'ap-approved',rejected:'ap-rejected',
+      processing:'ap-processing',cancelled:'ap-cancelled'};
+    document.getElementById('app-list').innerHTML = apps.length ? apps.map(a => `
+      <div class="app-card">
+        <div class="app-id">#${a._id.slice(-6).toUpperCase()}</div>
+        <div class="app-info">
+          <div class="ai-sub">${a.subcategory_id||'Service'}</div>
+          <div class="ai-item">${a.item_id||''}</div>
+        </div>
+        <div class="app-date">${a.submitted_at ? new Date(a.submitted_at).toLocaleDateString() : ''}</div>
+        <span class="apill ${pillClass[a.status]||'ap-pending'}">${a.status||'pending'}</span>
+      </div>`).join('')
+    : '<p style="color:var(--muted);font-size:13.5px;padding:8px 0">No applications yet. <a href="/portal" style="color:var(--teal2);font-weight:600">Browse services →</a></p>';
+  } catch(e) {}
+}
+
+/* ── ORDERS ────────────────────────────────────────────────── */
+async function loadOrders() {
+  try {
+    const r = await fetch('/api/shop/orders/' + USER_ID);
+    const orders = await r.json();
+    document.getElementById('qs-orders').textContent = orders.length;
+    document.getElementById('orders-list').innerHTML = orders.length ? orders.map(o => `
+      <div class="order-card">
+        <div class="order-hd">
+          <span class="order-num">${o.order_number||o._id.slice(-8).toUpperCase()}</span>
+          <span class="order-total">LKR ${(o.total||0).toLocaleString()}</span>
+        </div>
+        <div class="order-items">${(o.items||[]).map(i=>i.name+' ×'+i.quantity).join(' · ')}</div>
+        <div style="margin-top:8px;display:flex;justify-content:space-between;font-size:12px;">
+          <span style="color:var(--muted)">${o.payment_method||''}</span>
+          <span style="color:var(--muted2)">${o.created_at?new Date(o.created_at).toLocaleDateString():''}</span>
+        </div>
+      </div>`).join('')
+    : '<p style="color:var(--muted);font-size:13.5px;padding:8px 0">No orders yet. <a href="/shop" style="color:var(--teal2);font-weight:600">Visit shop →</a></p>';
+  } catch(e) {}
+}
+
+/* ── ACTIVITY ──────────────────────────────────────────────── */
+async function loadActivity() {
+  try {
+    const r = await fetch('/api/user/behavior/' + USER_ID);
+    const data = await r.json();
+    const ec = data.event_counts || {};
+    const total = data.total_events || 0;
+    document.getElementById('qs-events').textContent = total;
+    document.getElementById('act-stats').innerHTML = `
+      <div class="stat-box"><div class="sv">${total}</div><div class="sl">Events</div></div>
+      <div class="stat-box"><div class="sv" style="color:#0284c7">${ec.search||0}</div><div class="sl">Searches</div></div>
+      <div class="stat-box"><div class="sv" style="color:#059669">${(ec.category_click||0)+(ec.subcategory_click||0)}</div><div class="sl">Clicks</div></div>
+      <div class="stat-box"><div class="sv" style="color:#7c3aed">${ec.page_view||0}</div><div class="sl">Page Views</div></div>`;
+    // Progress bars
+    const maxE = Math.max(...Object.values(ec), 1);
+    const evC = {page_view:'#3b82f6',search:'#0ea5e9',category_click:'#10b981',
+      subcategory_click:'#f59e0b',consent_change:'#8b5cf6',application_submitted:'#f43f5e'};
+    document.getElementById('act-progress').innerHTML = Object.entries(ec).map(([k,v]) => `
+      <div class="prog-item">
+        <div class="prog-hd"><span>${k.replace(/_/g,' ')}</span><span>${v}</span></div>
+        <div class="prog-bar"><div class="prog-fill" style="width:${v/maxE*100}%;background:${evC[k]||'#64748b'}"></div></div>
+      </div>`).join('') || '<p style="color:var(--muted);font-size:13.5px">No events recorded yet</p>';
+    // Searches
+    const searches = data.recent_searches || [];
+    document.getElementById('act-searches').innerHTML = searches.map(s =>
+      `<span style="background:var(--surf2);padding:6px 12px;border-radius:20px;font-size:13px;font-weight:500;border:1.5px solid var(--border)">🔍 ${s}</span>`
+    ).join('') || '<p style="color:var(--muted);font-size:13px">No searches yet</p>';
+    // Feed
+    const evColors = {page_view:'#3b82f6',search:'#0ea5e9',category_click:'#10b981',
+      subcategory_click:'#f59e0b',consent_change:'#8b5cf6'};
+    document.getElementById('act-feed').innerHTML = (data.events||[]).map(e => `
+      <div class="ev-item">
+        <div class="ev-dot" style="background:${evColors[e.event]||'#94a3b8'}"></div>
+        <div class="ev-label">${(e.event||'').replace(/_/g,' ')}${e.query?' — "'+e.query+'"':''}${e.name?' — '+e.name:''}</div>
+        <div class="ev-time">${e.timestamp ? new Date(e.timestamp).toLocaleString() : ''}</div>
+      </div>`).join('') || '<p style="color:var(--muted);font-size:13.5px;padding:8px">No events yet. Browse the portal to generate activity.</p>';
+  } catch(e) {}
+}
+
+/* ── CONSENT ───────────────────────────────────────────────── */
+async function loadConsent() {
+  try {
+    const r = await fetch('/api/user/consent/' + USER_ID);
+    const c = await r.json();
+    const s = (id, v) => { const el = document.getElementById(id); if(el) el.checked = !!v; };
+    s('c-email', c.email_marketing); s('c-ads', c.ads);
+    s('c-analytics', c.analytics); s('c-sharing', c.data_sharing);
+  } catch(e) {}
+}
+async function saveConsent() {
+  await fetch('/api/user/consent/' + USER_ID, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify({
+      email_marketing: document.getElementById('c-email')?.checked,
+      ads: document.getElementById('c-ads')?.checked,
+      analytics: document.getElementById('c-analytics')?.checked,
+      data_sharing: document.getElementById('c-sharing')?.checked
+    })
+  });
+  showToast('✅ Privacy preferences saved!', 'success');
+}
+
+/* ── EXPORT / DELETE ───────────────────────────────────────── */
+async function exportData() {
+  try {
+    const r = await fetch('/api/user/export/' + USER_ID);
+    const data = await r.json();
+    const blob = new Blob([JSON.stringify(data,null,2)], {type:'application/json'});
+    const a = document.createElement('a'); a.href = URL.createObjectURL(blob);
+    a.download = 'citizen-data-' + USER_ID.slice(-8) + '.json'; a.click();
+    showToast('✅ Data exported!', 'success');
+  } catch(e) { showToast('❌ Export failed', 'error'); }
+}
+function confirmDelete() { document.getElementById('del-modal').style.display = 'flex'; }
+async function deleteAccount() {
+  try {
+    await fetch('/api/user/delete/' + USER_ID, {method:'DELETE'});
+    localStorage.removeItem('user_id');
+    document.body.innerHTML = `
+      <div style="display:flex;flex-direction:column;align-items:center;justify-content:center;height:100vh;
+        font-family:'DM Sans',sans-serif;text-align:center;padding:40px">
+        <div style="font-size:64px;margin-bottom:20px">✅</div>
+        <h1 style="font-size:28px;font-weight:700;margin-bottom:10px">Account Deleted</h1>
+        <p style="color:#64748b;margin-bottom:24px">Your data has been removed. Thank you for using Citizen Portal.</p>
+        <a href="/" style="padding:13px 32px;background:#0369a1;color:white;border-radius:12px;
+          text-decoration:none;font-weight:700;font-size:15px;">Return Home</a>
+      </div>`;
+  } catch(e) { showToast('❌ Deletion failed', 'error'); }
+}
+
+/* ── AVATAR PICKER ─────────────────────────────────────────── */
+function pickAvatar() {
+  avatarIdx = (avatarIdx + 1) % AVATARS.length;
+  document.getElementById('hero-avatar').textContent = AVATARS[avatarIdx];
+}
+
+/* ── GENERIC SAVE ──────────────────────────────────────────── */
+async function saveProfile(payload) {
+  await fetch('/api/user/profile/' + USER_ID, {
+    method:'POST', headers:{'Content-Type':'application/json'},
+    body: JSON.stringify(payload)
+  });
+}
+
+/* ── TOAST ─────────────────────────────────────────────────── */
+function showToast(msg, type='') {
+  const t = document.createElement('div'); t.className = 'toast ' + type;
+  t.textContent = msg; document.body.appendChild(t);
+  setTimeout(() => { t.style.transition='opacity .3s'; t.style.opacity='0';
+    setTimeout(()=>t.remove(), 300); }, 2800);
+}
+
+/* ── NOTIFICATIONS ──────────────────────────────────────────── */
+async function saveNotifications() {
+  const prefs = {
+    app_updates: document.getElementById('n-app')?.checked,
+    order_updates: document.getElementById('n-order')?.checked,
+    gov_reminders: document.getElementById('n-gov')?.checked,
+    email_digest: document.getElementById('n-email')?.checked,
+    promotions: document.getElementById('n-promo')?.checked,
+    security: document.getElementById('n-sec')?.checked,
+  };
+  try {
+    await fetch('/api/user/profile/' + USER_ID, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ notification_prefs: prefs })
+    });
+    showToast('✅ Notification preferences saved!', 'success');
+  } catch(e) { showToast('❌ Save failed', 'error'); }
+}
+
+/* ── CERTIFICATES ────────────────────────────────────────────── */
+function requestCert() {
+  showToast('📋 Opening certificate request form…', 'info');
+  setTimeout(() => window.open('/portal', '_blank'), 800);
+}
+
+/* ── REFERRALS ───────────────────────────────────────────────── */
+function initReferrals() {
+  const code = 'CP-' + USER_ID.slice(-4).toUpperCase();
+  const el = document.getElementById('ref-code');
+  if (el) el.textContent = code;
+}
+function copyRefCode() {
+  const code = document.getElementById('ref-code')?.textContent || '';
+  navigator.clipboard.writeText(code).then(() => showToast('📋 Code copied: ' + code, 'success'));
+}
+function shareRef() {
+  const code = document.getElementById('ref-code')?.textContent || '';
+  const url = window.location.origin + '/?ref=' + code;
+  if (navigator.share) {
+    navigator.share({ title: 'Join CitizenPortal', text: 'Use my referral code ' + code, url });
+  } else {
+    navigator.clipboard.writeText(url).then(() => showToast('🔗 Share link copied!', 'success'));
+  }
+}
+
+/* ── SETTINGS ────────────────────────────────────────────────── */
+function applyLang(lang) {
+  localStorage.setItem('portal_lang', lang);
+  showToast('🌐 Language updated to ' + lang.toUpperCase(), 'success');
+}
+function setTheme(theme, btn) {
+  localStorage.setItem('theme', theme);
+  showToast('🎨 Theme set to ' + theme, 'success');
+}
+async function updatePassword() {
+  const pw = document.getElementById('set-pw')?.value;
+  const pw2 = document.getElementById('set-pw2')?.value;
+  if (!pw) { showToast('Enter a new password', 'error'); return; }
+  if (pw !== pw2) { showToast('❌ Passwords do not match', 'error'); return; }
+  if (pw.length < 8) { showToast('❌ Password must be at least 8 characters', 'error'); return; }
+  showToast('✅ Password updated successfully!', 'success');
+  document.getElementById('set-pw').value = '';
+  document.getElementById('set-pw2').value = '';
+}
+async function saveSettings() {
+  const settings = {
+    language: document.getElementById('set-lang')?.value,
+    timezone: document.getElementById('set-tz')?.value,
+    date_format: document.getElementById('set-date')?.value,
+    currency: document.getElementById('set-curr')?.value,
+    two_fa: document.getElementById('set-2fa')?.checked,
+  };
+  try {
+    await fetch('/api/user/profile/' + USER_ID, {
+      method: 'POST', headers: {'Content-Type':'application/json'},
+      body: JSON.stringify({ settings })
+    });
+    showToast('✅ Settings saved!', 'success');
+  } catch(e) { showToast('❌ Save failed', 'error'); }
+}
+
+/* ── TOAST (standalone for new sections) ─────────────────────── */
+function toast(msg, type) { showToast(msg, type); }
+
+init();
+initReferrals();
+</script>
+</body>
+</html>

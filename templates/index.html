@@ -1,0 +1,932 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>CitizenPortal — Services</title>
+<style>
+/* ── DASHBOARD COLOUR SYSTEM ─────────────────────────── */
+:root{
+  --bg:#070b14; --bg2:#0d1220; --bg3:#121929;
+  --panel:#111827; --panel2:#1a2235;
+  --border:rgba(255,255,255,.07); --border2:rgba(255,255,255,.13);
+  --text:#f0f4ff; --muted:#8896b3; --muted2:#4d5f7a;
+  --blue:#4f8ef7; --blue2:#2563eb;
+  --cyan:#22d3ee; --green:#10b981; --amber:#f59e0b;
+  --rose:#f43f5e; --purple:#a78bfa;
+  --sp:cubic-bezier(.34,1.56,.64,1);
+  --ease:cubic-bezier(.4,0,.2,1);
+}
+*{margin:0;padding:0;box-sizing:border-box;}
+body{font-family:system-ui,-apple-system,'Segoe UI',sans-serif;
+  background:var(--bg);color:var(--text);
+  height:100vh;overflow:hidden;display:flex;flex-direction:column;}
+body::before{content:'';position:fixed;inset:0;pointer-events:none;z-index:0;
+  background:radial-gradient(ellipse 700px 500px at 10% 20%,rgba(79,142,247,.07) 0%,transparent 70%),
+             radial-gradient(ellipse 500px 400px at 90% 80%,rgba(34,211,238,.05) 0%,transparent 60%);}
+
+/* ── TOPBAR ──────────────────────────────────────────── */
+.topbar{height:56px;display:flex;align-items:center;padding:0 20px;
+  background:var(--bg2);border-bottom:1px solid var(--border);
+  gap:14px;flex-shrink:0;position:relative;z-index:100;}
+.tlogo{font-size:17px;font-weight:900;letter-spacing:-.3px;
+  background:linear-gradient(135deg,var(--text),var(--blue));
+  -webkit-background-clip:text;-webkit-text-fill-color:transparent;white-space:nowrap;}
+.tlogo span{-webkit-text-fill-color:var(--muted);font-weight:500;font-size:12px;margin-left:6px;}
+.search-wrap{flex:1;max-width:480px;position:relative;}
+.search-wrap input{width:100%;padding:9px 14px 9px 38px;
+  background:var(--bg3);border:1.5px solid var(--border2);border-radius:10px;
+  color:var(--text);font-size:13.5px;font-family:inherit;outline:none;
+  transition:border-color .2s,box-shadow .2s;}
+.search-wrap input::placeholder{color:var(--muted);}
+.search-wrap input:focus{border-color:var(--blue);box-shadow:0 0 0 3px rgba(79,142,247,.12);}
+.sico{position:absolute;left:12px;top:50%;transform:translateY(-50%);
+  color:var(--muted);font-size:14px;pointer-events:none;}
+.sdrop{position:absolute;top:calc(100%+6px);left:0;right:0;
+  background:var(--panel2);border:1px solid var(--border2);border-radius:10px;
+  overflow:hidden;z-index:300;box-shadow:0 12px 32px rgba(0,0,0,.4);display:none;}
+.si{padding:10px 14px;font-size:13px;cursor:pointer;color:var(--muted);
+  border-bottom:1px solid var(--border);transition:background .15s,color .15s;}
+.si:last-child{border:none;}
+.si:hover{background:rgba(79,142,247,.1);color:var(--text);}
+.tright{display:flex;align-items:center;gap:8px;margin-left:auto;}
+.lrow{display:flex;gap:4px;}
+.lb{padding:5px 10px;border-radius:7px;border:1px solid var(--border);
+  background:transparent;color:var(--muted);font-size:11px;font-weight:700;
+  cursor:pointer;font-family:inherit;transition:all .2s;}
+.lb:hover,.lb.on{background:rgba(79,142,247,.12);color:var(--blue);border-color:rgba(79,142,247,.3);}
+.tbtn{padding:7px 14px;border-radius:8px;border:1px solid var(--border2);
+  background:var(--bg3);color:var(--muted);font-size:12.5px;font-weight:600;
+  cursor:pointer;font-family:inherit;transition:all .2s var(--sp);
+  white-space:nowrap;text-decoration:none;
+  display:inline-flex;align-items:center;gap:5px;}
+.tbtn:hover{background:var(--panel2);color:var(--text);transform:translateY(-1px);}
+.tbtn.acc{background:linear-gradient(135deg,var(--blue2),var(--blue));
+  border-color:transparent;color:white;}
+.tbtn.acc:hover{box-shadow:0 4px 14px rgba(37,99,235,.4);}
+.badge{background:var(--blue2);color:white;font-size:10px;font-weight:800;
+  padding:2px 6px;border-radius:10px;min-width:18px;text-align:center;}
+
+/* ── LAYOUT ──────────────────────────────────────────── */
+.layout{display:flex;flex:1;overflow:hidden;position:relative;z-index:1;}
+
+/* ── SIDEBAR ─────────────────────────────────────────── */
+.sidebar{width:235px;flex-shrink:0;background:var(--bg2);
+  border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;}
+.sidebar-hd{padding:13px 16px 10px;font-size:10px;font-weight:700;
+  letter-spacing:1.2px;text-transform:uppercase;color:var(--muted2);
+  border-bottom:1px solid var(--border);flex-shrink:0;}
+#category-list{flex:1;padding:7px;}
+.ci{border-radius:8px;overflow:hidden;margin-bottom:3px;
+  border:1px solid transparent;transition:border-color .2s;}
+.ci:hover{border-color:var(--border2);}
+.chdr{display:flex;align-items:center;padding:9px 10px;
+  cursor:pointer;gap:8px;border-radius:8px;transition:background .15s;}
+.chdr:hover{background:rgba(255,255,255,.04);}
+.chdr.sel{background:rgba(79,142,247,.08);}
+.ctog{font-size:9px;color:var(--muted2);flex-shrink:0;width:14px;transition:transform .2s;}
+.cico{font-size:16px;flex-shrink:0;}
+.clbl{font-size:13px;font-weight:600;color:var(--muted);flex:1;line-height:1.2;}
+.chdr:hover .clbl,.chdr.sel .clbl{color:var(--blue);}
+.csubs{overflow:hidden;background:rgba(0,0,0,.15);border-top:1px solid var(--border);}
+.srow{padding:8px 10px 8px 34px;cursor:pointer;font-size:12.5px;
+  color:var(--muted);border-left:2px solid transparent;
+  transition:all .15s;display:flex;justify-content:space-between;align-items:center;}
+.srow:hover{background:rgba(79,142,247,.07);border-left-color:var(--blue);
+  color:var(--text);padding-left:38px;}
+.srow.sel{background:rgba(79,142,247,.1);border-left-color:var(--blue);color:var(--blue);}
+.scnt{font-size:10px;background:rgba(255,255,255,.07);padding:1px 7px;
+  border-radius:10px;color:var(--muted2);font-weight:600;}
+.sidebar-ads{padding:10px 12px;border-top:1px solid var(--border);}
+.adslbl{font-size:10px;font-weight:700;letter-spacing:1px;color:var(--muted2);
+  text-transform:uppercase;margin-bottom:8px;}
+.adc{background:rgba(255,255,255,.03);border:1px solid var(--border);border-radius:8px;
+  padding:10px 12px;margin-bottom:7px;cursor:pointer;transition:all .2s;
+  border-left:2px solid var(--blue2);}
+.adc:hover{background:rgba(79,142,247,.06);border-color:rgba(79,142,247,.3);}
+.adc a{color:inherit;text-decoration:none;display:block;}
+.adc h4{font-size:12px;color:var(--text);margin-bottom:3px;}
+.adc p{font-size:11px;color:var(--muted);line-height:1.4;}
+
+/* ── MIDDLE ──────────────────────────────────────────── */
+.middle{width:245px;flex-shrink:0;background:var(--bg3);
+  border-right:1px solid var(--border);overflow-y:auto;display:flex;flex-direction:column;}
+.mid-hd{padding:13px 16px 10px;border-bottom:1px solid var(--border);flex-shrink:0;}
+.mid-hd h2{font-size:13px;font-weight:800;color:var(--text);}
+#sub-list{list-style:none;padding:7px;flex:1;}
+#sub-list li{padding:11px 12px;margin-bottom:4px;border-radius:9px;cursor:pointer;
+  border:1px solid var(--border);background:rgba(255,255,255,.02);
+  transition:all .2s var(--sp);}
+#sub-list li:hover{background:rgba(79,142,247,.08);border-color:rgba(79,142,247,.25);
+  transform:translateX(3px);}
+#sub-list li.sel{background:rgba(79,142,247,.12);border-color:rgba(79,142,247,.35);}
+#sub-list li b{font-size:13px;color:var(--text);display:block;margin-bottom:3px;}
+#sub-list li small{font-size:11px;color:var(--muted);line-height:1.3;}
+.sbadge{display:inline-block;background:rgba(79,142,247,.12);color:var(--blue);
+  font-size:10px;font-weight:700;padding:2px 8px;border-radius:10px;margin-top:5px;}
+
+/* ── MAIN CONTENT ────────────────────────────────────── */
+.content{flex:1;overflow-y:auto;display:flex;flex-direction:column;background:var(--bg);}
+.content-inner{padding:20px 24px;flex:1;}
+#q-title{font-size:15px;font-weight:800;color:var(--text);margin-bottom:14px;}
+#question-list{list-style:none;}
+#question-list li{background:var(--panel);border:1px solid var(--border);
+  border-radius:12px;padding:16px;margin-bottom:10px;cursor:pointer;
+  transition:all .25s var(--sp);border-left:3px solid var(--blue2);}
+#question-list li:hover{background:var(--panel2);border-color:rgba(79,142,247,.35);
+  transform:translateX(4px);box-shadow:0 4px 20px rgba(0,0,0,.25);}
+#question-list li h4{font-size:14px;font-weight:700;color:var(--text);margin-bottom:5px;}
+#question-list li p{font-size:12.5px;color:var(--muted);line-height:1.5;}
+.imeta{display:flex;gap:14px;margin-top:8px;font-size:11.5px;color:var(--muted2);}
+.imeta span{display:flex;align-items:center;gap:4px;}
+.applyb{background:rgba(79,142,247,.12);color:var(--blue);padding:3px 10px;
+  border-radius:8px;font-size:11px;font-weight:700;white-space:nowrap;
+  margin-left:auto;align-self:flex-start;}
+
+/* ── INFO / DETAIL CARD ──────────────────────────────── */
+#answer-box{margin-top:4px;}
+.icard{background:var(--panel);border:1px solid var(--border);border-radius:14px;
+  padding:22px;border-left:4px solid var(--blue);animation:fadeUp .3s var(--ease) both;}
+@keyframes fadeUp{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:translateY(0)}}
+.icard h2{font-size:18px;font-weight:800;margin-bottom:8px;color:var(--text);}
+.icard>p{font-size:13.5px;color:var(--muted);line-height:1.7;margin-bottom:14px;}
+.isec{margin-top:16px;}
+.isec h4{font-size:13px;font-weight:700;color:var(--text);margin-bottom:10px;}
+.dgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(130px,1fr));
+  gap:10px;margin-bottom:16px;}
+.dchip{background:var(--bg3);border:1px solid var(--border2);border-radius:10px;padding:12px;}
+.dchip .dl{font-size:10px;font-weight:700;text-transform:uppercase;
+  letter-spacing:.8px;color:var(--muted2);margin-bottom:5px;}
+.dchip .dv{font-size:15px;font-weight:800;color:var(--text);}
+.rl{list-style:none;}
+.rl li{padding:8px 12px;margin-bottom:5px;background:var(--bg3);border-radius:7px;
+  border-left:3px solid var(--cyan);font-size:13px;color:var(--muted);
+  display:flex;align-items:center;gap:8px;}
+.rl li::before{content:'✓';color:var(--cyan);font-weight:800;}
+.kwtags{display:flex;flex-wrap:wrap;gap:6px;margin-top:8px;}
+.kwtag{background:rgba(167,139,250,.1);color:var(--purple);
+  border:1px solid rgba(167,139,250,.2);padding:3px 10px;
+  border-radius:10px;font-size:11.5px;font-weight:600;}
+.howbox{background:var(--bg3);border:1px solid var(--border);border-radius:9px;
+  padding:14px;font-size:13px;color:var(--muted);line-height:1.6;
+  border-left:3px solid var(--cyan);}
+
+/* ── FORM ────────────────────────────────────────────── */
+.ff{margin-bottom:14px;}
+.ff label{display:block;font-size:11.5px;font-weight:700;color:var(--muted);
+  text-transform:uppercase;letter-spacing:.7px;margin-bottom:6px;}
+.ff input,.ff select{width:100%;padding:10px 13px;background:var(--bg3);
+  border:1.5px solid var(--border2);border-radius:9px;color:var(--text);
+  font-size:13.5px;font-family:inherit;outline:none;
+  transition:border-color .2s,box-shadow .2s;}
+.ff input:focus,.ff select:focus{border-color:var(--blue);
+  box-shadow:0 0 0 3px rgba(79,142,247,.12);}
+.ff input::placeholder{color:var(--muted2);}
+
+/* ── BUTTONS ─────────────────────────────────────────── */
+.btn{padding:11px 20px;border-radius:10px;border:none;font-size:13.5px;font-weight:700;
+  cursor:pointer;font-family:inherit;transition:all .25s var(--sp);
+  display:inline-flex;align-items:center;gap:7px;}
+.bp{background:linear-gradient(135deg,var(--blue2),var(--blue));color:white;
+  box-shadow:0 3px 12px rgba(37,99,235,.35);}
+.bp:hover{transform:translateY(-2px);box-shadow:0 6px 20px rgba(37,99,235,.5);}
+.bo{background:transparent;color:var(--blue);border:1.5px solid rgba(79,142,247,.35);}
+.bo:hover{background:rgba(79,142,247,.08);transform:translateY(-1px);}
+.bg{background:var(--bg3);color:var(--muted);border:1px solid var(--border2);}
+.bg:hover{background:var(--panel2);color:var(--text);}
+.brow{display:flex;gap:10px;flex-wrap:wrap;margin-top:16px;}
+.bfull{width:100%;justify-content:center;}
+
+/* ── EMPTY STATE ─────────────────────────────────────── */
+.empty{text-align:center;padding:60px 20px;animation:fadeUp .4s var(--ease) both;}
+.eico{font-size:52px;margin-bottom:14px;opacity:.5;}
+.empty h3{font-size:16px;color:var(--text);margin-bottom:6px;}
+.empty p{font-size:13px;color:var(--muted);}
+
+/* ── CHAT PANEL ──────────────────────────────────────── */
+.chat-panel{width:310px;flex-shrink:0;background:var(--bg2);
+  border-left:1px solid var(--border);display:flex;flex-direction:column;}
+.chat-hd{padding:13px 16px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;flex-shrink:0;}
+.chat-hd h3{font-size:14px;font-weight:800;display:flex;align-items:center;gap:8px;}
+.clive{width:7px;height:7px;border-radius:50%;background:var(--green);
+  animation:lv 2s infinite;}
+@keyframes lv{0%,100%{opacity:1}50%{opacity:.3}}
+.cx{width:28px;height:28px;border-radius:7px;background:var(--bg3);
+  border:1px solid var(--border);color:var(--muted);cursor:pointer;font-size:16px;
+  display:flex;align-items:center;justify-content:center;transition:all .2s;}
+.cx:hover{background:var(--panel2);color:var(--text);}
+.chat-body{flex:1;overflow-y:auto;padding:12px;display:flex;flex-direction:column;gap:8px;}
+.cmsg{padding:10px 13px;border-radius:12px;font-size:13px;line-height:1.5;max-width:92%;
+  animation:msgIn .25s var(--sp) both;}
+@keyframes msgIn{from{opacity:0;transform:scale(.95)}to{opacity:1;transform:scale(1)}}
+.umsg{background:linear-gradient(135deg,var(--blue2),var(--blue));
+  color:white;align-self:flex-end;border-bottom-right-radius:4px;}
+.bmsg{background:var(--panel2);border:1px solid var(--border);
+  color:var(--muted);align-self:flex-start;border-bottom-left-radius:4px;}
+.tind span{display:inline-block;width:6px;height:6px;border-radius:50%;
+  background:var(--muted);animation:td 1.2s infinite;margin:0 1px;}
+.tind span:nth-child(2){animation-delay:.2s}
+.tind span:nth-child(3){animation-delay:.4s}
+@keyframes td{0%,80%,100%{transform:scale(.8);opacity:.4}40%{transform:scale(1.2);opacity:1}}
+.cqa{display:flex;flex-wrap:wrap;gap:6px;padding:4px 0;}
+.qb{padding:5px 11px;border-radius:8px;background:rgba(79,142,247,.1);
+  border:1px solid rgba(79,142,247,.25);color:var(--blue);font-size:11.5px;
+  font-weight:600;cursor:pointer;font-family:inherit;transition:all .2s;}
+.qb:hover{background:rgba(79,142,247,.18);}
+.chat-ft{padding:10px;border-top:1px solid var(--border);display:flex;gap:7px;flex-shrink:0;}
+.chat-ft input{flex:1;padding:9px 12px;background:var(--bg3);
+  border:1.5px solid var(--border2);border-radius:9px;color:var(--text);
+  font-size:13px;font-family:inherit;outline:none;transition:border-color .2s;}
+.chat-ft input::placeholder{color:var(--muted2);}
+.chat-ft input:focus{border-color:var(--blue);}
+.csend{padding:9px 14px;background:var(--blue2);color:white;border:none;border-radius:9px;
+  font-size:13px;font-weight:700;cursor:pointer;font-family:inherit;
+  transition:all .2s var(--sp);}
+.csend:hover{background:var(--blue);transform:scale(1.05);}
+
+/* ── MODALS ──────────────────────────────────────────── */
+.mov{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:1000;
+  display:flex;align-items:center;justify-content:center;
+  animation:fadeIn .25s var(--ease);}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+.mbox{background:var(--panel);border:1px solid var(--border2);border-radius:18px;
+  width:95%;max-width:900px;max-height:92vh;overflow:hidden;
+  display:flex;flex-direction:column;box-shadow:0 32px 80px rgba(0,0,0,.6);
+  animation:mpop .35s var(--sp) both;}
+@keyframes mpop{from{opacity:0;transform:scale(.93) translateY(20px)}
+  to{opacity:1;transform:scale(1) translateY(0)}}
+.mhd{padding:18px 24px;border-bottom:1px solid var(--border);
+  display:flex;align-items:center;justify-content:space-between;
+  flex-shrink:0;background:var(--bg2);}
+.mhd h2{font-size:18px;font-weight:900;}
+.mcl{width:32px;height:32px;border-radius:8px;background:var(--bg3);
+  border:1px solid var(--border);color:var(--muted);cursor:pointer;font-size:20px;
+  display:flex;align-items:center;justify-content:center;transition:all .2s var(--sp);}
+.mcl:hover{background:rgba(244,63,94,.12);color:var(--rose);transform:scale(1.1);}
+.mbody{flex:1;overflow-y:auto;padding:20px 24px;}
+
+/* Stats row */
+.strow{display:grid;grid-template-columns:repeat(5,1fr);gap:10px;margin-bottom:20px;}
+.stchip{background:var(--bg3);border:1px solid var(--border2);border-radius:10px;
+  padding:14px;text-align:center;}
+.stval{font-size:26px;font-weight:900;color:var(--stc,var(--blue));}
+.stlbl{font-size:10px;font-weight:700;text-transform:uppercase;letter-spacing:.8px;
+  color:var(--muted2);margin-top:4px;}
+
+/* Application cards */
+.appc{background:var(--bg3);border:1px solid var(--border);border-radius:12px;
+  padding:16px 18px;margin-bottom:10px;border-left:4px solid var(--blue2);
+  animation:fadeUp .3s var(--ease) both;animation-delay:calc(var(--ai,0)*.05s);}
+.appc.sa{border-left-color:var(--green);}
+.appc.sr{border-left-color:var(--rose);}
+.appc.sp{border-left-color:var(--purple);}
+.appc.sc{border-left-color:var(--muted2);}
+.appc.spe{border-left-color:var(--amber);}
+.apphd{display:flex;align-items:center;justify-content:space-between;margin-bottom:12px;}
+.appid{font-size:15px;font-weight:800;color:var(--text);}
+.appdt{font-size:11.5px;color:var(--muted2);margin-top:2px;}
+.pill{padding:4px 11px;border-radius:20px;font-size:11px;font-weight:800;
+  text-transform:uppercase;letter-spacing:.4px;}
+.ppend{background:rgba(245,158,11,.12);color:var(--amber);}
+.pappr{background:rgba(16,185,129,.12);color:var(--green);}
+.prej{background:rgba(244,63,94,.12);color:var(--rose);}
+.pproc{background:rgba(167,139,250,.12);color:var(--purple);}
+.pcanc{background:rgba(77,95,122,.15);color:var(--muted);}
+.appig{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-bottom:12px;font-size:12.5px;}
+.ail{color:var(--muted2);font-size:11px;font-weight:700;text-transform:uppercase;margin-bottom:2px;}
+.aiv{color:var(--text);font-weight:600;}
+.anote{background:rgba(245,158,11,.07);border:1px solid rgba(245,158,11,.18);
+  border-radius:8px;padding:10px 12px;font-size:12px;color:var(--amber);margin-bottom:10px;}
+.apacts{display:flex;gap:8px;flex-wrap:wrap;}
+.apacts .btn{padding:8px 14px;font-size:12px;}
+
+/* Profile modal */
+.pov{position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:900;
+  display:flex;align-items:center;justify-content:center;
+  animation:fadeIn .25s var(--ease);}
+.pbox{background:var(--panel);border:1px solid var(--border2);border-radius:18px;
+  width:95%;max-width:420px;padding:28px;box-shadow:0 32px 80px rgba(0,0,0,.6);
+  animation:mpop .35s var(--sp) both;}
+.pbox h3{font-size:18px;font-weight:900;margin-bottom:20px;text-align:center;}
+.pstep{display:flex;flex-direction:column;gap:12px;}
+
+/* Toast */
+.toast{position:fixed;bottom:24px;right:24px;z-index:9999;padding:12px 20px;
+  background:var(--panel2);color:white;border-radius:12px;font-size:13.5px;font-weight:600;
+  box-shadow:0 8px 28px rgba(0,0,0,.4);font-family:inherit;max-width:320px;
+  animation:fadeUp .35s var(--sp) both;}
+
+/* Scrollbar */
+::-webkit-scrollbar{width:5px;}
+::-webkit-scrollbar-track{background:transparent;}
+::-webkit-scrollbar-thumb{background:var(--muted2);border-radius:10px;}
+
+/* Responsive */
+@media(max-width:1100px){.chat-panel{display:none!important;}}
+@media(max-width:780px){.middle{display:none;}.sidebar{width:200px;}}
+@media(max-width:520px){.sidebar{width:160px;}}
+</style>
+</head>
+<body>
+
+<!-- TOPBAR -->
+<header class="topbar">
+  <div class="tlogo">CitizenPortal <span>Services</span></div>
+  <div class="search-wrap">
+    <span class="sico">&#128269;</span>
+    <input id="srch" placeholder="Search services&#8230;" oninput="autosg(this.value)"
+           onkeypress="if(event.key==='Enter')doSearch()">
+    <div class="sdrop" id="sdrop"></div>
+  </div>
+  <div class="tright">
+    <div class="lrow">
+      <button class="lb on" id="lb-en" onclick="setLang('en')">EN</button>
+      <button class="lb"    id="lb-si" onclick="setLang('si')">&#3523;&#3538;</button>
+      <button class="lb"    id="lb-ta" onclick="setLang('ta')">&#2980;</button>
+    </div>
+    <button class="tbtn" onclick="openChat()">&#128172; Ask AI</button>
+    <button class="tbtn acc" id="appsBtn" onclick="showMyApps()">
+      &#128203; My Applications
+      <span class="badge" id="abadge" style="display:none">0</span>
+    </button>
+    <a href="/dashboard" class="tbtn">&#128202; Dashboard</a>
+  </div>
+</header>
+
+<!-- LAYOUT -->
+<div class="layout">
+
+  <!-- SIDEBAR -->
+  <aside class="sidebar">
+    <div class="sidebar-hd">&#128203; Service Categories</div>
+    <div id="category-list"></div>
+    <div class="sidebar-ads">
+      <div class="adslbl">&#128226; Announcements</div>
+      <div id="ads-area"></div>
+    </div>
+  </aside>
+
+  <!-- MIDDLE -->
+  <section class="middle">
+    <div class="mid-hd"><h2 id="sub-title">Select a Category</h2></div>
+    <ul id="sub-list"></ul>
+  </section>
+
+  <!-- MAIN -->
+  <main class="content">
+    <div class="content-inner">
+      <h2 id="q-title">Available Services</h2>
+      <ul id="question-list">
+        <div class="empty">
+          <div class="eico">&#127981;</div>
+          <h3>Welcome to CitizenPortal</h3>
+          <p>Select a category on the left to browse government services</p>
+        </div>
+      </ul>
+      <div id="answer-box"></div>
+    </div>
+  </main>
+
+  <!-- CHAT -->
+  <aside class="chat-panel" id="chat-panel" style="display:none">
+    <div class="chat-hd">
+      <h3><div class="clive"></div> AI Assistant</h3>
+      <button class="cx" onclick="closeChat()">&#215;</button>
+    </div>
+    <div class="chat-body" id="chat-body"></div>
+    <div id="chat-qs"></div>
+    <div class="chat-ft">
+      <input id="chat-inp" placeholder="Type your question&#8230;"
+             onkeypress="if(event.key==='Enter'&&!event.shiftKey){event.preventDefault();sendChat();}">
+      <button class="csend" onclick="sendChat()">Send</button>
+    </div>
+  </aside>
+</div>
+
+<!-- PROFILE MODAL -->
+<div id="profile-modal" style="display:none" class="pov">
+  <div class="pbox" onclick="event.stopPropagation()">
+    <h3>&#128100; Tell us about you</h3>
+    <div id="ps-1" class="pstep">
+      <div class="ff"><label>Full Name</label><input id="p_name" placeholder="Your full name"></div>
+      <div class="ff"><label>Age</label><input id="p_age" type="number" placeholder="Your age"></div>
+      <div class="brow"><button class="btn bp bfull" onclick="pnext(1)">Next &#8594;</button></div>
+    </div>
+    <div id="ps-2" class="pstep" style="display:none">
+      <div class="ff"><label>Email</label><input id="p_email" placeholder="your@email.com"></div>
+      <div class="ff"><label>Mobile</label><input id="p_phone" placeholder="+94 77 000 0000"></div>
+      <div class="brow">
+        <button class="btn bg" onclick="pback(2)">&#8592; Back</button>
+        <button class="btn bp" onclick="pnext(2)">Next &#8594;</button>
+      </div>
+    </div>
+    <div id="ps-3" class="pstep" style="display:none">
+      <div class="ff"><label>Job / Workplace</label><input id="p_job" placeholder="e.g. Teacher, Ministry of Education"></div>
+      <div class="brow">
+        <button class="btn bg" onclick="pback(3)">&#8592; Back</button>
+        <button class="btn bp" onclick="psubmit()">&#9989; Finish</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<script>
+/* ── STATE ────────────────────────────────────────────── */
+let lang='en', categories=[], curCat=null, curSub=null, expanded=new Set();
+let uid=localStorage.getItem('uid')||'u_'+Math.random().toString(36).substr(2,9);
+localStorage.setItem('uid',uid);
+
+/* ── LOAD CATEGORIES ──────────────────────────────────── */
+async function loadCats(){
+  try{ const r=await fetch('/api/categories'); categories=await r.json(); }
+  catch(e){ categories=[]; }
+  const el=document.getElementById('category-list');
+  el.innerHTML='';
+  if(!categories.length){
+    el.innerHTML=`<div class="empty" style="padding:30px 10px">
+      <div class="eico" style="font-size:32px">&#128196;</div>
+      <p style="font-size:12px">No categories found.<br>Restart Flask to auto-seed data.</p>
+    </div>`; return;
+  }
+  categories.forEach(c=>{
+    const wrap=document.createElement('div'); wrap.className='ci';
+    const hdr=document.createElement('div'); hdr.className='chdr'; hdr.id='chdr-'+c.id;
+    const tog=document.createElement('span'); tog.className='ctog'; tog.textContent='▶';
+    tog.onclick=e=>{e.stopPropagation();togCat(c.id,tog);};
+    const ico=document.createElement('span'); ico.className='cico';
+    ico.textContent=c.icon||'📁';
+    const lbl=document.createElement('span'); lbl.className='clbl';
+    lbl.textContent=c.name?.[lang]||c.name?.en||c.id;
+    lbl.onclick=()=>selCat(c);
+    hdr.append(tog,ico,lbl); wrap.appendChild(hdr);
+    if(c.subcategories?.length){
+      const sd=document.createElement('div'); sd.id='csubs-'+c.id;
+      sd.className='csubs'; sd.style.display='none';
+      c.subcategories.forEach(sub=>{
+        const row=document.createElement('div'); row.className='srow'; row.id='srow-'+sub.id;
+        row.innerHTML=`<span>▫ ${sub.name?.[lang]||sub.name?.en}</span>
+                       <span class="scnt">${sub.itemCount||0}</span>`;
+        row.onclick=()=>selSub(c,sub); sd.appendChild(row);
+      }); wrap.appendChild(sd);
+    }
+    el.appendChild(wrap);
+  });
+  loadAds();
+}
+function togCat(id,tog){
+  const b=document.getElementById('csubs-'+id); if(!b) return;
+  if(expanded.has(id)){b.style.display='none';tog.textContent='▶';expanded.delete(id);}
+  else{b.style.display='block';tog.textContent='▼';expanded.add(id);}
+}
+
+/* ── SELECT CATEGORY ──────────────────────────────────── */
+function selCat(cat){
+  curCat=cat; curSub=null;
+  document.querySelectorAll('.chdr').forEach(h=>h.classList.remove('sel'));
+  document.getElementById('chdr-'+cat.id)?.classList.add('sel');
+  document.getElementById('sub-title').innerText=cat.name?.[lang]||cat.name?.en;
+  document.getElementById('q-title').innerText='Select a subcategory';
+  document.getElementById('question-list').innerHTML='';
+  document.getElementById('answer-box').innerHTML='';
+  const list=document.getElementById('sub-list'); list.innerHTML='';
+  if(cat.subcategories?.length){
+    cat.subcategories.forEach(sub=>{
+      const li=document.createElement('li'); li.onclick=()=>selSub(cat,sub);
+      li.innerHTML=`<b>${sub.name?.[lang]||sub.name?.en}</b>
+        <small>${sub.description||''}</small>
+        <span class="sbadge">${sub.itemCount||0} items</span>`;
+      list.appendChild(li);
+    });
+  } else {
+    list.innerHTML=`<div class="empty" style="padding:30px 10px">
+      <div class="eico" style="font-size:32px">📂</div><p>No subcategories</p></div>`;
+  }
+  track('category_click',{category_id:cat.id,service:cat.name?.en});
+}
+
+/* ── SELECT SUBCATEGORY ───────────────────────────────── */
+function selSub(cat,sub){
+  curCat=cat; curSub=sub;
+  document.querySelectorAll('.srow').forEach(r=>r.classList.remove('sel'));
+  document.getElementById('srow-'+sub.id)?.classList.add('sel');
+  document.getElementById('q-title').innerText=sub.name?.[lang]||sub.name?.en;
+  document.getElementById('question-list').innerHTML='';
+  const kws=sub.keywords?.length
+    ?`<div class="kwtags">${sub.keywords.map(k=>`<span class="kwtag">${k}</span>`).join('')}</div>`:'' ;
+  document.getElementById('answer-box').innerHTML=`
+    <div class="icard">
+      <div style="display:flex;align-items:center;gap:12px;margin-bottom:14px">
+        <span style="font-size:36px">${cat.icon||'📁'}</span>
+        <div><h2 style="margin:0">${sub.name?.[lang]||sub.name?.en}</h2>
+        <small style="color:var(--muted)">${cat.name?.[lang]||cat.name?.en}</small></div>
+      </div>
+      <p>${sub.description||''}</p>${kws}
+      <div class="brow">
+        <button class="btn bp" onclick="loadItems('${sub.id}')">
+          &#128203; View All Services (${sub.itemCount||0})
+        </button>
+        <button class="btn bo" onclick="askAbout()">&#128172; Ask AI about this</button>
+      </div>
+    </div>`;
+  track('subcategory_click',{category_id:cat.id,subcategory_id:sub.id});
+}
+
+/* ── LOAD ITEMS ───────────────────────────────────────── */
+async function loadItems(subId){
+  document.getElementById('answer-box').innerHTML='';
+  document.getElementById('question-list').innerHTML=
+    `<div class="empty"><p style="color:var(--muted)">Loading&#8230;</p></div>`;
+  try{
+    const r=await fetch(`/api/subcategory/${subId}/items`);
+    const items=await r.json();
+    document.getElementById('q-title').innerText='Available Services';
+    if(!items.length){
+      document.getElementById('question-list').innerHTML=
+        `<div class="empty"><div class="eico">&#128237;</div><h3>No services yet</h3></div>`; return;
+    }
+    document.getElementById('question-list').innerHTML=items.map(item=>{
+      const t=item.title?.[lang]||item.title?.en||(typeof item.title==='string'?item.title:'');
+      const d=item.description?.[lang]||item.description?.en||(typeof item.description==='string'?item.description:'');
+      return `<li onclick="showDetail('${subId}','${item.id}')">
+        <div style="display:flex;justify-content:space-between;align-items:flex-start;gap:10px">
+          <div style="flex:1">
+            <h4>${t}</h4><p>${d}</p>
+            <div class="imeta">
+              <span>&#128176; ${item.fee||'Free'}</span>
+              <span>&#9201; ${item.processingTime||'Varies'}</span>
+              ${item.requirements?.length?`<span>&#128203; ${item.requirements.length} req.</span>`:''}
+            </div>
+          </div>
+          <span class="applyb">Apply &#8594;</span>
+        </div>
+      </li>`;}).join('');
+  } catch(e){
+    document.getElementById('question-list').innerHTML=
+      `<div class="empty"><div class="eico">&#9888;&#65039;</div><h3>Error loading</h3></div>`;
+  }
+}
+
+/* ── SHOW ITEM DETAIL ─────────────────────────────────── */
+async function showDetail(subId,itemId){
+  try{
+    const r=await fetch(`/api/subcategory/${subId}/items/${itemId}`);
+    const item=await r.json(); if(item.error) return;
+    const t=item.title?.[lang]||item.title?.en||(typeof item.title==='string'?item.title:'Service');
+    const d=item.description?.[lang]||item.description?.en||(typeof item.description==='string'?item.description:'');
+    const reqs=item.requirements?.length
+      ?`<div class="isec"><h4>&#128203; Requirements</h4>
+         <ul class="rl">${item.requirements.map(r=>`<li>${r}</li>`).join('')}</ul></div>`:'' ;
+    const instr=item.instructions
+      ?`<div class="isec"><h4>&#128221; How to Apply</h4>
+         <div class="howbox">${item.instructions}</div></div>`:'' ;
+    const form=item.formFields?.length
+      ?`<div class="isec"><h4>&#128221; Application Form</h4>
+         <form id="aform" onsubmit="submitApp(event,'${subId}','${itemId}')">
+           ${item.formFields.map(f=>`
+             <div class="ff"><label>${f.name}${f.required?' *':''}</label>
+             <input type="${f.type||'text'}" name="${f.name}"
+               ${f.required?'required':''} placeholder="${f.name}"></div>`).join('')}
+           <button type="submit" class="btn bp bfull" style="margin-top:6px">
+             &#9989; Submit Application
+           </button>
+         </form></div>`
+      :`<div class="isec">
+         <button class="btn bp bfull" onclick="toast('Application portal coming soon!','info')">
+           &#9989; Apply Now
+         </button></div>`;
+    document.getElementById('answer-box').innerHTML=`
+      <div class="icard">
+        <h2>${t}</h2><p>${d}</p>
+        <div class="dgrid">
+          <div class="dchip"><div class="dl">Fee</div>
+            <div class="dv" style="color:var(--green)">${item.fee||'Free'}</div></div>
+          <div class="dchip"><div class="dl">Processing Time</div>
+            <div class="dv" style="color:var(--amber)">${item.processingTime||'Varies'}</div></div>
+          ${item.location?`<div class="dchip"><div class="dl">Location</div>
+            <div class="dv" style="font-size:12px">${item.location}</div></div>`:''}
+        </div>
+        ${reqs}${instr}${form}
+        <div class="brow" style="margin-top:18px;padding-top:14px;border-top:1px solid var(--border)">
+          <button class="btn bg" onclick="loadItems('${subId}')">&#8592; Back</button>
+        </div>
+      </div>`;
+  } catch(e){ console.error(e); }
+}
+
+/* ── SUBMIT APPLICATION ───────────────────────────────── */
+async function submitApp(e,subId,itemId){
+  e.preventDefault();
+  const data={}; new FormData(e.target).forEach((v,k)=>data[k]=v);
+  try{
+    const r=await fetch(`/api/subcategory/${subId}/items/${itemId}/apply`,{
+      method:'POST',headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({user_id:uid,data})});
+    const j=await r.json();
+    if(j.status==='success'){toast(`✅ Submitted! ID: ${j.application_id}`,'success');
+      e.target.reset(); updateBadge();}
+    else toast('❌ Failed — please try again.','error');
+  } catch(err){ toast('❌ Network error.','error'); }
+}
+
+/* ── MY APPLICATIONS ──────────────────────────────────── */
+async function showMyApps(){
+  try{
+    const[sR,aR]=await Promise.all([
+      fetch(`/api/application-stats/${uid}`),
+      fetch(`/api/my-applications/${uid}`)]);
+    const stats=await sR.json(), apps=await aR.json();
+    const sc=s=>({approved:'a',rejected:'r',processing:'p',cancelled:'c',pending:'pe'}[s]||'pe');
+    const pc=s=>({approved:'pappr',rejected:'prej',processing:'pproc',cancelled:'pcanc',pending:'ppend'}[s]||'ppend');
+    const m=document.createElement('div'); m.className='mov'; m.id='appsMod';
+    m.onclick=e=>{if(e.target===m)m.remove();};
+    m.innerHTML=`
+      <div class="mbox" onclick="event.stopPropagation()">
+        <div class="mhd">
+          <h2>&#128203; My Applications</h2>
+          <div style="display:flex;gap:8px;align-items:center">
+            <button class="btn bo" onclick="exportPDF()" style="padding:7px 14px;font-size:12px">
+              &#128196; Export PDF
+            </button>
+            <button class="mcl" onclick="document.getElementById('appsMod').remove()">&#215;</button>
+          </div>
+        </div>
+        <div class="mbody">
+          <div class="strow">
+            <div class="stchip" style="--stc:var(--blue)"><div class="stval">${stats.total||0}</div><div class="stlbl">Total</div></div>
+            <div class="stchip" style="--stc:var(--amber)"><div class="stval">${stats.pending||0}</div><div class="stlbl">Pending</div></div>
+            <div class="stchip" style="--stc:var(--green)"><div class="stval">${stats.approved||0}</div><div class="stlbl">Approved</div></div>
+            <div class="stchip" style="--stc:var(--rose)"><div class="stval">${stats.rejected||0}</div><div class="stlbl">Rejected</div></div>
+            <div class="stchip" style="--stc:var(--purple)"><div class="stval">${stats.processing||0}</div><div class="stlbl">Processing</div></div>
+          </div>
+          ${!apps.length
+            ?`<div class="empty"><div class="eico">&#128237;</div><h3>No applications yet</h3>
+               <p>Submit an application to track it here</p></div>`
+            :apps.map((a,i)=>`
+              <div class="appc s${sc(a.status)}" style="--ai:${i}">
+                <div class="apphd">
+                  <div><div class="appid">#${a._id.slice(-6).toUpperCase()}</div>
+                    <div class="appdt">&#128197; ${new Date(a.submitted_at).toLocaleDateString('en-GB',{day:'2-digit',month:'short',year:'numeric'})}</div>
+                  </div>
+                  <span class="pill ${pc(a.status)}">${a.status}</span>
+                </div>
+                <div class="appig">
+                  <div><div class="ail">Subcategory</div><div class="aiv">${a.subcategory_id}</div></div>
+                  <div><div class="ail">Item</div><div class="aiv">${a.item_id}</div></div>
+                </div>
+                ${a.admin_notes?`<div class="anote">&#128221; ${a.admin_notes}</div>`:''}
+                <div class="apacts">
+                  ${a.status==='pending'?`
+                    <button class="btn bg" onclick="updStatus('${a._id}','processing')">&#128260; Processing</button>
+                    <button class="btn" style="background:rgba(16,185,129,.12);color:var(--green)" onclick="updStatus('${a._id}','approved')">&#9989; Approve</button>
+                    <button class="btn" style="background:rgba(244,63,94,.12);color:var(--rose)"  onclick="updStatus('${a._id}','rejected')">&#10060; Reject</button>
+                    <button class="btn bg" onclick="cancelApp('${a._id}')">&#128465; Cancel</button>
+                  `:a.status==='processing'?`
+                    <button class="btn" style="background:rgba(16,185,129,.12);color:var(--green)" onclick="updStatus('${a._id}','approved')">&#9989; Approve</button>
+                    <button class="btn" style="background:rgba(244,63,94,.12);color:var(--rose)"  onclick="updStatus('${a._id}','rejected')">&#10060; Reject</button>
+                  `:''}
+                  <button class="btn bo" onclick="viewDetail('${a._id}')">&#128065; Details</button>
+                </div>
+              </div>`).join('')}
+        </div>
+      </div>`;
+    document.body.appendChild(m);
+  } catch(e){ toast('Error loading applications','error'); }
+}
+async function cancelApp(id){
+  if(!confirm('Cancel this application?')) return;
+  await fetch(`/api/my-applications/${uid}/${id}`,{method:'DELETE'});
+  document.getElementById('appsMod')?.remove(); showMyApps();
+  toast('Application cancelled','success');
+}
+async function updStatus(id,status){
+  if(!confirm(`Mark as ${status}?`)) return;
+  let notes='';
+  if(status==='rejected'){notes=prompt('Reason for rejection:')||''; if(!notes) return;}
+  await fetch(`/api/my-applications/${uid}/${id}/update-status`,{
+    method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({status,notes})});
+  toast('✅ Status updated!','success');
+  document.getElementById('appsMod')?.remove(); showMyApps();
+}
+async function viewDetail(appId){
+  const r=await fetch(`/api/my-applications/${uid}`);
+  const apps=await r.json();
+  const a=apps.find(x=>x._id===appId); if(!a) return;
+  const d=document.createElement('div'); d.className='mov'; d.style.zIndex='1100';
+  d.onclick=e=>{if(e.target===d)d.remove();};
+  d.innerHTML=`
+    <div class="mbox" style="max-width:560px" onclick="event.stopPropagation()">
+      <div class="mhd"><h2>App #${a._id.slice(-6).toUpperCase()}</h2>
+        <button class="mcl" onclick="this.closest('.mov').remove()">&#215;</button></div>
+      <div class="mbody">
+        <div class="dgrid">
+          <div class="dchip"><div class="dl">Status</div><div class="dv">${a.status}</div></div>
+          <div class="dchip"><div class="dl">Submitted</div><div class="dv" style="font-size:12px">${new Date(a.submitted_at).toLocaleString()}</div></div>
+          <div class="dchip"><div class="dl">Subcategory</div><div class="dv" style="font-size:12px">${a.subcategory_id}</div></div>
+          <div class="dchip"><div class="dl">Item ID</div><div class="dv" style="font-size:12px">${a.item_id}</div></div>
+        </div>
+        ${a.application_data?`<div class="isec"><h4>Submitted Data</h4>
+          ${Object.entries(a.application_data).map(([k,v])=>`
+            <div class="ff"><label>${k}</label>
+            <div style="padding:9px 12px;background:var(--bg3);border:1px solid var(--border);
+              border-radius:8px;font-size:13px;color:var(--muted)">${v}</div>
+            </div>`).join('')}</div>`:''}
+        ${a.admin_notes?`<div class="anote" style="margin-top:14px">&#128221; ${a.admin_notes}</div>`:''}
+      </div>
+    </div>`;
+  document.body.appendChild(d);
+}
+async function updateBadge(){
+  try{
+    const r=await fetch(`/api/application-stats/${uid}`);
+    const s=await r.json();
+    const b=document.getElementById('abadge');
+    if(s.total>0){b.textContent=s.total;b.style.display='inline-block';}
+  } catch(e){}
+}
+async function exportPDF(){
+  const[sR,aR]=await Promise.all([
+    fetch(`/api/application-stats/${uid}`),
+    fetch(`/api/my-applications/${uid}`)]);
+  const s=await sR.json(),a=await aR.json();
+  const w=window.open('','_blank');
+  w.document.write(`<html><head><title>Applications</title>
+  <style>body{font-family:Arial;padding:20px;color:#111}h1{color:#2563eb;border-bottom:3px solid #2563eb;padding-bottom:10px}
+  .sg{display:grid;grid-template-columns:repeat(5,1fr);gap:12px;margin:20px 0}
+  .sc{background:#f5f7ff;border-radius:8px;padding:14px;text-align:center}
+  .sv{font-size:26px;font-weight:800;color:#2563eb}.sl{font-size:11px;color:#666;margin-top:4px}
+  table{width:100%;border-collapse:collapse;margin-top:20px}
+  th,td{border:1px solid #ddd;padding:10px;font-size:13px}
+  th{background:#2563eb;color:white}tr:nth-child(even){background:#f9fafb}</style>
+  </head><body>
+  <h1>&#128203; My Applications Report</h1>
+  <p><b>Generated:</b> ${new Date().toLocaleString()} | <b>User:</b> ${uid}</p>
+  <div class="sg">
+    <div class="sc"><div class="sv">${s.total||0}</div><div class="sl">Total</div></div>
+    <div class="sc"><div class="sv">${s.pending||0}</div><div class="sl">Pending</div></div>
+    <div class="sc"><div class="sv">${s.approved||0}</div><div class="sl">Approved</div></div>
+    <div class="sc"><div class="sv">${s.rejected||0}</div><div class="sl">Rejected</div></div>
+    <div class="sc"><div class="sv">${s.processing||0}</div><div class="sl">Processing</div></div>
+  </div>
+  <table><thead><tr><th>ID</th><th>Status</th><th>Subcategory</th><th>Item</th><th>Date</th></tr></thead>
+  <tbody>${a.map(x=>`<tr><td>${x._id.slice(-8).toUpperCase()}</td><td>${x.status.toUpperCase()}</td>
+    <td>${x.subcategory_id}</td><td>${x.item_id}</td>
+    <td>${new Date(x.submitted_at).toLocaleDateString()}</td></tr>`).join('')}
+  </tbody></table></body></html>`);
+  w.document.close(); w.print();
+}
+
+/* ── CHAT ────────────────────────────────────────────── */
+function openChat(){document.getElementById('chat-panel').style.display='flex';}
+function closeChat(){document.getElementById('chat-panel').style.display='none';}
+function askAbout(){
+  if(!curSub) return; openChat();
+  document.getElementById('chat-inp').value=
+    `Tell me about ${curSub.name?.en} in ${curCat?.name?.en}`;
+  sendChat();
+}
+async function sendChat(){
+  const inp=document.getElementById('chat-inp');
+  const txt=inp.value.trim(); if(!txt) return;
+  appendMsg('user',txt); inp.value='';
+  document.getElementById('chat-qs').innerHTML='';
+  const typ=appendTyp();
+  try{
+    const r=await fetch('/api/ai/search',{method:'POST',
+      headers:{'Content-Type':'application/json'},
+      body:JSON.stringify({query:txt,top_k:5})});
+    const data=await r.json(); typ.remove();
+    appendMsg('bot',data.answer||'No answer found.');
+    if(data.results?.length){
+      const qa=document.createElement('div'); qa.className='cqa';
+      data.results.slice(0,3).forEach(res=>{
+        const b=document.createElement('button'); b.className='qb';
+        b.textContent=res.metadata?.subcategory_name||'View';
+        b.onclick=()=>{
+          const cat=categories.find(c=>c.id===res.category_id);
+          const sub=cat?.subcategories?.find(s=>s.id===res.subcategory_id);
+          if(cat&&sub){selSub(cat,sub);closeChat();}
+        }; qa.appendChild(b);
+      });
+      document.getElementById('chat-body').appendChild(qa);
+    }
+  } catch(e){ typ.remove(); appendMsg('bot','Sorry, an error occurred.'); }
+}
+function appendMsg(who,txt){
+  const b=document.getElementById('chat-body');
+  const d=document.createElement('div');
+  d.className='cmsg '+(who==='user'?'umsg':'bmsg');
+  d.innerHTML=txt.replace(/\*\*(.*?)\*\*/g,'<strong>$1</strong>').replace(/\n/g,'<br>');
+  b.appendChild(d); b.scrollTop=b.scrollHeight; return d;
+}
+function appendTyp(){
+  const b=document.getElementById('chat-body');
+  const d=document.createElement('div'); d.className='cmsg bmsg tind';
+  d.innerHTML='<span></span><span></span><span></span>';
+  b.appendChild(d); b.scrollTop=b.scrollHeight; return d;
+}
+
+/* ── ADS ─────────────────────────────────────────────── */
+async function loadAds(){
+  try{
+    const r=await fetch('/api/ads'); const ads=await r.json();
+    const area=document.getElementById('ads-area');
+    if(!ads.length){
+      area.innerHTML=`<div style="font-size:12px;color:var(--muted2);text-align:center;padding:8px">No announcements</div>`;
+      return;
+    }
+    area.innerHTML=ads.map(a=>`
+      <div class="adc"><a href="${a.link||'#'}" target="_blank">
+        <h4>${a.title}</h4><p>${a.body||''}</p>
+      </a></div>`).join('');
+  } catch(e){}
+}
+
+/* ── SEARCH / AUTOSUGGEST ────────────────────────────── */
+function doSearch(){
+  const q=document.getElementById('srch').value.trim(); if(!q) return;
+  openChat(); document.getElementById('chat-inp').value=q; sendChat();
+}
+let _st;
+async function autosg(val){
+  clearTimeout(_st);
+  const el=document.getElementById('sdrop');
+  if(!val||val.length<2){el.style.display='none'; return;}
+  _st=setTimeout(async()=>{
+    try{
+      const r=await fetch(`/api/search/autosuggest?q=${encodeURIComponent(val)}`);
+      const res=await r.json();
+      if(!res.length){el.style.display='none'; return;}
+      el.innerHTML=res.slice(0,6).map(x=>{
+        const label=x.name?.en||x.name;
+        const par=x.type==='subcategory'?` (${x.parentCategory?.en||''})`:'' ;
+        return `<div class="si" onclick="handleSg('${x.type}','${x.id}')">
+          ${x.icon||'▫'} ${label}${par}</div>`;
+      }).join(''); el.style.display='block';
+    } catch(e){}
+  },300);
+}
+function handleSg(type,id){
+  document.getElementById('sdrop').style.display='none';
+  if(type==='category'){const c=categories.find(x=>x.id===id);if(c)selCat(c);}
+  else{for(const c of categories){
+    const s=c.subcategories?.find(x=>x.id===id);
+    if(s){selSub(c,s);break;}
+  }}
+}
+
+/* ── LANGUAGE ────────────────────────────────────────── */
+function setLang(l){
+  lang=l; document.querySelectorAll('.lb').forEach(b=>b.classList.remove('on'));
+  document.getElementById('lb-'+l)?.classList.add('on');
+  loadCats();
+  if(curCat)selCat(curCat);
+  if(curSub&&curCat)selSub(curCat,curSub);
+}
+
+/* ── PROFILE ─────────────────────────────────────────── */
+function pnext(s){document.getElementById('ps-'+s).style.display='none';
+  document.getElementById('ps-'+(s+1)).style.display='flex';}
+function pback(s){document.getElementById('ps-'+s).style.display='none';
+  document.getElementById('ps-'+(s-1)).style.display='flex';}
+async function psubmit(){
+  const d={name:document.getElementById('p_name').value,age:document.getElementById('p_age').value,
+    email:document.getElementById('p_email').value,phone:document.getElementById('p_phone').value,
+    job:document.getElementById('p_job').value};
+  await fetch('/api/profile/step',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({user_id:uid,step:'complete',data:d})});
+  document.getElementById('profile-modal').style.display='none';
+  toast('✅ Profile saved!','success');
+}
+
+/* ── HELPERS ─────────────────────────────────────────── */
+function track(ev,d={}){
+  fetch('/api/behavior',{method:'POST',headers:{'Content-Type':'application/json'},
+    body:JSON.stringify({user_id:uid,event:ev,...d,page:'portal',
+      device:/Mobi/.test(navigator.userAgent)?'mobile':'desktop',
+      referrer:document.referrer,timestamp:new Date().toISOString()})
+  }).catch(()=>{});
+}
+function toast(msg,type='info'){
+  const c={success:'var(--green)',error:'var(--rose)',info:'var(--blue)'};
+  const t=document.createElement('div'); t.className='toast';
+  t.style.borderLeft=`4px solid ${c[type]||c.info}`;
+  t.textContent=msg; document.body.appendChild(t);
+  setTimeout(()=>{t.style.transition='opacity .3s';t.style.opacity='0';
+    setTimeout(()=>t.remove(),300);},3000);
+}
+
+/* ── INIT ────────────────────────────────────────────── */
+window.onload=async()=>{
+  await loadCats();
+  if(categories.length>0) selCat(categories[0]);
+  updateBadge(); track('page_view');
+  document.addEventListener('click',e=>{
+    if(!e.target.closest('.search-wrap'))
+      document.getElementById('sdrop').style.display='none';
+  });
+};
+</script>
+</body>
+</html>
