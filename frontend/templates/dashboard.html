@@ -2331,12 +2331,26 @@ async function loadApps(){
   // Try live API first
   let apps=[], stats={total:0,pending:0,approved:0,rejected:0};
   try{
-    const d=await(await fetch('/api/dashboard/stats')).json();
+    console.log('📊 Fetching dashboard stats...');
+    const statsRes = await fetch('/api/dashboard/stats');
+    if(!statsRes.ok) throw new Error(`Stats fetch failed: ${statsRes.status}`);
+    const d = await statsRes.json();
+    console.log('✓ Dashboard stats:', d);
     const a=d.applications||{},bs=a.by_status||{};
     stats={total:a.total||0,pending:bs.pending||0,approved:bs.approved||0,rejected:bs.rejected||0};
-    const r2=await fetch('/api/applications?limit=20');
-    if(r2.ok) apps=await r2.json();
-  }catch(e){}
+    
+    console.log('📋 Fetching applications...');
+    const r2 = await fetch('/api/applications?limit=20');
+    console.log('Response status:', r2.status, r2.statusText);
+    if(r2.ok) {
+      apps = await r2.json();
+      console.log('✓ Applications loaded:', apps.length, 'items');
+    } else {
+      console.warn('⚠ Applications fetch returned:', r2.status);
+    }
+  }catch(e){
+    console.error('❌ Error loading apps:', e);
+  }
 
   // If no live data → use rich demo data
   if(!apps.length){

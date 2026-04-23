@@ -1,72 +1,7 @@
-# Python
 __pycache__/
-*.py[cod]
-*$py.class
-*.so
-.Python
-build/
-develop-eggs/
-dist/
-downloads/
-eggs/
-.eggs/
-lib/
-lib64/
-parts/
-sdist/
-var/
-wheels/
-*.egg-info/
-.installed.cfg
-*.egg
-
-# Virtual Environment
-venv/
-ENV/
-env/
-.venv
-
-# IDE
-.vscode/
-.idea/
-*.swp
-*.swo
-*~
-.DS_Store
-
-# Environment Variables
+*.pyc
 .env
-.env.local
-.env.*.local
-
-# Data files (large)
-data/
-*.index
-*.npy
-
-# Logs
-*.log
-logs/
-
-# Testing
-.pytest_cache/
-.coverage
-htmlcov/
-
-# MongoDB backups
-dump/
-
-# Temporary
-*.tmp
-*.bak
-*.cache
-
-# Node modules (if using build tools)
+venv/
+env/
 node_modules/
-
-# OS
-Thumbs.db
-.DS_Store
-
-# Git
-.git/
+*.log

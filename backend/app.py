@@ -23,7 +23,7 @@ except Exception:
 
 load_dotenv()
 
-app = Flask(__name__, static_folder="static", template_folder="templates")
+app = Flask(__name__, static_folder="../frontend/static", template_folder="../frontend/templates")
 app.secret_key = os.getenv("FLASK_SECRET", "dev-secret-change-in-production")
 app.config["SESSION_COOKIE_HTTPONLY"] = True
 app.config["SESSION_COOKIE_SAMESITE"] = "Lax"
@@ -876,7 +876,7 @@ def approve_application(application_id):
             "status": "approved",
             "updated_at": datetime.utcnow(),
             "admin_notes": payload.get("notes", "Application approved"),
-            "approved_by": session.get("admin_username", "admin")
+            "approved_by": session.get("admin_user", "admin")
         }}
     )
     return jsonify({"status": "Application approved"})
@@ -892,7 +892,7 @@ def reject_application(application_id):
             "status": "rejected",
             "updated_at": datetime.utcnow(),
             "admin_notes": payload.get("notes", "Application rejected"),
-            "rejected_by": session.get("admin_username", "admin")
+            "rejected_by": session.get("admin_user", "admin")
         }}
     )
     return jsonify({"status": "Application rejected"})
@@ -904,7 +904,7 @@ def update_application_admin(application_id):
     payload = request.json or {}
     update_data = {
         "updated_at": datetime.utcnow(),
-        "updated_by": session.get("admin_username", "admin")
+        "updated_by": session.get("admin_user", "admin")
     }
     if "application_data" in payload:
         update_data["application_data"] = payload["application_data"]
@@ -1057,6 +1057,103 @@ def get_user_application_stats(user_id):
         "processing": stats.get("processing", 0),
         "cancelled": stats.get("cancelled", 0)
     })
+
+@app.route("/api/applications")
+def get_applications_public():
+    """Get applications for portal display (public endpoint)"""
+    try:
+        limit = int(request.args.get("limit", 20))
+        
+        # Check if applications collection exists and has data
+        app_count = db["applications"].count_documents({})
+        
+        # If no applications exist, seed with demo data
+        if app_count == 0:
+            now = datetime.utcnow()
+            demo_apps = [
+                {
+                    "id": "APP-4821",
+                    "user_id": "user_001",
+                    "user": "Amara Perera",
+                    "subcategory": "NIC Renewal",
+                    "subcategory_id": "nid_renewal",
+                    "status": "approved",
+                    "submitted_at": now - timedelta(days=1),
+                    "updated_at": now - timedelta(days=1),
+                    "application_data": {"type": "NIC"}
+                },
+                {
+                    "id": "APP-4820",
+                    "user_id": "user_002",
+                    "user": "Rajith Silva",
+                    "subcategory": "Driving Licence",
+                    "subcategory_id": "driving_licence",
+                    "status": "pending",
+                    "submitted_at": now - timedelta(days=1.2),
+                    "updated_at": now - timedelta(days=1.2),
+                    "application_data": {"type": "DL"}
+                },
+                {
+                    "id": "APP-4819",
+                    "user_id": "user_003",
+                    "user": "Nimal Fernando",
+                    "subcategory": "Passport Application",
+                    "subcategory_id": "passport",
+                    "status": "approved",
+                    "submitted_at": now - timedelta(days=1.5),
+                    "updated_at": now - timedelta(days=1.5),
+                    "application_data": {"type": "PASSPORT"}
+                },
+                {
+                    "id": "APP-4818",
+                    "user_id": "user_004",
+                    "user": "Kavi Ratnam",
+                    "subcategory": "School Admission",
+                    "subcategory_id": "school_admission",
+                    "status": "approved",
+                    "submitted_at": now - timedelta(days=2),
+                    "updated_at": now - timedelta(days=2),
+                    "application_data": {"type": "SCHOOL"}
+                },
+                {
+                    "id": "APP-4817",
+                    "user_id": "user_005",
+                    "user": "Priya Jayawardena",
+                    "subcategory": "Business Registration",
+                    "subcategory_id": "business_reg",
+                    "status": "rejected",
+                    "submitted_at": now - timedelta(days=2.3),
+                    "updated_at": now - timedelta(days=2.3),
+                    "application_data": {"type": "BUSINESS"}
+                },
+                {
+                    "id": "APP-4816",
+                    "user_id": "user_006",
+                    "user": "Saman Wickrama",
+                    "subcategory": "Land Deed Transfer",
+                    "subcategory_id": "land_deed",
+                    "status": "pending",
+                    "submitted_at": now - timedelta(days=2.8),
+                    "updated_at": now - timedelta(days=2.8),
+                    "application_data": {"type": "LAND"}
+                },
+            ]
+            db["applications"].insert_many(demo_apps)
+            print(f"✓ Seeded {len(demo_apps)} demo applications")
+        
+        # Fetch applications
+        applications = list(db["applications"].find().sort("submitted_at", -1).limit(limit))
+        for app in applications:
+            app["_id"] = str(app["_id"])
+            if app.get("submitted_at"):
+                app["submitted_at"] = app["submitted_at"].isoformat()
+            if app.get("updated_at"):
+                app["updated_at"] = app["updated_at"].isoformat()
+        
+        return jsonify(applications)
+    except Exception as e:
+        print(f"Error in /api/applications: {e}")
+        return jsonify({"error": str(e)}), 500
 
 @app.route("/api/my-applications/<user_id>/<application_id>/update-status", methods=["POST"])
 def update_user_application_status(user_id, application_id):
